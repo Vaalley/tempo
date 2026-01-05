@@ -1,0 +1,12 @@
+{
+	"plugins": ["typescript", "import", "jest", "react"],
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn",
+		"pedantic": "off",
+		"style": "off"
+	},
+	"rules": {
+		"no-console": "off"
+	}
+}

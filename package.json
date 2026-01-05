@@ -1,0 +1,20 @@
+{
+	"name": "tempo",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "bun --filter '*' dev",
+		"build": "bun --filter '*' build",
+		"lint": "oxlint . --ignore-path .gitignore",
+		"format": "oxfmt .",
+		"format:check": "oxfmt . --check",
+		"test": "bun --filter '*' test"
+	},
+	"devDependencies": {
+		"oxfmt": "^0.21.0",
+		"oxlint": "^1.36.0"
+	}
+}
