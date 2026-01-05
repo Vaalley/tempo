@@ -1,0 +1,95 @@
+@startuml
+
+' Configuration du style
+!theme plain
+hide empty members
+skinparam classAttributeIconSize 0
+
+package "Domain Model (Data Persistence)" {
+
+    enum Role {
+        ADMIN
+        USER
+    }
+
+    enum WorkspaceType {
+        MEETING_ROOM
+        DESK
+        PHONE_BOOTH
+    }
+
+    enum BookingStatus {
+        CONFIRMED
+        CANCELLED
+        PENDING
+    }
+
+    class "User (PostgreSQL)" as User {
+        + id: UUID <<PK>>
+        + email: Varchar(255)
+        + password: Varchar
+        + role: Role
+        + createdAt: Timestamp
+        --
+        + verifyPassword(input: string): boolean
+    }
+
+    class "Workspace (PostgreSQL)" as Workspace {
+        + id: Serial <<PK>>
+        + name: Varchar
+        + type: WorkspaceType
+        + capacity: Integer
+        + amenities: JSONB
+        + isAvailable: Boolean
+    }
+
+    class "Booking (PostgreSQL)" as Booking {
+        + id: UUID <<PK>>
+        + userId: UUID <<FK>>
+        + workspaceId: Integer <<FK>>
+        + startAt: Timestamp
+        + endAt: Timestamp
+        + status: BookingStatus
+        --
+        + duration(): Integer
+    }
+
+    class "AuditLog (MongoDB)" as AuditLog {
+        + _id: ObjectId <<PK>>
+        + action: String
+        + performedBy: UUID
+        + targetResource: String
+        + metadata: JSON
+        + timestamp: Date
+    }
+}
+
+package "Business Logic (Services)" {
+    class UserService {
+        + create(dto: CreateUserDto): Promise<User>
+        + findAll(): Promise<User[]>
+        + findByEmail(email: string): Promise<User>
+    }
+
+    class BookingService {
+        + create(userId, workspaceId, dates): Promise<Booking>
+        + checkAvailability(workspaceId, dates): Boolean
+        + cancel(bookingId): void
+    }
+}
+
+' Relations entre les entités
+User "1" *-- "0..*" Booking : "makes" >
+Workspace "1" *-- "0..*" Booking : "is reserved in" >
+
+' Relations logiques
+UserService ..> User : "manages"
+BookingService ..> Booking : "manages"
+BookingService ..> AuditLog : "logs actions to"
+
+note right of AuditLog
+  Stockage NoSQL pour la performance
+  et la flexibilité des logs
+end note
+
+@enduml

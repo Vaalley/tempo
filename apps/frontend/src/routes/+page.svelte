@@ -21,7 +21,7 @@
 	}
 
 	async function createUser() {
-		if (!email || !password) return;
+		if (!email || !password) return;            
 		loading = true;
 
 		try {
