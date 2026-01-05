@@ -4,7 +4,7 @@ import { render } from 'vitest-browser-svelte';
 import Page from './+page.svelte';
 
 beforeEach(() => {
-	global.fetch = vi.fn(() =>
+	window.fetch = vi.fn(() =>
 		Promise.resolve({
 			ok: true,
 			json: () => Promise.resolve([]),
