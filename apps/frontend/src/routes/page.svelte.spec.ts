@@ -4,12 +4,12 @@ import { render } from 'vitest-browser-svelte';
 import Page from './+page.svelte';
 
 beforeEach(() => {
-  global.fetch = vi.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve([]),
-    })
-  ) as any;
+	global.fetch = vi.fn(() =>
+		Promise.resolve({
+			ok: true,
+			json: () => Promise.resolve([]),
+		}),
+	) as any;
 });
 
 describe('/+page.svelte', () => {
