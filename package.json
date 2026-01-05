@@ -11,7 +11,8 @@
 		"lint": "oxlint . --ignore-path .gitignore",
 		"format": "oxfmt .",
 		"format:check": "oxfmt . --check",
-		"test": "bun --filter '*' test"
+		"test": "bun --filter '*' test",
+		"precommit": "bun run format && bun run lint && bun run test"
 	},
 	"devDependencies": {
 		"oxfmt": "^0.21.0",

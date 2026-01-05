@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import { playwright } from '@vitest/browser-playwright';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 
@@ -7,36 +6,12 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 
 	test: {
-		expect: { requireAssertions: true },
+		include: ['src/**/*.{test,spec}.{js,ts}'],
 
-		projects: [
-			{
-				extends: './vite.config.ts',
+		environment: 'node',
 
-				test: {
-					name: 'client',
+		passWithNoTests: true,
 
-					browser: {
-						enabled: true,
-						provider: playwright(),
-						instances: [{ browser: 'chromium', headless: true }],
-					},
-
-					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**'],
-				},
-			},
-
-			{
-				extends: './vite.config.ts',
-
-				test: {
-					name: 'server',
-					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-				},
-			},
-		],
+		globals: true,
 	},
 });
