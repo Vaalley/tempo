@@ -40,7 +40,7 @@ describe('AuthService', () => {
 				createdAt: new Date(),
 			});
 
-			expect(authService.register('test@test.com', 'password123')).rejects.toThrow(
+			await expect(authService.register('test@test.com', 'password123')).rejects.toThrow(
 				'USER_EXISTS',
 			);
 		});
@@ -67,7 +67,7 @@ describe('AuthService', () => {
 		it('should throw INVALID_CREDENTIALS if user not found', async () => {
 			mockFindFirst.mockResolvedValue(undefined);
 
-			expect(authService.login('notfound@test.com', 'password')).rejects.toThrow(
+			await expect(authService.login('notfound@test.com', 'password')).rejects.toThrow(
 				'INVALID_CREDENTIALS',
 			);
 		});
@@ -83,7 +83,7 @@ describe('AuthService', () => {
 				createdAt: new Date(),
 			});
 
-			expect(authService.login('test@test.com', 'wrongpassword')).rejects.toThrow(
+			await expect(authService.login('test@test.com', 'wrongpassword')).rejects.toThrow(
 				'INVALID_CREDENTIALS',
 			);
 		});
