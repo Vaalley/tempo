@@ -1,7 +1,11 @@
 import { Hono } from 'hono';
 import { userService } from './users.service';
+import { authGuard } from '../../middlewares/auth.guard';
 
 const app = new Hono();
+
+// Protège toutes les routes /users avec le JWT
+app.use('*', authGuard);
 
 // GET /users
 app.get('/', async (c) => {

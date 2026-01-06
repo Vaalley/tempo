@@ -1,5 +1,7 @@
 <script lang="ts">
-	import client from '$lib/client';
+	import { getAuthClient } from '$lib/client';
+	import { auth } from '$lib/auth.svelte';
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	// État local avec les "Runes" de Svelte 5 ($state)
@@ -9,12 +11,17 @@
 	let loading = $state(false);
 
 	onMount(async () => {
+		if (!auth.isLoggedIn) {
+			goto('/login');
+			return;
+		}
 		await fetchUsers();
 	});
 
 	async function fetchUsers() {
 		// Appel API typé : .users.$get() est suggéré par VSCode !
-		const res = await client.users.$get();
+		const client = getAuthClient();
+		const res = await (client as any).users.$get();
 		if (res.ok) {
 			users = await res.json();
 		}
@@ -25,7 +32,8 @@
 		loading = true;
 
 		try {
-			const res = await client.users.$post({
+			const client = getAuthClient();
+			const res = await (client as any).users.$post({
 				json: { email, password }
 			});
 
@@ -43,7 +51,18 @@
 </script>
 
 <div class="mx-auto max-w-2xl p-10 font-sans">
-	<h1 class="mb-6 text-3xl font-bold text-gray-800">Tempo Users</h1>
+	<div class="flex justify-between items-center mb-6">
+		<h1 class="text-3xl font-bold text-gray-800">Tempo Users</h1>
+		<div class="flex items-center gap-4">
+			<span class="text-sm text-gray-600">{auth.user?.email}</span>
+			<button
+				onclick={() => { auth.logout(); goto('/login'); }}
+				class="text-sm text-red-600 hover:text-red-800"
+			>
+				Déconnexion
+			</button>
+		</div>
+	</div>
 
 	<div class="mb-8 rounded-lg bg-white p-6 shadow-md border border-gray-100">
 		<h2 class="mb-4 text-xl font-semibold text-gray-700">Nouvel Utilisateur</h2>
