@@ -4,7 +4,6 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	// État local avec les "Runes" de Svelte 5 ($state)
 	let users = $state<any[]>([]);
 	let email = $state('');
 	let password = $state('');
@@ -19,7 +18,6 @@
 	});
 
 	async function fetchUsers() {
-		// Appel API typé : .users.$get() est suggéré par VSCode !
 		const client = getAuthClient();
 		const res = await (client as any).users.$get();
 		if (res.ok) {
@@ -38,7 +36,7 @@
 			});
 
 			if (res.ok) {
-				await fetchUsers(); // Rafraîchir la liste
+				await fetchUsers();
 				email = '';
 				password = '';
 			} else {

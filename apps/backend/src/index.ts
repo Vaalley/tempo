@@ -11,9 +11,7 @@ app.use('*', logger());
 app.use('*', cors()); // Autorise le Frontend à nous appeler
 
 // Routes
-const routes = app
-	.route('/auth', authRoute)
-	.route('/users', usersRoute);
+const routes = app.route('/auth', authRoute).route('/users', usersRoute);
 
 // Health check
 routes.get('/health', (c) => c.text('OK'));

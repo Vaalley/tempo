@@ -60,7 +60,7 @@ export const authService = {
 				role: user.role,
 				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24h
 			},
-			JWT_SECRET
+			JWT_SECRET,
 		);
 
 		return {

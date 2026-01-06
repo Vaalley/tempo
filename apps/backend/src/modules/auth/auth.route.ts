@@ -1,16 +1,14 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 import { authService } from './auth.service';
+import { loginSchema, registerSchema } from './auth.dto';
 
 const app = new Hono();
 
 // POST /auth/register
-app.post('/register', async (c) => {
+app.post('/register', zValidator('json', registerSchema), async (c) => {
 	try {
-		const { email, password } = await c.req.json();
-
-		if (!email || !password) {
-			return c.json({ error: 'Email et mot de passe requis' }, 400);
-		}
+		const { email, password } = c.req.valid('json');
 
 		const user = await authService.register(email, password);
 		return c.json(user, 201);
@@ -23,13 +21,9 @@ app.post('/register', async (c) => {
 });
 
 // POST /auth/login
-app.post('/login', async (c) => {
+app.post('/login', zValidator('json', loginSchema), async (c) => {
 	try {
-		const { email, password } = await c.req.json();
-
-		if (!email || !password) {
-			return c.json({ error: 'Email et mot de passe requis' }, 400);
-		}
+		const { email, password } = c.req.valid('json');
 
 		const result = await authService.login(email, password);
 		return c.json(result);
