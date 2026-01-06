@@ -23,6 +23,7 @@
         "@types/bun": "latest",
         "@types/pg": "^8.16.0",
         "drizzle-kit": "^0.31.8",
+        "vitest": "^4.0.16",
       },
     },
     "apps/frontend": {
