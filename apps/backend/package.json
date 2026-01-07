@@ -1,17 +1,22 @@
 {
 	"name": "@tempo/backend",
 	"scripts": {
-		"dev": "bun run --hot src/index.ts"
+		"dev": "bun run --hot src/index.ts",
+		"test": "bun test",
+		"test:watch": "bun test --watch"
 	},
 	"dependencies": {
+		"@hono/zod-validator": "^0.7.6",
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.45.1",
 		"hono": "^4.11.3",
-		"pg": "^8.16.3"
+		"pg": "^8.16.3",
+		"zod": "^4.3.5"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/pg": "^8.16.0",
-		"drizzle-kit": "^0.31.8"
+		"drizzle-kit": "^0.31.8",
+		"vitest": "^4.0.16"
 	}
 }
