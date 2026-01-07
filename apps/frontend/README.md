@@ -1,38 +1,61 @@
-# sv
+# Tempo Frontend
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Interface utilisateur pour Tempo, construite avec **Svelte 5** et **SvelteKit**.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Framework** : Svelte 5 (Runes)
+- **Meta-framework** : SvelteKit
+- **Build** : Vite
+- **Style** : Tailwind CSS
+- **API Client** : Hono RPC Client
+- **Tests** : Vitest
 
-```sh
-# create a new project in the current directory
-npx sv create
+## Structure
 
-# create a new project in my-app
-npx sv create my-app
+```
+src/
+├── app.html              # Template HTML
+├── lib/
+│   ├── client.ts         # Client API (Hono RPC)
+│   └── auth.svelte.ts    # Store d'authentification (Runes)
+└── routes/
+    ├── +layout.svelte    # Layout principal
+    ├── +page.svelte      # Page d'accueil (liste users)
+    └── login/
+        └── +page.svelte  # Page de connexion
 ```
 
-## Developing
+## Développement
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```bash
+# Depuis la racine du monorepo
+bun install
 
-```sh
-npm run dev
+# Lancer le backend d'abord
+bun --filter @tempo/backend dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Lancer le frontend
+bun run dev
 ```
 
-## Building
+Le frontend est disponible sur **http://localhost:5173**
 
-To create a production version of your app:
+## Scripts
 
-```sh
-npm run build
+| Commande          | Description                   |
+| ----------------- | ----------------------------- |
+| `bun run dev`     | Serveur de développement Vite |
+| `bun run build`   | Build de production           |
+| `bun run preview` | Preview du build              |
+| `bun run test`    | Lance les tests Vitest        |
+| `bun run check`   | Vérifie les types TypeScript  |
+
+## Build de Production
+
+```bash
+bun run build
+bun run preview
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Le build utilise l'adapter Bun pour une compatibilité optimale avec le runtime.
