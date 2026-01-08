@@ -14,10 +14,9 @@ export function getAuthClient() {
 		fetch: (input: RequestInfo | URL, init?: RequestInit) =>
 			fetch(input, {
 				...init,
-				headers: {
-					...init?.headers,
-					Authorization: token ? `Bearer ${token}` : '',
-				},
+				headers: token
+					? { ...init?.headers, Authorization: `Bearer ${token}` }
+					: init?.headers,
 			}),
 	});
 }
