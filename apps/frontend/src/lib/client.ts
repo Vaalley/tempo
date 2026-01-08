@@ -11,7 +11,14 @@ const client = hc<AppType>(API_URL);
 export function getAuthClient() {
 	const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 	return hc<AppType>(API_URL, {
-		headers: token ? { Authorization: `Bearer ${token}` } : {},
+		fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+			fetch(input, {
+				...init,
+				headers: {
+					...init?.headers,
+					Authorization: token ? `Bearer ${token}` : '',
+				},
+			}),
 	});
 }
 
