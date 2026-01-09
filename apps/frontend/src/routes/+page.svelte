@@ -52,6 +52,9 @@
 	<div class="flex justify-between items-center mb-6">
 		<h1 class="text-3xl font-bold text-gray-800">Tempo</h1>
 		<div class="flex items-center gap-4">
+			<a href="/bookings" class="text-sm text-blue-600 hover:text-blue-800">
+				Mes réservations
+			</a>
 			<a href="/admin/workspaces" class="text-sm text-blue-600 hover:text-blue-800">
 				Gérer les espaces →
 			</a>
