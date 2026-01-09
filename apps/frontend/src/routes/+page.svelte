@@ -50,8 +50,11 @@
 
 <div class="mx-auto max-w-2xl p-10 font-sans">
 	<div class="flex justify-between items-center mb-6">
-		<h1 class="text-3xl font-bold text-gray-800">Tempo Users</h1>
+		<h1 class="text-3xl font-bold text-gray-800">Tempo</h1>
 		<div class="flex items-center gap-4">
+			<a href="/admin/workspaces" class="text-sm text-blue-600 hover:text-blue-800">
+				Gérer les espaces →
+			</a>
 			<span class="text-sm text-gray-600">{auth.user?.email}</span>
 			<button
 				onclick={() => { auth.logout(); goto('/login'); }}
