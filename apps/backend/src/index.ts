@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import usersRoute from './modules/users/users.route';
 import authRoute from './modules/auth/auth.route';
 import workspacesRoute from './modules/workspaces/workspaces.route';
+import bookingsRoute from './modules/bookings/bookings.route';
 
 const app = new Hono();
 
@@ -15,7 +16,8 @@ app.use('*', cors()); // Autorise le Frontend à nous appeler
 const routes = app
 	.route('/auth', authRoute)
 	.route('/users', usersRoute)
-	.route('/workspaces', workspacesRoute);
+	.route('/workspaces', workspacesRoute)
+	.route('/bookings', bookingsRoute);
 
 // Health check
 routes.get('/health', (c) => c.text('OK'));
