@@ -37,6 +37,8 @@ services:
         environment:
             # Attention : ici on utilise le nom du service "postgres" et plus "localhost" !
             DATABASE_URL: 'postgres://admin:password123@postgres:5432/tempo_db'
+            MONGO_URL: 'mongodb://admin:password123@mongo:27017'
+            MONGO_DB_NAME: 'tempo_audit'
         depends_on:
             - postgres
             - mongo

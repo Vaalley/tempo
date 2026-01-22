@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import { bookingService } from './bookings.service';
 import { authGuard } from '../../middlewares/auth.guard';
 import { createBookingSchema } from './bookings.dto';
+import { auditService } from '../audit/audit.service';
 
 const app = new Hono();
 
@@ -53,6 +54,13 @@ app.delete('/:id', async (c) => {
 		const id = c.req.param('id');
 
 		const deleted = await bookingService.delete(id, payload.sub);
+
+		await auditService.logDeletion('booking', id, deleted as Record<string, unknown>, {
+			userId: payload.sub,
+			email: payload.email,
+			role: payload.role,
+		});
+
 		return c.json({ message: 'Réservation supprimée', booking: deleted });
 	} catch (error) {
 		if (error instanceof Error) {
