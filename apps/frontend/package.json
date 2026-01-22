@@ -14,7 +14,6 @@
 		"test": "npm run test:unit -- --run"
 	},
 	"dependencies": {
-		"@tempo/backend": "workspace:*",
 		"hono": "^4.11.3"
 	},
 	"devDependencies": {

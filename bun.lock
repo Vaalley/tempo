@@ -31,7 +31,6 @@
       "name": "frontend",
       "version": "0.0.1",
       "dependencies": {
-        "@tempo/backend": "workspace:*",
         "hono": "^4.11.3",
       },
       "devDependencies": {
