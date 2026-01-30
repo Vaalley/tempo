@@ -1,7 +1,4 @@
 import { MongoClient, Db } from 'mongodb';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'tempo_audit';
@@ -22,13 +19,6 @@ export async function connectMongo(): Promise<Db> {
 		console.error('❌ MongoDB connection error:', error);
 		throw error;
 	}
-}
-
-export async function getMongoDb(): Promise<Db> {
-	if (!db) {
-		return await connectMongo();
-	}
-	return db;
 }
 
 export async function closeMongo(): Promise<void> {

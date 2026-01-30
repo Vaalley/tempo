@@ -1,4 +1,4 @@
-import { getMongoDb } from '../../db/mongo';
+import { connectMongo } from '../../db/mongo';
 
 export type AuditAction = 'DELETE_WORKSPACE' | 'DELETE_BOOKING' | 'DELETE_USER';
 
@@ -19,7 +19,7 @@ export interface AuditLog {
 export const auditService = {
 	async log(auditLog: Omit<AuditLog, 'timestamp'>): Promise<void> {
 		try {
-			const db = await getMongoDb();
+			const db = await connectMongo();
 			const collection = db.collection<AuditLog>('audit_logs');
 
 			await collection.insertOne({
@@ -57,7 +57,7 @@ export const auditService = {
 	},
 
 	async getAll(limit = 100): Promise<AuditLog[]> {
-		const db = await getMongoDb();
+		const db = await connectMongo();
 		const collection = db.collection<AuditLog>('audit_logs');
 
 		return await collection.find().sort({ timestamp: -1 }).limit(limit).toArray();
@@ -67,7 +67,7 @@ export const auditService = {
 		entityType: AuditLog['entityType'],
 		entityId: string | number,
 	): Promise<AuditLog[]> {
-		const db = await getMongoDb();
+		const db = await connectMongo();
 		const collection = db.collection<AuditLog>('audit_logs');
 
 		return await collection.find({ entityType, entityId }).sort({ timestamp: -1 }).toArray();

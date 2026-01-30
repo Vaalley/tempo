@@ -6,7 +6,7 @@ let capturedInsertData: any = null;
 let mockToArrayResult: any[] = [];
 
 mock.module('../../db/mongo', () => ({
-	getMongoDb: mock(() => {
+	connectMongo: mock(() => {
 		return Promise.resolve({
 			collection: mock(() => ({
 				insertOne: mock((data: any) => {
