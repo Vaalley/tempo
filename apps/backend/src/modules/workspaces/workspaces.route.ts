@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import { workspaceService } from './workspaces.service';
 import { authGuard } from '../../middlewares/auth.guard';
 import { createWorkspaceSchema } from './workspaces.dto';
+import { auditService } from '../audit/audit.service';
 
 const app = new Hono();
 
@@ -42,6 +43,7 @@ app.post('/', zValidator('json', createWorkspaceSchema), async (c) => {
 // DELETE /workspaces/:id - Supprimer un espace
 app.delete('/:id', async (c) => {
 	const id = Number(c.req.param('id'));
+	const payload = c.get('jwtPayload');
 
 	if (isNaN(id)) {
 		return c.json({ error: 'ID invalide' }, 400);
@@ -52,6 +54,12 @@ app.delete('/:id', async (c) => {
 	if (!deleted) {
 		return c.json({ error: 'Espace non trouvé' }, 404);
 	}
+
+	await auditService.logDeletion('workspace', id, deleted as Record<string, unknown>, {
+		userId: payload.sub,
+		email: payload.email,
+		role: payload.role,
+	});
 
 	return c.json({ message: 'Espace supprimé', workspace: deleted });
 });
