@@ -25,7 +25,7 @@ export const auditService = {
 			await collection.insertOne({
 				...auditLog,
 				timestamp: new Date(),
-			});
+			} as AuditLog);
 
 			console.log(
 				`📝 Audit: ${auditLog.action} on ${auditLog.entityType}:${auditLog.entityId}`,
