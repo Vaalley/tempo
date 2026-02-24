@@ -11,7 +11,7 @@ export const workspaceService = {
 
 	async getAll() {
 		return await db.query.workspaces.findMany({
-			orderBy: (workspaces, { asc }) => [asc(workspaces.name)],
+			orderBy: (workspaceTable, { asc }) => [asc(workspaceTable.name)],
 		});
 	},
 

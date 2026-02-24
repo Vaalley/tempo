@@ -3,6 +3,17 @@
 	import { auth } from '$lib/auth.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import LogOut from '@lucide/svelte/icons/log-out';
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+	import Plus from '@lucide/svelte/icons/plus';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
 
 	type Workspace = {
 		id: number;
@@ -79,105 +90,121 @@
 	}
 </script>
 
-<div class="mx-auto max-w-4xl p-10 font-sans">
+<div class="mx-auto max-w-4xl p-10">
 	<div class="flex justify-between items-center mb-6">
 		<div>
-			<h1 class="text-3xl font-bold text-gray-800">Gestion des Espaces</h1>
-			<p class="text-gray-500 text-sm mt-1">Bureaux et salles de réunion</p>
+			<h1 class="text-3xl font-bold">Gestion des Espaces</h1>
+			<p class="text-muted-foreground text-sm mt-1">Bureaux et salles de réunion</p>
 		</div>
-		<div class="flex items-center gap-4">
-			<a href="/" class="text-sm text-blue-600 hover:text-blue-800">← Accueil</a>
-			<span class="text-sm text-gray-600">{auth.user?.email}</span>
-			<button
+		<div class="flex items-center gap-2">
+			<Button variant="ghost" size="sm" href="/">
+				<ArrowLeft class="size-4" />
+				Accueil
+			</Button>
+			<Separator orientation="vertical" class="h-6" />
+			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
+			<Button
+				variant="ghost"
+				size="sm"
 				onclick={() => { auth.logout(); goto('/login'); }}
-				class="text-sm text-red-600 hover:text-red-800"
 			>
-				Déconnexion
-			</button>
+				<LogOut class="size-4" />
+			</Button>
 		</div>
 	</div>
 
 	<!-- Formulaire de création -->
-	<div class="mb-8 rounded-lg bg-white p-6 shadow-md border border-gray-100">
-		<h2 class="mb-4 text-xl font-semibold text-gray-700">Nouvel Espace</h2>
-		<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-			<input
-				type="text"
-				bind:value={name}
-				placeholder="Nom de l'espace"
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<select
-				bind:value={type}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-			>
-				<option value="DESK">Bureau</option>
-				<option value="MEETING_ROOM">Salle de réunion</option>
-			</select>
-			<input
-				type="number"
-				bind:value={capacity}
-				min="1"
-				placeholder="Capacité"
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<button
-				onclick={createWorkspace}
-				disabled={loading || !name}
-				class="rounded bg-blue-600 px-6 py-2 text-white font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
-			>
-				{loading ? '...' : 'Ajouter'}
-			</button>
-		</div>
-	</div>
+	<Card.Root class="mb-8">
+		<Card.Header>
+			<Card.Title>
+				<Plus class="size-5 inline-block mr-1" />
+				Nouvel Espace
+			</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+				<Input
+					type="text"
+					bind:value={name}
+					placeholder="Nom de l'espace"
+				/>
+				<Select.Root
+					type="single"
+					value={type}
+					onValueChange={(v) => { if (v) type = v as 'DESK' | 'MEETING_ROOM'; }}
+				>
+					<Select.Trigger class="w-full">
+						{type === 'DESK' ? 'Bureau' : 'Salle de réunion'}
+					</Select.Trigger>
+					<Select.Content>
+						<Select.Item value="DESK" label="Bureau" />
+						<Select.Item value="MEETING_ROOM" label="Salle de réunion" />
+					</Select.Content>
+				</Select.Root>
+				<Input
+					type="number"
+					bind:value={capacity}
+					min={1}
+					placeholder="Capacité"
+				/>
+				<Button onclick={createWorkspace} disabled={loading || !name}>
+					{loading ? '...' : 'Ajouter'}
+				</Button>
+			</div>
+		</Card.Content>
+	</Card.Root>
 
 	<!-- Liste des espaces -->
-	<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-		<div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-			<h3 class="font-semibold text-gray-700">
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>
 				{workspaces.length} espace{workspaces.length > 1 ? 's' : ''}
-			</h3>
-		</div>
-
-		{#if workspaces.length === 0}
-			<div class="p-8 text-center text-gray-500">Aucun espace créé.</div>
-		{:else}
-			<table class="w-full">
-				<thead class="bg-gray-50 text-left text-sm text-gray-600">
-					<tr>
-						<th class="px-4 py-3 font-medium">Nom</th>
-						<th class="px-4 py-3 font-medium">Type</th>
-						<th class="px-4 py-3 font-medium">Capacité</th>
-						<th class="px-4 py-3 font-medium">Créé le</th>
-						<th class="px-4 py-3 font-medium text-right">Actions</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y divide-gray-100">
-					{#each workspaces as workspace}
-						<tr class="hover:bg-gray-50">
-							<td class="px-4 py-3 font-medium text-gray-800">{workspace.name}</td>
-							<td class="px-4 py-3">
-								<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {workspace.type === 'DESK' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">
-									{workspace.type === 'DESK' ? '🪑 Bureau' : '🚪 Salle'}
-								</span>
-							</td>
-							<td class="px-4 py-3 text-gray-600">{workspace.capacity} pers.</td>
-							<td class="px-4 py-3 text-gray-500 text-sm">
-								{new Date(workspace.createdAt).toLocaleDateString()}
-							</td>
-							<td class="px-4 py-3 text-right">
-								<button
-									onclick={() => deleteWorkspace(workspace.id)}
-									disabled={deleting === workspace.id}
-									class="text-red-600 hover:text-red-800 text-sm disabled:opacity-50"
-								>
-									{deleting === workspace.id ? '...' : 'Supprimer'}
-								</button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		{/if}
-	</div>
+			</Card.Title>
+		</Card.Header>
+		<Card.Content class="p-0">
+			{#if workspaces.length === 0}
+				<div class="p-8 text-center text-muted-foreground">Aucun espace créé.</div>
+			{:else}
+				<Table.Root>
+					<Table.Header>
+						<Table.Row>
+							<Table.Head>Nom</Table.Head>
+							<Table.Head>Type</Table.Head>
+							<Table.Head>Capacité</Table.Head>
+							<Table.Head>Créé le</Table.Head>
+							<Table.Head class="text-right">Actions</Table.Head>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{#each workspaces as workspace}
+							<Table.Row>
+								<Table.Cell class="font-medium">{workspace.name}</Table.Cell>
+								<Table.Cell>
+									<Badge variant={workspace.type === 'DESK' ? 'default' : 'secondary'}>
+										{workspace.type === 'DESK' ? '🪑 Bureau' : '🚪 Salle'}
+									</Badge>
+								</Table.Cell>
+								<Table.Cell>{workspace.capacity} pers.</Table.Cell>
+								<Table.Cell class="text-muted-foreground text-sm">
+									{new Date(workspace.createdAt).toLocaleDateString()}
+								</Table.Cell>
+								<Table.Cell class="text-right">
+									<Button
+										variant="ghost"
+										size="sm"
+										onclick={() => deleteWorkspace(workspace.id)}
+										disabled={deleting === workspace.id}
+										class="text-destructive hover:text-destructive"
+									>
+										<Trash2 class="size-4" />
+										{deleting === workspace.id ? '...' : 'Supprimer'}
+									</Button>
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			{/if}
+		</Card.Content>
+	</Card.Root>
 </div>

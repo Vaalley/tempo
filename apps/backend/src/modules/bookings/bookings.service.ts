@@ -72,7 +72,7 @@ export const bookingService = {
 			with: {
 				workspace: true,
 			},
-			orderBy: (bookings, { desc }) => [desc(bookings.startAt)],
+			orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
 		});
 	},
 
@@ -88,7 +88,7 @@ export const bookingService = {
 					},
 				},
 			},
-			orderBy: (bookings, { desc }) => [desc(bookings.startAt)],
+			orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
 		});
 	},
 
