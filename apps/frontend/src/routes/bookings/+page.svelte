@@ -151,6 +151,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Mes Réservations - Tempo</title>
+</svelte:head>
+
 <div class="mx-auto max-w-5xl p-10">
 	<div class="flex justify-between items-center mb-6">
 		<div>

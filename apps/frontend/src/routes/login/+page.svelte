@@ -40,6 +40,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Connexion - Tempo</title>
+</svelte:head>
+
 <div class="min-h-screen flex items-center justify-center bg-muted">
 	<Card.Root class="w-full max-w-md">
 		<Card.Header class="text-center">

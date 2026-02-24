@@ -57,6 +57,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Tempo - Gestion des Espaces de Travail</title>
+</svelte:head>
+
 <div class="mx-auto max-w-2xl p-10">
 	<div class="flex justify-between items-center mb-6">
 		<h1 class="text-3xl font-bold">Tempo</h1>
