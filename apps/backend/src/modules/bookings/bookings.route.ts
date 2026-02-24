@@ -7,25 +7,25 @@ import { auditService } from '../audit/audit.service';
 
 const app = new Hono();
 
-// Protège toutes les routes /bookings avec le JWT
+// Protect all /bookings routes with JWT
 app.use('*', authGuard);
 
-// GET /bookings - Lister toutes les réservations (admin) ou les siennes (user)
+// GET /bookings - List all bookings (admin) or user's bookings (user)
 app.get('/', async (c) => {
 	const payload = c.get('jwtPayload');
 
-	// Si admin, retourner toutes les réservations
+	// If admin, return all bookings
 	if (payload.role === 'ADMIN') {
 		const allBookings = await bookingService.getAll();
 		return c.json(allBookings);
 	}
 
-	// Sinon, retourner uniquement les réservations de l'utilisateur
+	// Otherwise, return only the user's bookings
 	const userBookings = await bookingService.getByUser(payload.sub);
 	return c.json(userBookings);
 });
 
-// POST /bookings - Créer une réservation
+// POST /bookings - Create a booking
 app.post('/', zValidator('json', createBookingSchema), async (c) => {
 	try {
 		const payload = c.get('jwtPayload');
@@ -37,17 +37,20 @@ app.post('/', zValidator('json', createBookingSchema), async (c) => {
 		console.error('Booking creation error:', error);
 		if (error instanceof Error) {
 			if (error.message === 'WORKSPACE_NOT_FOUND') {
-				return c.json({ error: 'Espace de travail non trouvé' }, 404);
+				return c.json({ error: 'Workspace not found' }, 404);
 			}
 			if (error.message === 'BOOKING_OVERLAP') {
-				return c.json({ error: 'Cet espace est déjà réservé sur ce créneau' }, 409);
+				return c.json(
+					{ error: 'This workspace is already booked for this time slot' },
+					409,
+				);
 			}
 		}
-		return c.json({ error: 'Erreur serveur' }, 500);
+		return c.json({ error: 'Server error' }, 500);
 	}
 });
 
-// DELETE /bookings/:id - Supprimer une réservation
+// DELETE /bookings/:id - Delete a booking
 app.delete('/:id', async (c) => {
 	try {
 		const payload = c.get('jwtPayload');
@@ -61,17 +64,17 @@ app.delete('/:id', async (c) => {
 			role: payload.role,
 		});
 
-		return c.json({ message: 'Réservation supprimée', booking: deleted });
+		return c.json({ message: 'Booking deleted', booking: deleted });
 	} catch (error) {
 		if (error instanceof Error) {
 			if (error.message === 'BOOKING_NOT_FOUND') {
-				return c.json({ error: 'Réservation non trouvée' }, 404);
+				return c.json({ error: 'Booking not found' }, 404);
 			}
 			if (error.message === 'UNAUTHORIZED') {
-				return c.json({ error: 'Non autorisé' }, 403);
+				return c.json({ error: 'Unauthorized' }, 403);
 			}
 		}
-		return c.json({ error: 'Erreur serveur' }, 500);
+		return c.json({ error: 'Server error' }, 500);
 	}
 });
 

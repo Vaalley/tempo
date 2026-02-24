@@ -1,12 +1,14 @@
 import { db } from '../../db';
 import { users } from '../../db/schema';
 
+type User = typeof users.$inferSelect;
+
 export const userService = {
-	// Créer un utilisateur
-	async create(email: string, password: string) {
+	// Create a user
+	async create(email: string, password: string): Promise<User> {
 		const hashedPassword = await Bun.password.hash(password);
 
-		// .returning() permet de récupérer l'objet créé immédiatement
+		// .returning() allows to retrieve the created object immediately
 		const [user] = await db
 			.insert(users)
 			.values({
@@ -18,9 +20,9 @@ export const userService = {
 		return user;
 	},
 
-	// Récupérer tous les utilisateurs
-	async getAll() {
-		// On exclut le mot de passe de la réponse pour la sécurité
+	// Retrieve all users
+	async getAll(): Promise<Partial<User>[]> {
+		// Exclude password from response for security
 		return await db.query.users.findMany({
 			columns: {
 				password: false,

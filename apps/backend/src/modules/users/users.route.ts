@@ -6,7 +6,7 @@ import { createUserSchema } from './users.dto';
 
 const app = new Hono();
 
-// Protège toutes les routes /users avec le JWT
+// Protect all /users routes with JWT
 app.use('*', authGuard);
 
 // GET /users
