@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { z } from 'zod';
 import { workspaceService } from './workspaces.service';
 import { authGuard } from '../../middlewares/auth.guard';
 import { createWorkspaceSchema } from './workspaces.dto';
@@ -10,6 +11,10 @@ const app = new Hono();
 // Protège toutes les routes /workspaces avec le JWT
 app.use('*', authGuard);
 
+const paramIdSchema = z.object({
+	id: z.coerce.number(),
+});
+
 // GET /workspaces - Lister tous les espaces
 app.get('/', async (c) => {
 	const workspaces = await workspaceService.getAll();
@@ -17,12 +22,8 @@ app.get('/', async (c) => {
 });
 
 // GET /workspaces/:id - Récupérer un espace par ID
-app.get('/:id', async (c) => {
-	const id = Number(c.req.param('id'));
-
-	if (isNaN(id)) {
-		return c.json({ error: 'ID invalide' }, 400);
-	}
+app.get('/:id', zValidator('param', paramIdSchema), async (c) => {
+	const { id } = c.req.valid('param');
 
 	const workspace = await workspaceService.getById(id);
 
@@ -41,13 +42,9 @@ app.post('/', zValidator('json', createWorkspaceSchema), async (c) => {
 });
 
 // DELETE /workspaces/:id - Supprimer un espace
-app.delete('/:id', async (c) => {
-	const id = Number(c.req.param('id'));
+app.delete('/:id', zValidator('param', paramIdSchema), async (c) => {
+	const { id } = c.req.valid('param');
 	const payload = c.get('jwtPayload');
-
-	if (isNaN(id)) {
-		return c.json({ error: 'ID invalide' }, 400);
-	}
 
 	const deleted = await workspaceService.delete(id);
 
