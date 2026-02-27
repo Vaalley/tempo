@@ -1,27 +1,34 @@
-import { and, eq, lt, gt } from 'drizzle-orm';
+import { and, eq, lt, gt, ne } from 'drizzle-orm';
 import { db } from '../../db';
 import { bookings, workspaces } from '../../db/schema';
 import type { CreateBookingDto } from './bookings.dto';
 
+type Booking = typeof bookings.$inferSelect;
+
 export const bookingService = {
 	/**
-	 * Vérifie si une réservation chevauche des réservations existantes
-	 * Logique de chevauchement :
-	 * - Nouvelle réservation commence avant qu'une existante se termine ET
-	 * - Nouvelle réservation se termine après qu'une existante commence
+	 * Checks if a booking overlaps with existing bookings
+	 * Overlap logic:
+	 * - New booking starts before an existing one ends AND
+	 * - New booking ends after an existing one starts
 	 */
-	async checkOverlap(workspaceId: number, startAt: Date, endAt: Date, excludeBookingId?: string) {
+	async checkOverlap(
+		workspaceId: number,
+		startAt: Date,
+		endAt: Date,
+		excludeBookingId?: string,
+	): Promise<boolean> {
 		const conditions = [
 			eq(bookings.workspaceId, workspaceId),
-			// Chevauchement : (startAt < existing.endAt) AND (endAt > existing.startAt)
+			// Overlap: (startAt < existing.endAt) AND (endAt > existing.startAt)
 			lt(bookings.startAt, endAt),
 			gt(bookings.endAt, startAt),
 		];
 
-		// Si on met à jour une réservation, exclure son propre ID
+		// If updating a booking, exclude its own ID
 		if (excludeBookingId) {
 			const overlapping = await db.query.bookings.findFirst({
-				where: and(...conditions, eq(bookings.id, excludeBookingId)),
+				where: and(...conditions, ne(bookings.id, excludeBookingId)),
 			});
 			return !!overlapping;
 		}
@@ -33,11 +40,11 @@ export const bookingService = {
 		return !!overlapping;
 	},
 
-	async create(userId: string, data: CreateBookingDto) {
+	async create(userId: string, data: CreateBookingDto): Promise<Booking> {
 		const startAt = new Date(data.startAt);
 		const endAt = new Date(data.endAt);
 
-		// Vérifier que le workspace existe
+		// Check that the workspace exists
 		const workspace = await db.query.workspaces.findFirst({
 			where: eq(workspaces.id, data.workspaceId),
 		});
@@ -46,7 +53,7 @@ export const bookingService = {
 			throw new Error('WORKSPACE_NOT_FOUND');
 		}
 
-		// Vérifier les chevauchements
+		// Check for overlaps
 		const hasOverlap = await this.checkOverlap(data.workspaceId, startAt, endAt);
 
 		if (hasOverlap) {
@@ -66,17 +73,17 @@ export const bookingService = {
 		return booking;
 	},
 
-	async getByUser(userId: string) {
+	async getByUser(userId: string): Promise<Booking[]> {
 		return await db.query.bookings.findMany({
 			where: eq(bookings.userId, userId),
 			with: {
 				workspace: true,
 			},
-			orderBy: (bookings, { desc }) => [desc(bookings.startAt)],
+			orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
 		});
 	},
 
-	async getAll() {
+	async getAll(): Promise<any[]> {
 		return await db.query.bookings.findMany({
 			with: {
 				workspace: true,
@@ -88,12 +95,12 @@ export const bookingService = {
 					},
 				},
 			},
-			orderBy: (bookings, { desc }) => [desc(bookings.startAt)],
+			orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
 		});
 	},
 
-	async delete(id: string, userId: string) {
-		// Vérifier que la réservation appartient à l'utilisateur
+	async delete(id: string, userId: string): Promise<Booking> {
+		// Check that the booking belongs to the user
 		const booking = await db.query.bookings.findFirst({
 			where: eq(bookings.id, id),
 		});
@@ -102,6 +109,7 @@ export const bookingService = {
 			throw new Error('BOOKING_NOT_FOUND');
 		}
 
+		// Note: Ideally, we should also allow ADMINs to delete any booking.
 		if (booking.userId !== userId) {
 			throw new Error('UNAUTHORIZED');
 		}

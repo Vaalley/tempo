@@ -3,6 +3,20 @@
 	import { auth } from '$lib/auth.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Alert from '$lib/components/ui/alert/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import LogOut from '@lucide/svelte/icons/log-out';
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
+	import CalendarPlus from '@lucide/svelte/icons/calendar-plus';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
+	import X from '@lucide/svelte/icons/x';
 
 	type Workspace = {
 		id: number;
@@ -128,151 +142,176 @@
 	function isPast(dateStr: string) {
 		return new Date(dateStr) < new Date();
 	}
+
+	function selectedWorkspaceLabel(): string {
+		if (!selectedWorkspaceId) return 'Choisir un espace';
+		const ws = workspaces.find((w) => String(w.id) === selectedWorkspaceId);
+		if (!ws) return 'Choisir un espace';
+		return `${ws.type === 'DESK' ? '🪑' : '🚪'} ${ws.name}`;
+	}
 </script>
 
-<div class="mx-auto max-w-5xl p-10 font-sans">
+<svelte:head>
+	<title>Mes Réservations - Tempo</title>
+</svelte:head>
+
+<div class="mx-auto max-w-5xl p-10">
 	<div class="flex justify-between items-center mb-6">
 		<div>
-			<h1 class="text-3xl font-bold text-gray-800">Mes Réservations</h1>
-			<p class="text-gray-500 text-sm mt-1">Gérez vos réservations d'espaces</p>
+			<h1 class="text-3xl font-bold">Mes Réservations</h1>
+			<p class="text-muted-foreground text-sm mt-1">Gérez vos réservations d'espaces</p>
 		</div>
-		<div class="flex items-center gap-4">
-			<a href="/" class="text-sm text-blue-600 hover:text-blue-800">← Accueil</a>
-			<a href="/admin/workspaces" class="text-sm text-blue-600 hover:text-blue-800">Espaces</a>
-			<span class="text-sm text-gray-600">{auth.user?.email}</span>
-			<button
+		<div class="flex items-center gap-2">
+			<Button variant="ghost" size="sm" href="/">
+				<ArrowLeft class="size-4" />
+				Accueil
+			</Button>
+			<Button variant="ghost" size="sm" href="/admin/workspaces">
+				<LayoutGrid class="size-4" />
+				Espaces
+			</Button>
+			<Separator orientation="vertical" class="h-6" />
+			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
+			<Button
+				variant="ghost"
+				size="sm"
 				onclick={() => { auth.logout(); goto('/login'); }}
-				class="text-sm text-red-600 hover:text-red-800"
 			>
-				Déconnexion
-			</button>
+				<LogOut class="size-4" />
+			</Button>
 		</div>
 	</div>
 
 	<!-- Formulaire de création -->
-	<div class="mb-8 rounded-lg bg-white p-6 shadow-md border border-gray-100">
-		<h2 class="mb-4 text-xl font-semibold text-gray-700">Nouvelle Réservation</h2>
-		
-		{#if error}
-			<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-				{error}
+	<Card.Root class="mb-8">
+		<Card.Header>
+			<Card.Title>
+				<CalendarPlus class="size-5 inline-block mr-1" />
+				Nouvelle Réservation
+			</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			{#if error}
+				<Alert.Root variant="destructive" class="mb-4">
+					<CircleAlert class="size-4" />
+					<Alert.Title>Erreur</Alert.Title>
+					<Alert.Description>{error}</Alert.Description>
+				</Alert.Root>
+			{/if}
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+				<Select.Root
+					type="single"
+					value={selectedWorkspaceId}
+					onValueChange={(v) => { if (v !== undefined) selectedWorkspaceId = v; }}
+				>
+					<Select.Trigger class="w-full">
+						{selectedWorkspaceLabel()}
+					</Select.Trigger>
+					<Select.Content>
+						{#each workspaces as workspace}
+							<Select.Item value={String(workspace.id)} label="{workspace.type === 'DESK' ? '🪑' : '🚪'} {workspace.name}">
+								{workspace.type === 'DESK' ? '🪑' : '🚪'} {workspace.name}
+							</Select.Item>
+						{/each}
+					</Select.Content>
+				</Select.Root>
+
+				<Input
+					type="date"
+					bind:value={startDate}
+				/>
+				<Input
+					type="time"
+					bind:value={startTime}
+				/>
+				<Input
+					type="date"
+					bind:value={endDate}
+				/>
+				<Input
+					type="time"
+					bind:value={endTime}
+				/>
 			</div>
-		{/if}
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-			<select
-				bind:value={selectedWorkspaceId}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+			<Button
+				onclick={createBooking}
+				disabled={loading || !selectedWorkspaceId || !startDate || !endDate}
+				class="mt-4"
 			>
-				<option value="">Choisir un espace</option>
-				{#each workspaces as workspace}
-					<option value={workspace.id}>
-						{workspace.type === 'DESK' ? '🪑' : '🚪'} {workspace.name}
-					</option>
-				{/each}
-			</select>
-
-			<input
-				type="date"
-				bind:value={startDate}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<input
-				type="time"
-				bind:value={startTime}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-
-			<input
-				type="date"
-				bind:value={endDate}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<input
-				type="time"
-				bind:value={endTime}
-				class="rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-		</div>
-
-		<button
-			onclick={createBooking}
-			disabled={loading || !selectedWorkspaceId || !startDate || !endDate}
-			class="mt-4 rounded bg-blue-600 px-6 py-2 text-white font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
-		>
-			{loading ? 'Création...' : 'Réserver'}
-		</button>
-	</div>
+				{loading ? 'Création...' : 'Réserver'}
+			</Button>
+		</Card.Content>
+	</Card.Root>
 
 	<!-- Liste des réservations -->
-	<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-		<div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-			<h3 class="font-semibold text-gray-700">
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>
 				{bookings.length} réservation{bookings.length > 1 ? 's' : ''}
-			</h3>
-		</div>
-
-		{#if bookings.length === 0}
-			<div class="p-8 text-center text-gray-500">Aucune réservation.</div>
-		{:else}
-			<table class="w-full">
-				<thead class="bg-gray-50 text-left text-sm text-gray-600">
-					<tr>
-						<th class="px-4 py-3 font-medium">Espace</th>
-						<th class="px-4 py-3 font-medium">Début</th>
-						<th class="px-4 py-3 font-medium">Fin</th>
-						<th class="px-4 py-3 font-medium">Statut</th>
-						<th class="px-4 py-3 font-medium text-right">Actions</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y divide-gray-100">
-					{#each bookings as booking}
-						<tr class="hover:bg-gray-50" class:opacity-50={isPast(booking.endAt)}>
-							<td class="px-4 py-3">
-								<div class="flex items-center gap-2">
-									<span class="text-xl">
-										{booking.workspace.type === 'DESK' ? '🪑' : '🚪'}
-									</span>
-									<div>
-										<div class="font-medium text-gray-800">{booking.workspace.name}</div>
-										<div class="text-xs text-gray-500">
-											{booking.workspace.type === 'DESK' ? 'Bureau' : 'Salle'} · {booking.workspace.capacity} pers.
+			</Card.Title>
+		</Card.Header>
+		<Card.Content class="p-0">
+			{#if bookings.length === 0}
+				<div class="p-8 text-center text-muted-foreground">Aucune réservation.</div>
+			{:else}
+				<Table.Root>
+					<Table.Header>
+						<Table.Row>
+							<Table.Head>Espace</Table.Head>
+							<Table.Head>Début</Table.Head>
+							<Table.Head>Fin</Table.Head>
+							<Table.Head>Statut</Table.Head>
+							<Table.Head class="text-right">Actions</Table.Head>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{#each bookings as booking}
+							<Table.Row class={isPast(booking.endAt) ? 'opacity-50' : ''}>
+								<Table.Cell>
+									<div class="flex items-center gap-2">
+										<span class="text-xl">
+											{booking.workspace.type === 'DESK' ? '🪑' : '🚪'}
+										</span>
+										<div>
+											<div class="font-medium">{booking.workspace.name}</div>
+											<div class="text-xs text-muted-foreground">
+												{booking.workspace.type === 'DESK' ? 'Bureau' : 'Salle'} · {booking.workspace.capacity} pers.
+											</div>
 										</div>
 									</div>
-								</div>
-							</td>
-							<td class="px-4 py-3 text-gray-700">{formatDate(booking.startAt)}</td>
-							<td class="px-4 py-3 text-gray-700">{formatDate(booking.endAt)}</td>
-							<td class="px-4 py-3">
-								{#if isPast(booking.endAt)}
-									<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-										Passée
-									</span>
-								{:else if new Date(booking.startAt) <= new Date() && new Date() <= new Date(booking.endAt)}
-									<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-										En cours
-									</span>
-								{:else}
-									<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-										À venir
-									</span>
-								{/if}
-							</td>
-							<td class="px-4 py-3 text-right">
-								{#if !isPast(booking.endAt)}
-									<button
-										onclick={() => deleteBooking(booking.id)}
-										disabled={deleting === booking.id}
-										class="text-red-600 hover:text-red-800 text-sm disabled:opacity-50"
-									>
-										{deleting === booking.id ? '...' : 'Annuler'}
-									</button>
-								{/if}
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		{/if}
-	</div>
+								</Table.Cell>
+								<Table.Cell>{formatDate(booking.startAt)}</Table.Cell>
+								<Table.Cell>{formatDate(booking.endAt)}</Table.Cell>
+								<Table.Cell>
+									{#if isPast(booking.endAt)}
+										<Badge variant="outline">Passée</Badge>
+									{:else if new Date(booking.startAt) <= new Date() && new Date() <= new Date(booking.endAt)}
+										<Badge variant="default">En cours</Badge>
+									{:else}
+										<Badge variant="secondary">À venir</Badge>
+									{/if}
+								</Table.Cell>
+								<Table.Cell class="text-right">
+									{#if !isPast(booking.endAt)}
+										<Button
+											variant="ghost"
+											size="sm"
+											onclick={() => deleteBooking(booking.id)}
+											disabled={deleting === booking.id}
+											class="text-destructive hover:text-destructive"
+										>
+											<X class="size-4" />
+											{deleting === booking.id ? '...' : 'Annuler'}
+										</Button>
+									{/if}
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			{/if}
+		</Card.Content>
+	</Card.Root>
 </div>

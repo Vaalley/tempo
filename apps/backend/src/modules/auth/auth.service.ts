@@ -5,9 +5,15 @@ import { users } from '../../db/schema';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
+type UserPayload = {
+	id: string;
+	email: string;
+	role: string | null;
+};
+
 export const authService = {
-	async register(email: string, password: string) {
-		// Vérifier si l'utilisateur existe déjà
+	async register(email: string, password: string): Promise<UserPayload> {
+		// Check if user already exists
 		const existing = await db.query.users.findFirst({
 			where: eq(users.email, email),
 		});
@@ -16,10 +22,10 @@ export const authService = {
 			throw new Error('USER_EXISTS');
 		}
 
-		// Hasher le mot de passe avec Bun
+		// Hash the password with Bun
 		const hashedPassword = await Bun.password.hash(password);
 
-		// Créer l'utilisateur
+		// Create the user
 		const [user] = await db
 			.insert(users)
 			.values({
@@ -35,8 +41,8 @@ export const authService = {
 		return user;
 	},
 
-	async login(email: string, password: string) {
-		// Trouver l'utilisateur
+	async login(email: string, password: string): Promise<{ token: string; user: UserPayload }> {
+		// Find the user
 		const user = await db.query.users.findFirst({
 			where: eq(users.email, email),
 		});
@@ -45,14 +51,14 @@ export const authService = {
 			throw new Error('INVALID_CREDENTIALS');
 		}
 
-		// Vérifier le mot de passe
+		// Verify the password
 		const isValid = await Bun.password.verify(password, user.password);
 
 		if (!isValid) {
 			throw new Error('INVALID_CREDENTIALS');
 		}
 
-		// Générer le JWT
+		// Generate the JWT
 		const token = await sign(
 			{
 				sub: user.id,
@@ -73,7 +79,7 @@ export const authService = {
 		};
 	},
 
-	getSecret() {
+	getSecret(): string {
 		return JWT_SECRET;
 	},
 };

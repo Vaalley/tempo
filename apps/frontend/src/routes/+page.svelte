@@ -3,6 +3,15 @@
 	import { auth } from '$lib/auth.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import LogOut from '@lucide/svelte/icons/log-out';
+	import CalendarDays from '@lucide/svelte/icons/calendar-days';
+	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
+	import UserPlus from '@lucide/svelte/icons/user-plus';
 
 	let users = $state<any[]>([]);
 	let email = $state('');
@@ -48,68 +57,81 @@
 	}
 </script>
 
-<div class="mx-auto max-w-2xl p-10 font-sans">
+<svelte:head>
+	<title>Tempo - Gestion des Espaces de Travail</title>
+</svelte:head>
+
+<div class="mx-auto max-w-2xl p-10">
 	<div class="flex justify-between items-center mb-6">
-		<h1 class="text-3xl font-bold text-gray-800">Tempo</h1>
-		<div class="flex items-center gap-4">
-			<a href="/bookings" class="text-sm text-blue-600 hover:text-blue-800">
+		<h1 class="text-3xl font-bold">Tempo</h1>
+		<div class="flex items-center gap-2">
+			<Button variant="ghost" size="sm" href="/bookings">
+				<CalendarDays class="size-4" />
 				Mes réservations
-			</a>
-			<a href="/admin/workspaces" class="text-sm text-blue-600 hover:text-blue-800">
-				Gérer les espaces →
-			</a>
-			<span class="text-sm text-gray-600">{auth.user?.email}</span>
-			<button
+			</Button>
+			<Button variant="ghost" size="sm" href="/admin/workspaces">
+				<LayoutGrid class="size-4" />
+				Gérer les espaces
+			</Button>
+			<Separator orientation="vertical" class="h-6" />
+			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
+			<Button
+				variant="ghost"
+				size="sm"
 				onclick={() => { auth.logout(); goto('/login'); }}
-				class="text-sm text-red-600 hover:text-red-800"
 			>
-				Déconnexion
-			</button>
+				<LogOut class="size-4" />
+			</Button>
 		</div>
 	</div>
 
-	<div class="mb-8 rounded-lg bg-white p-6 shadow-md border border-gray-100">
-		<h2 class="mb-4 text-xl font-semibold text-gray-700">Nouvel Utilisateur</h2>
-		<div class="flex gap-3">
-			<input
-				type="email"
-				bind:value={email}
-				placeholder="Email pro"
-				class="flex-1 rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<input
-				type="password"
-				bind:value={password}
-				placeholder="Mot de passe"
-				class="flex-1 rounded border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-			/>
-			<button
-				onclick={createUser}
-				disabled={loading}
-				class="rounded bg-blue-600 px-6 py-2 text-white font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
-			>
-				{loading ? '...' : 'Ajouter'}
-			</button>
-		</div>
-	</div>
+	<Card.Root class="mb-8">
+		<Card.Header>
+			<Card.Title>
+				<UserPlus class="size-5 inline-block mr-1" />
+				Nouvel Utilisateur
+			</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<div class="flex gap-3">
+				<Input
+					type="email"
+					bind:value={email}
+					placeholder="Email pro"
+					class="flex-1"
+				/>
+				<Input
+					type="password"
+					bind:value={password}
+					placeholder="Mot de passe"
+					class="flex-1"
+				/>
+				<Button onclick={createUser} disabled={loading}>
+					{loading ? '...' : 'Ajouter'}
+				</Button>
+			</div>
+		</Card.Content>
+	</Card.Root>
 
-	<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-		{#if users.length === 0}
-			<div class="p-8 text-center text-gray-500">Aucun utilisateur trouvé.</div>
-		{:else}
-			<ul class="divide-y divide-gray-100">
-				{#each users as user}
-					<li class="flex items-center justify-between p-4 hover:bg-gray-50">
-						<div class="flex flex-col">
-							<span class="font-medium text-gray-800">{user.email}</span>
-							<span class="text-xs text-gray-400">ID: {user.id}</span>
-						</div>
-						<span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-							{new Date(user.createdAt).toLocaleDateString()}
-						</span>
-					</li>
-				{/each}
-			</ul>
-		{/if}
-	</div>
+	<Card.Root>
+		<Card.Content class="p-0">
+			{#if users.length === 0}
+				<div class="p-8 text-center text-muted-foreground">Aucun utilisateur trouvé.</div>
+			{:else}
+				<ul class="divide-y divide-border">
+					{#each users as user}
+						<li class="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+							<div class="flex flex-col">
+								<span class="font-medium">{user.email}</span>
+								<span class="text-xs text-muted-foreground">ID: {user.id}</span>
+							</div>
+							<Badge variant="secondary">
+								{new Date(user.createdAt).toLocaleDateString()}
+							</Badge>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</Card.Content>
+	</Card.Root>
 </div>

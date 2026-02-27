@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { auth } from '$lib/auth.svelte';
 	import { goto } from '$app/navigation';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Alert from '$lib/components/ui/alert/index.js';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	let email = $state('');
 	let password = $state('');
@@ -34,62 +40,66 @@
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
-	<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-		<h1 class="text-2xl font-bold text-center mb-6">
-			{isRegister ? 'Inscription' : 'Connexion'}
-		</h1>
+<svelte:head>
+	<title>Connexion - Tempo</title>
+</svelte:head>
 
-		{#if error}
-			<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-				{error}
-			</div>
-		{/if}
+<div class="min-h-screen flex items-center justify-center bg-muted">
+	<Card.Root class="w-full max-w-md">
+		<Card.Header class="text-center">
+			<Card.Title class="text-2xl">
+				{isRegister ? 'Inscription' : 'Connexion'}
+			</Card.Title>
+			<Card.Description>
+				{isRegister ? 'Créez votre compte Tempo' : 'Connectez-vous à Tempo'}
+			</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			{#if error}
+				<Alert.Root variant="destructive" class="mb-4">
+					<CircleAlert class="size-4" />
+					<Alert.Title>Erreur</Alert.Title>
+					<Alert.Description>{error}</Alert.Description>
+				</Alert.Root>
+			{/if}
 
-		<form onsubmit={handleSubmit} class="space-y-4">
-			<div>
-				<label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-				<input
-					type="email"
-					id="email"
-					bind:value={email}
-					class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-					placeholder="exemple@email.com"
-				/>
-			</div>
+			<form onsubmit={handleSubmit} class="space-y-4">
+				<div class="space-y-2">
+					<Label for="email">Email</Label>
+					<Input
+						type="email"
+						id="email"
+						bind:value={email}
+						placeholder="exemple@email.com"
+					/>
+				</div>
 
-			<div>
-				<label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-				<input
-					type="password"
-					id="password"
-					bind:value={password}
-					class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-					placeholder="••••••••"
-				/>
-			</div>
+				<div class="space-y-2">
+					<Label for="password">Mot de passe</Label>
+					<Input
+						type="password"
+						id="password"
+						bind:value={password}
+						placeholder="••••••••"
+					/>
+				</div>
 
-			<button
-				type="submit"
-				disabled={loading}
-				class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-			>
-				{#if loading}
-					Chargement...
-				{:else}
-					{isRegister ? "S'inscrire" : 'Se connecter'}
-				{/if}
-			</button>
-		</form>
-
-		<div class="mt-4 text-center">
-			<button
-				type="button"
+				<Button type="submit" disabled={loading} class="w-full">
+					{#if loading}
+						Chargement...
+					{:else}
+						{isRegister ? "S'inscrire" : 'Se connecter'}
+					{/if}
+				</Button>
+			</form>
+		</Card.Content>
+		<Card.Footer class="justify-center">
+			<Button
+				variant="link"
 				onclick={() => (isRegister = !isRegister)}
-				class="text-blue-600 hover:text-blue-800 text-sm"
 			>
 				{isRegister ? 'Déjà un compte ? Se connecter' : "Pas de compte ? S'inscrire"}
-			</button>
-		</div>
-	</div>
+			</Button>
+		</Card.Footer>
+	</Card.Root>
 </div>

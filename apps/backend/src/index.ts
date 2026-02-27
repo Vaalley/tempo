@@ -5,6 +5,10 @@ import usersRoute from './modules/users/users.route';
 import authRoute from './modules/auth/auth.route';
 import workspacesRoute from './modules/workspaces/workspaces.route';
 import bookingsRoute from './modules/bookings/bookings.route';
+import { connectMongo } from './db/mongo';
+
+// Initialize MongoDB connection
+connectMongo().catch(console.error);
 
 const app = new Hono();
 
