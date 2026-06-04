@@ -1,237 +1,221 @@
-# AGENTS.md - Guide for AI Agents
+# AGENTS.md - AI Guide
 
-This file provides guidelines for AI agents working in this repository.
+Tempo = flex-office SaaS. Book desks/rooms, monitor occupancy.
 
----
-
-## Project Overview
-
-**Tempo** is a SaaS application for managing workspaces (flex-office). It allows employees to book desks or meeting rooms and administrators to monitor space occupancy.
-
-- **Stack**: Bun + Hono (Backend) + Svelte 5 (Frontend) + Drizzle ORM + PostgreSQL + MongoDB
-- **Monorepo**: Bun Workspaces (`apps/backend`, `apps/frontend`)
-- **Language**: TypeScript (strict mode enabled)
+**Stack**: Bun + Hono (API) + Svelte 5 (UI) + Drizzle + PostgreSQL + MongoDB + shadcn-svelte + Tailwind 4
 
 ---
 
-## Build, Lint, and Test Commands
+## Commands
 
-### Root Commands (Monorepo)
+**Root:**
 
 ```bash
-bun run dev          # Start all workspaces in parallel
-bun run build        # Build all workspaces
-bun run test         # Run all tests
-bun run lint         # Run oxlint
-bun run format       # Run oxfmt
-bun run format:check # Check formatting without changes
-bun run precommit    # format + lint + test
+bun run dev          # all workspaces
+bun run build
+bun run test
+bun run lint         # oxlint
+bun run format       # oxfmt
+bun run precommit    # fmt + lint + test
 ```
 
-### Backend Commands
+**Backend** (`apps/backend`):
 
 ```bash
-cd apps/backend
-bun run dev          # Start with hot reload (port 3000)
-bun test             # Run all tests
-bun test --watch     # Run tests in watch mode
-bun test <file>      # Run single test file
+bun run dev          # :3000 hot reload
+bun test             # all tests
+bun test --watch
+bun test src/path/to/file.spec.ts
 ```
 
-### Frontend Commands
+**Frontend** (`apps/frontend`):
 
 ```bash
-cd apps/frontend
-bun run dev          # Start dev server (port 5173)
-bun run build        # Build for production
-bun run check        # Svelte type checking
-bun run check:watch  # Watch mode for type checking
-bun run test         # Run Vitest tests
-bun run test:unit    # Run Vitest in watch mode
-```
-
-### Running a Single Test
-
-```bash
-# Backend (using bun test with file path)
-bun test src/modules/auth/auth.service.spec.ts
-
-# Frontend (using vitest with file path)
-bun test src/lib/auth.spec.ts
-
-# Or using vitest directly in frontend
-cd apps/frontend && npx vitest run src/lib/auth.spec.ts
+bun run dev          # :5173
+bun run build
+bun run check        # svelte-check
+bun run test         # vitest
 ```
 
 ---
 
-## Code Style Guidelines
+## Style
 
-### Formatting
+- **Tabs** width 4 (`.oxfmtrc.json`)
+- Single quotes
+- `camelCase` vars/fns
+- `PascalCase` types/classes
+- `kebab-case.ts` files
+- `snake_case` DB tables
+- Strict TS: explicit types, `verbatimModuleSyntax` → `import type {...}`
 
-- **Use Tabs** with width 4 (configured in `.oxfmtrc.json`)
-- **Use single quotes** for strings
-- Run `bun run format` before committing
+---
 
-### TypeScript
-
-- **Strict mode** is enabled in `tsconfig.json`
-- Always use explicit types for function parameters and return types
-- Enable strict checks: `noUncheckedIndexedAccess`, `noImplicitOverride`
-- Use `verbatimModuleSyntax` - must use `import type` for types only
-
-### Imports
-
-```typescript
-// Type-only imports (required with verbatimModuleSyntax)
-import type { AppType } from '@tempo/backend/src/index';
-import type { User } from './types';
-
-// Value imports
-import { db } from '../../db';
-import { authService } from './auth.service';
-
-// Relative paths for local imports, package imports for external
-```
-
-### Naming Conventions
-
-- **Files**: `kebab-case.ts` (e.g., `auth.service.ts`, `users.route.ts`)
-- **Variables/Functions**: `camelCase`
-- **Classes/Types**: `PascalCase`
-- **Constants**: `UPPER_SNAKE_CASE` for configuration constants
-- **Database Tables**: `snake_case` (e.g., `users`, `workspaces`)
-
-### Project Structure (Backend)
+## Structure
 
 ```
 apps/backend/src/
 ├── modules/
-│   └── auth/
-│       ├── auth.route.ts      # Controller (HTTP)
-│       ├── auth.service.ts    # Business logic
-│       ├── auth.dto.ts        # Zod validation schemas
-│       └── auth.service.spec.ts # Tests
+│   ├── auth/           # auth.route.ts (HTTP), auth.service.ts (logic), auth.dto.ts (Zod), auth.service.spec.ts
+│   ├── bookings/
+│   ├── users/
+│   └── workspaces/
 ├── db/
-│   ├── schema.ts              # Drizzle schema
-│   ├── index.ts               # DB instance
-│   └── mongo.ts               # MongoDB connection
-└── index.ts                   # App entry point
+│   ├── schema.ts       # Drizzle tables
+│   ├── index.ts        # DB conn
+│   └── mongo.ts        # audit logs
+├── middleware/auth.ts  # JWT middleware
+└── index.ts            # AppType export
+
+apps/frontend/src/
+├── lib/
+│   ├── components/ui/  # shadcn (button, card, input, select, table, badge, alert...)
+│   ├── client.ts       # Hono RPC client
+│   ├── utils.ts        # cn() Tailwind helper
+│   └── auth.ts         # auth store
+└── routes/             # SvelteKit file routing
 ```
 
-### Error Handling (Backend)
+---
 
-- Use **Zod** for request validation with `@hono/zod-validator`
-- Throw descriptive errors in services: `throw new Error('USER_EXISTS')`
-- Handle errors in routes with appropriate HTTP status codes:
-    - `401` for authentication failures
-    - `409` for conflicts (e.g., duplicate resources)
-    - `500` for server errors
+## Env
+
+**Backend**:
+
+```bash
+DATABASE_URL=postgres://admin:password123@localhost:5432/tempo_db
+MONGO_URL=mongodb://admin:password123@localhost:27017
+MONGO_DB_NAME=tempo_audit
+JWT_SECRET=change-me-prod
+```
+
+**Frontend**:
+
+```bash
+PUBLIC_API_URL=http://localhost:3000
+```
+
+---
+
+## Patterns
+
+**Imports**:
 
 ```typescript
-// Example from auth.route.ts
-app.post('/register', zValidator('json', registerSchema), async (c) => {
+import type { AppType } from '@tempo/backend/src/index';  // type only
+import { db } from '../../db';                           // value
+```
+
+**Auth**:
+
+- JWT via `hono/jwt`
+- Hash: `Bun.password.hash/verify`
+- Store JWT `localStorage` frontend
+
+**Error handling** (routes):
+
+```typescript
+app.post('/path', zValidator('json', schema), async (c) => {
   try {
-    const { email, password } = c.req.valid('json');
-    const user = await authService.register(email, password);
-    return c.json(user, 201);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'USER_EXISTS') {
-      return c.json({ error: 'Cet email est déjà utilisé' }, 409);
-    }
-    return c.json({ error: 'Erreur serveur' }, 500);
+    const data = c.req.valid('json');
+    const result = await service.fn(data);
+    return c.json(result, 201);
+  } catch (e) {
+    if (e.message === 'USER_EXISTS') return c.json({ error: 'Email taken' }, 409);
+    return c.json({ error: 'Server error' }, 500);
   }
 });
 ```
 
-### Authentication
+**Svelte 5 runes**:
 
-- Use JWT tokens via `hono/jwt`
-- Password hashing with `Bun.password.hash` and `Bun.password.verify`
-- Secrets from environment variables with defaults for development:
-    ```typescript
-    const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
-    ```
+```svelte
+<script>
+  let count = $state(0);
+  let doubled = $derived(count * 2);
+  $effect(() => console.log(count));
+</script>
+```
 
-### Database
-
-- **PostgreSQL** with Drizzle ORM for structured data
-- **MongoDB** for logs/audit (flexible schema)
-- Use Drizzle migrations for schema changes
-- Use relations for queries requiring joins
-
-### Testing
-
-- Use **Bun Test** for backend (`.spec.ts` files)
-- Use **Vitest** for frontend
-- Mock external dependencies (DB, services)
-- Follow AAA pattern: **Arrange**, **Act**, **Assert**
+**Hono RPC client**:
 
 ```typescript
-describe('AuthService', () => {
-  beforeEach(() => {
-    mockFindFirst.mockReset();
-    // Reset mocks
-  });
+import { hc } from 'hono/client';
+import type { AppType } from '@tempo/backend/src/index';
+const client = hc<AppType>('http://localhost:3000/');
+const res = await client.api.auth.login.$post({ json: { email, password } });
+```
 
-  it('should throw USER_EXISTS if email already exists', async () => {
-    // Arrange
-    mockFindFirst.mockResolvedValue({ id: '123', email: 'test@test.com' });
+**UI (shadcn)**:
 
-    // Act & Assert
-    await expect(authService.register('test@test.com', 'pass')).rejects.toThrow('USER_EXISTS');
+```svelte
+<script>
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Card, CardHeader, CardTitle } from '$lib/components/ui/card';
+</script>
+```
+
+**Test (Bun Test backend, Vitest frontend)**:
+
+```typescript
+describe('Service', () => {
+  beforeEach(() => mockReset());
+  it('should throw X', async () => {
+    mockFn.mockResolvedValue({ id: '1' });
+    await expect(service.fn()).rejects.toThrow('ERROR_CODE');
   });
 });
 ```
 
-### Frontend Guidelines
-
-- Use **Svelte 5 Runes**: `$state`, `$derived`, `$effect`
-- Use **Hono client** with type-safe RPC:
-    ```typescript
-    import { hc } from 'hono/client';
-    import type { AppType } from '@tempo/backend/src/index';
-    const client = hc<AppType>('http://localhost:3000/');
-    ```
-- Store JWT in `localStorage` for authenticated requests
-
-### Linting Configuration
-
-- **oxlint** is used (configured in `.oxlintrc.json`)
-- Categories: `correctness` (error), `suspicious` (warn), `pedantic` (off), `style` (off)
-- Console logging is allowed (`no-console: off`)
-
-### Docker Development
+**DB migrations**:
 
 ```bash
-# Start databases
-docker compose up -d postgres mongo
-
-# Full stack with Docker
-docker compose up --build
+cd apps/backend
+bunx drizzle-kit generate
+bunx drizzle-kit migrate
 ```
+
+---
+
+## Docker
+
+```bash
+docker compose up -d postgres mongo   # DBs only
+docker compose up --build             # full stack
+```
+
+| Service  | Port  |
+| -------- | ----- |
+| postgres | 5432  |
+| mongo    | 27017 |
+| backend  | 3000  |
+| frontend | 5173  |
 
 ---
 
 ## Key Files
 
-| File                              | Purpose                        |
-| --------------------------------- | ------------------------------ |
-| `package.json`                    | Root workspace config          |
-| `apps/backend/src/index.ts`       | Backend entry + AppType export |
-| `apps/backend/src/db/schema.ts`   | Drizzle schema definitions     |
-| `apps/frontend/src/lib/client.ts` | Hono client for frontend       |
-| `.oxlintrc.json`                  | Linting rules                  |
-| `.oxfmtrc.json`                   | Formatting rules               |
-| `docker-compose.yml`              | Local development services     |
+| File                              | Purpose                                                         |
+| --------------------------------- | --------------------------------------------------------------- |
+| `package.json`                    | workspace config                                                |
+| `apps/backend/src/index.ts`       | entry + AppType                                                 |
+| `apps/backend/src/db/schema.ts`   | Drizzle schema                                                  |
+| `apps/frontend/src/lib/client.ts` | Hono client                                                     |
+| `apps/frontend/src/lib/utils.ts`  | cn() helper                                                     |
+| `.oxlintrc.json`                  | lint rules (correctness=error, suspicious=warn, no-console=off) |
+| `.oxfmtrc.json`                   | fmt rules (tabs, width 4, singleQuote)                          |
+| `docker-compose.yml`              | services                                                        |
+| `apps/frontend/components.json`   | shadcn config                                                   |
 
 ---
 
-## Notes for AI Agents
+## Checklist
 
-1. **Always format and lint** before marking a task complete
-2. **Run tests** to verify changes work correctly
-3. **Use type-safe patterns** - import `AppType` for frontend-backend communication
-4. **Follow the module structure** - route → service → db separation
-5. **Handle errors gracefully** - return appropriate HTTP status codes
-6. **Use Zod** for all input validation on the backend
+- [ ] `bun run format && bun run lint` before done
+- [ ] Tests pass
+- [ ] Type-safe Hono RPC (`AppType`)
+- [ ] Route→service→DB separation
+- [ ] Zod validation all inputs
+- [ ] Proper HTTP status codes
+- [ ] Svelte 5 runes (not old syntax)
