@@ -1,7 +1,6 @@
 @startuml
 
 ' Configuration du style
-!theme plain
 hide empty members
 skinparam classAttributeIconSize 0
 

@@ -11,7 +11,7 @@ services:
         ports:
             - '5432:5432'
         volumes:
-            - postgres_data:/var/lib/postgresql/data
+            - postgres_data:/var/lib/postgresql
 
     mongo:
         image: mongo:8-noble
@@ -35,7 +35,6 @@ services:
         ports:
             - '3000:3000'
         environment:
-            # Attention : ici on utilise le nom du service "postgres" et plus "localhost" !
             DATABASE_URL: 'postgres://admin:password123@postgres:5432/tempo_db'
             MONGO_URL: 'mongodb://admin:password123@mongo:27017'
             MONGO_DB_NAME: 'tempo_audit'
@@ -51,9 +50,8 @@ services:
         container_name: tempo_frontend
         restart: always
         ports:
-            - '5173:3000' # On mappe le port 3000 interne du conteneur vers 5173 externe
+            - '5173:3000'
         environment:
-            # L'URL publique du backend pour le navigateur
             PUBLIC_API_URL: 'http://localhost:3000'
         depends_on:
             - backend

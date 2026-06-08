@@ -7,16 +7,16 @@
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.7.6",
-		"drizzle-orm": "^0.45.1",
-		"hono": "^4.12.2",
-		"mongodb": "^7.1.0",
-		"pg": "^8.18.0",
-		"zod": "^4.3.6"
+		"drizzle-orm": "^0.45.2",
+		"hono": "^4.12.24",
+		"mongodb": "^7.2.0",
+		"pg": "^8.21.0",
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
-		"@types/pg": "^8.16.0",
-		"drizzle-kit": "^0.31.9",
-		"vitest": "^4.0.18"
+		"@types/pg": "^8.20.0",
+		"drizzle-kit": "^0.31.10",
+		"vitest": "^4.1.8"
 	}
 }
