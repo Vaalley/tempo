@@ -1,0 +1,62 @@
+@startuml
+
+title Diagramme de séquence — Gestion des espaces (Administrateur)
+
+actor "Administrateur" as Admin
+participant "Frontend" as Frontend
+participant "API" as API
+database "PostgreSQL" as DB
+database "MongoDB\n(Audit)" as Mongo
+
+== Création d'un espace ==
+
+Admin -> Frontend : Renseigner nom, type, capacité\net confirmer
+Frontend -> API : POST /api/workspaces\n{ name, type, capacity }
+
+API -> API : Vérifier le JWT et le rôle ADMIN
+
+alt JWT invalide ou rôle insuffisant
+    API --> Frontend : 403 Forbidden
+    Frontend --> Admin : Afficher "Accès refusé"
+end
+
+API -> API : Valider les données (Zod)
+
+alt Données invalides
+    API --> Frontend : 400 Bad Request
+    Frontend --> Admin : Afficher les erreurs de saisie
+end
+
+API -> DB : INSERT INTO workspaces\n{ name, type, capacity }
+DB --> API : Espace créé
+API --> Frontend : 201 Created
+Frontend --> Admin : Afficher l'espace créé
+
+== Suppression d'un espace ==
+
+Admin -> Frontend : Sélectionner un espace\net confirmer la suppression
+Frontend -> API : DELETE /api/workspaces/:id
+
+API -> API : Vérifier le JWT et le rôle ADMIN
+
+alt JWT invalide ou rôle insuffisant
+    API --> Frontend : 403 Forbidden
+    Frontend --> Admin : Afficher "Accès refusé"
+end
+
+API -> DB : Rechercher l'espace par ID
+
+alt Espace introuvable
+    DB --> API : null
+    API --> Frontend : 404 Not Found
+    Frontend --> Admin : Afficher "Espace introuvable"
+end
+
+API -> DB : DELETE FROM workspaces WHERE id = ?
+DB --> API : Espace supprimé
+API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, timestamp }
+Mongo --> API : Log enregistré
+API --> Frontend : 200 OK
+Frontend --> Admin : Afficher la confirmation de suppression
+
+@enduml

@@ -1,0 +1,52 @@
+@startuml
+
+title Diagramme de séquence — Réservation d'un espace (Tempo)
+
+actor "Collaborateur" as User
+participant "Frontend" as Frontend
+participant "API" as API
+database "PostgreSQL" as DB
+
+== Consultation des espaces ==
+
+User -> Frontend : Accéder à la page des espaces
+Frontend -> API : GET /api/workspaces
+API -> DB : Récupérer tous les espaces
+DB --> API : Liste des espaces
+API --> Frontend : 200 OK
+Frontend --> User : Afficher les espaces disponibles
+
+== Création de la réservation ==
+
+User -> Frontend : Sélectionner un espace,\nchoisir un créneau et confirmer
+Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt }
+
+API -> API : Vérifier le JWT
+
+alt JWT invalide
+    API --> Frontend : 401 Unauthorized
+    Frontend --> User : Afficher message d'erreur
+end
+
+API -> DB : Vérifier que l'espace existe
+
+alt Espace introuvable
+    DB --> API : null
+    API --> Frontend : 404 Not Found
+    Frontend --> User : Afficher "Espace introuvable"
+end
+
+API -> DB : Vérifier les chevauchements de réservations
+
+alt Créneau déjà réservé
+    DB --> API : Conflit détecté
+    API --> Frontend : 409 Conflict
+    Frontend --> User : Afficher "Créneau non disponible"
+end
+
+API -> DB : Insérer la réservation (status: CONFIRMED)
+DB --> API : Réservation créée
+API --> Frontend : 201 Created
+Frontend --> User : Afficher la confirmation
+
+@enduml

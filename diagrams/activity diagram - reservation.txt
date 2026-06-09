@@ -1,0 +1,48 @@
+@startuml
+
+title Diagramme d'activité — Réservation d'un espace (Tempo)
+
+|Collaborateur|
+start
+
+:Consulter les espaces disponibles;
+:Sélectionner un espace et un créneau;
+:Confirmer la réservation;
+
+|Système|
+
+:Vérifier l'authentification (JWT);
+
+if (Authentifié ?) then (non)
+    :Retourner 401 Unauthorized;
+    stop
+else (oui)
+endif
+
+:Vérifier que l'espace existe;
+
+if (Espace trouvé ?) then (non)
+    :Retourner 404 Not Found;
+    stop
+else (oui)
+endif
+
+:Vérifier les chevauchements\nde réservations;
+
+if (Créneau disponible ?) then (non)
+    :Retourner 409 Conflict;
+    |Collaborateur|
+    :Afficher "Créneau déjà réservé";
+    stop
+else (oui)
+endif
+
+:Enregistrer la réservation (CONFIRMED);
+
+|Collaborateur|
+
+:Afficher la confirmation de réservation;
+
+stop
+
+@enduml

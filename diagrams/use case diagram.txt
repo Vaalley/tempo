@@ -1,0 +1,106 @@
+@startuml
+
+left to right direction
+
+' Acteurs
+actor "Collaborateur\n(User)" as User
+actor "Administrateur\n(Admin)" as Admin
+actor "Système\n(Scheduler)" as System
+
+' L'Admin hérite des droits du User
+Admin --|> User
+
+rectangle "Tempo - Gestion d'espaces flex-office" {
+
+    ' --- Authentification ---
+    package "Authentification" {
+        usecase "S'inscrire" as UC_Register
+        usecase "Se connecter" as UC_Login
+        usecase "Se déconnecter" as UC_Logout
+    }
+
+    ' --- Espaces de travail ---
+    package "Gestion des espaces" {
+        usecase "Consulter les espaces\ndisponibles" as UC_ListWorkspaces
+        usecase "Filtrer par type\n(bureau / salle / cabine)" as UC_FilterWorkspaces
+        usecase "Vérifier la disponibilité\nd'un espace" as UC_CheckAvailability
+        usecase "Créer un espace" as UC_CreateWorkspace
+        usecase "Modifier un espace" as UC_EditWorkspace
+        usecase "Supprimer un espace" as UC_DeleteWorkspace
+    }
+
+    ' --- Réservations ---
+    package "Gestion des réservations" {
+        usecase "Créer une réservation" as UC_CreateBooking
+        usecase "Consulter ses réservations" as UC_ViewMyBookings
+        usecase "Annuler sa réservation" as UC_CancelBooking
+        usecase "Consulter toutes\nles réservations" as UC_ViewAllBookings
+        usecase "Annuler n'importe\nquelle réservation" as UC_AdminCancelBooking
+        usecase "Détecter les chevauchements" as UC_OverlapCheck
+    }
+
+    ' --- Tableau de bord admin ---
+    package "Supervision & Audit" {
+        usecase "Consulter le tableau\nde bord d'occupation" as UC_Dashboard
+        usecase "Gérer les utilisateurs" as UC_ManageUsers
+        usecase "Consulter les logs\nd'audit" as UC_ViewAuditLogs
+        usecase "Enregistrer une action\ndans les logs" as UC_WriteAuditLog
+    }
+
+}
+
+' --- Relations User ---
+User --> UC_Register
+User --> UC_Login
+User --> UC_Logout
+
+User --> UC_ListWorkspaces
+User --> UC_FilterWorkspaces
+User --> UC_CheckAvailability
+
+User --> UC_CreateBooking
+User --> UC_ViewMyBookings
+User --> UC_CancelBooking
+
+' --- Relations Admin (fonctionnalités exclusives) ---
+Admin --> UC_CreateWorkspace
+Admin --> UC_EditWorkspace
+Admin --> UC_DeleteWorkspace
+
+Admin --> UC_ViewAllBookings
+Admin --> UC_AdminCancelBooking
+
+Admin --> UC_Dashboard
+Admin --> UC_ManageUsers
+Admin --> UC_ViewAuditLogs
+
+' --- Relations Système ---
+System --> UC_WriteAuditLog
+
+' --- Inclusions & Extensions ---
+UC_CreateBooking .> UC_CheckAvailability : <<include>>
+UC_CreateBooking .> UC_OverlapCheck : <<include>>
+UC_CreateBooking .> UC_WriteAuditLog : <<include>>
+
+UC_CancelBooking .> UC_WriteAuditLog : <<include>>
+UC_AdminCancelBooking .> UC_WriteAuditLog : <<include>>
+
+UC_CreateWorkspace .> UC_WriteAuditLog : <<include>>
+UC_EditWorkspace .> UC_WriteAuditLog : <<include>>
+UC_DeleteWorkspace .> UC_WriteAuditLog : <<include>>
+
+UC_ListWorkspaces .> UC_FilterWorkspaces : <<extend>>
+
+' --- Notes ---
+note bottom of UC_OverlapCheck
+  Vérifie qu'aucune réservation
+  existante ne chevauche les
+  créneaux demandés (startAt/endAt)
+end note
+
+note bottom of UC_WriteAuditLog
+  Persisté en MongoDB
+  (AuditLog collection)
+end note
+
+@enduml

@@ -4,13 +4,17 @@
 Présenter sommairement le projet :
 
 - besoins
+Gérer les espaces de travail (bureaux, salles, cabines) et permettre aux collaborateurs de réserver ces espaces.
 - cible
+Des établissements qui souhaitent gérer la réservation de leurs espaces de travail.
 - contraintes
+L'appli doit avoir un ou des systemes en place pour avoir une disponibilité accru, quitte a avoir une experience degrade plutot que rien du tout.
 
 ## 2. Besoins fonctionnels « métier »
 ### 2.1. Utilisateurs du projet
 Lister les différents types d'utilisateurs du projet Processus utilisateur impacté
-Comptabilité, Gestion, Marketing, RH, … autre
+- Collaborateur (User) : Consultation des espaces, réservation, annulation.
+- Administrateur (Admin) : Gestion des espaces, des réservations, des utilisateurs.
 
 ### 2.2. Informations relatives aux contenus
 
@@ -37,6 +41,10 @@ aux frontières du système, et la réponse du système.
 ### 3.2. Fonctionnalités détaillées les plus significatives
 
 à faire pour **4 fonctionnalités**
+- Consultation des espaces
+- Réservation d'un espace
+- Annulation d'une réservation
+- Gestion des espaces par un administrateur
 
 #### 3.2.1. Fonctionnalité 1
 
