@@ -11,54 +11,69 @@ database "MongoDB\n(Audit)" as Mongo
 == Consultation des réservations ==
 
 User -> Frontend : Accéder à "Mes réservations"
+activate Frontend
+
 Frontend -> API : GET /api/bookings/my
+activate API
+
 API -> API : Vérifier le JWT
-API -> DB : Récupérer les réservations de l'utilisateur
+
+API -> DB : Récupérer les réservations\nde l'utilisateur
+activate DB
 DB --> API : Liste des réservations
+deactivate DB
+
 API --> Frontend : 200 OK
+deactivate API
+
 Frontend --> User : Afficher les réservations actives
+deactivate Frontend
 
-== Check-in ==
+== Check-in via QR Code ==
 
-User -> Frontend : Sélectionner une réservation\net confirmer la présence
-Frontend -> API : POST /api/bookings/:id/checkin
+User -> Frontend : Scanner le QR code\ndans la salle
+activate Frontend
+
+Frontend -> API : POST /api/bookings/checkin\n{ qrCodeData }
+activate API
+
+API -> API : Décoder le QR code\n(extract workspaceId)
 
 API -> API : Vérifier le JWT
 
 alt JWT invalide
     API --> Frontend : 401 Unauthorized
-    Frontend --> User : Afficher message d'erreur
+    deactivate API
+    Frontend --> User : Afficher "Authentification requise"
+    deactivate Frontend
 end
 
-API -> DB : Récupérer la réservation par ID
+API -> DB : SELECT b.* FROM bookings b\nLEFT JOIN booking_participants bp\n  ON bp.booking_id = b.id\nWHERE b.workspace_id = ?\nAND (b.user_id = ? OR (bp.user_id = ? AND bp.status = 'ACCEPTED'))\nAND b.status = 'CONFIRMED'\nAND b.start_at <= now()\nAND b.end_at >= now()
+activate DB
+DB --> API : Réservation ou null
+deactivate DB
 
-alt Réservation introuvable
-    DB --> API : null
-    API --> Frontend : 404 Not Found
-    Frontend --> User : Afficher "Réservation introuvable"
+alt Aucune réservation active sur cet espace\nou utilisateur non autorisé (ni créateur ni participant)
+    API --> Frontend : 404 Not Found\n{ error: "Aucune réservation active\nou accès non autorisé" }
+    deactivate API
+    Frontend --> User : Afficher "Check-in impossible\n(aucune réservation ou accès refusé)"
+    deactivate Frontend
 end
 
-API -> API : Vérifier que user_id correspond au JWT
-
-alt Non autorisé
-    API --> Frontend : 403 Forbidden
-    Frontend --> User : Afficher "Accès refusé"
-end
-
-API -> API : Vérifier que le créneau est actif\n(startAt <= now <= endAt)
-
-alt Hors créneau
-    API --> Frontend : 400 Bad Request
-    Frontend --> User : Afficher "Check-in indisponible"
-end
-
-API -> DB : UPDATE bookings SET status = 'CHECKED_IN',\ncheckedInAt = now()
+API -> DB : UPDATE bookings\nSET status = 'CHECKED_IN',\nchecked_in_at = now()\nWHERE id = ?
+activate DB
 DB --> API : Réservation mise à jour
+deactivate DB
 
-API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN,\nbookingId, userId, timestamp }
+API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN,\nbookingId, userId, workspaceId,\ntimestamp }
+activate Mongo
 Mongo --> API : Log enregistré
+deactivate Mongo
 
 API --> Frontend : 200 OK
+deactivate API
+
 Frontend --> User : Afficher "Présence confirmée"
+deactivate Frontend
 
 @enduml

@@ -12,7 +12,8 @@
 		"format": "oxfmt .",
 		"format:check": "oxfmt . --check",
 		"test": "bun --filter '*' test",
-		"precommit": "bun run format && bun run lint && bun run test"
+		"precommit": "bun run format && bun run lint && bun run test",
+		"diagrams:png": "bun run scripts/export-diagrams.ts"
 	},
 	"devDependencies": {
 		"oxfmt": "^0.21.0",

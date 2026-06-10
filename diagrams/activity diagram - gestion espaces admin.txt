@@ -1,32 +1,29 @@
 @startuml
 
-title Diagramme d'activité — Gestion des espaces (Administrateur)
+title Diagramme d'activite - Gestion des espaces (Administrateur)
 
 |Administrateur|
 start
-
-:Accéder à la gestion des espaces;
-
+:Acceder a la gestion des espaces;
 :Choisir une action;
 
-if (Action ?) then (Créer un espace)
+if (Action ?) then (Creer un espace)
+    :Renseigner nom, type, capacite\net quota maximum de personnes;
+    :Confirmer la creation;
 
-    :Renseigner nom, type et capacité;
-    :Confirmer la création;
-
-    |Système|
-
-    :Vérifier le rôle ADMIN (JWT);
-
-    if (Rôle valide ?) then (non)
+    |Systeme|
+    :Verifier le role ADMIN (JWT);
+    if (Role valide ?) then (non)
         :Retourner 403 Forbidden;
+        |Administrateur|
+        :Afficher "Acces refuse";
         stop
     else (oui)
     endif
 
-    :Valider les données (nom, type, capacité);
-
-    if (Données valides ?) then (non)
+    |Systeme|
+    :Valider les donnees\n(nom, type, capacite, quota);
+    if (Donnees valides ?) then (non)
         :Retourner 400 Bad Request;
         |Administrateur|
         :Afficher les erreurs de saisie;
@@ -34,50 +31,50 @@ if (Action ?) then (Créer un espace)
     else (oui)
     endif
 
+    |Systeme|
     :Enregistrer l'espace en base;
 
     |Administrateur|
-    :Afficher l'espace créé;
+    :Afficher l'espace cree;
+    stop
 
 else (Supprimer un espace)
-
-    :Sélectionner un espace;
+    :Selectionner un espace;
     :Confirmer la suppression;
 
-    |Système|
-
-    :Vérifier le rôle ADMIN (JWT);
-
-    if (Rôle valide ?) then (non)
+    |Systeme|
+    :Verifier le role ADMIN (JWT);
+    if (Role valide ?) then (non)
         :Retourner 403 Forbidden;
+        |Administrateur|
+        :Afficher "Acces refuse";
         stop
     else (oui)
     endif
 
+    |Systeme|
     :Rechercher l'espace par ID;
-
-    if (Espace trouvé ?) then (non)
+    if (Espace trouve ?) then (non)
         :Retourner 404 Not Found;
+        |Administrateur|
+        :Afficher "Espace introuvable";
         stop
     else (oui)
     endif
 
-    :Rechercher les réservations futures\nsur cet espace;
-
-    if (Réservations futures ?) then (oui)
-        :Notifier les utilisateurs concernés\n(annulation de leurs réservations);
+    |Systeme|
+    :Rechercher les reservations futures\nsur cet espace;
+    if (Reservations futures ?) then (oui)
+        :Notifier les utilisateurs concernes;
     else (non)
     endif
-
     :Supprimer l'espace;
-    :Annuler les réservations associées\n(status: CANCELLED);
-    :Enregistrer l'action dans le journal d'audit\n(MongoDB);
+    :Annuler les reservations associees\n(status: CANCELLED);
+    :Enregistrer l'action dans le journal\nd'audit (MongoDB);
 
     |Administrateur|
     :Afficher la confirmation de suppression;
-
+    stop
 endif
-
-stop
 
 @enduml

@@ -7,70 +7,99 @@ participant "Frontend" as Frontend
 participant "API" as API
 database "PostgreSQL" as DB
 database "MongoDB\n(Audit)" as Mongo
-participant "Notification\nService" as Notif
 
 == Création d'un espace ==
 
-Admin -> Frontend : Renseigner nom, type, capacité\net confirmer
-Frontend -> API : POST /api/workspaces\n{ name, type, capacity }
+Admin -> Frontend : Renseigner nom, type, capacité,\nquota et confirmer
+activate Frontend
+
+Frontend -> API : POST /api/workspaces\n{ name, type, capacity, maxQuota }
+activate API
 
 API -> API : Vérifier le JWT et le rôle ADMIN
 
 alt JWT invalide ou rôle insuffisant
     API --> Frontend : 403 Forbidden
+    deactivate API
     Frontend --> Admin : Afficher "Accès refusé"
+    deactivate Frontend
+else Authentification OK
+    API -> API : Valider les données (Zod)
+
+    alt Données invalides
+        API --> Frontend : 400 Bad Request
+        deactivate API
+        Frontend --> Admin : Afficher les erreurs de saisie
+        deactivate Frontend
+    else Données valides
+        API -> DB : INSERT INTO workspaces\n{ name, type, capacity, max_quota }
+        activate DB
+        DB --> API : Espace créé
+        deactivate DB
+
+        API --> Frontend : 201 Created
+        deactivate API
+        Frontend --> Admin : Afficher l'espace créé
+        deactivate Frontend
+    end
 end
-
-API -> API : Valider les données (Zod)
-
-alt Données invalides
-    API --> Frontend : 400 Bad Request
-    Frontend --> Admin : Afficher les erreurs de saisie
-end
-
-API -> DB : INSERT INTO workspaces\n{ name, type, capacity }
-DB --> API : Espace créé
-API --> Frontend : 201 Created
-Frontend --> Admin : Afficher l'espace créé
 
 == Suppression d'un espace ==
 
 Admin -> Frontend : Sélectionner un espace\net confirmer la suppression
+activate Frontend
+
 Frontend -> API : DELETE /api/workspaces/:id
+activate API
 
 API -> API : Vérifier le JWT et le rôle ADMIN
 
 alt JWT invalide ou rôle insuffisant
     API --> Frontend : 403 Forbidden
+    deactivate API
     Frontend --> Admin : Afficher "Accès refusé"
+    deactivate Frontend
+else Authentification OK
+    API -> DB : SELECT * FROM workspaces WHERE id = ?
+    activate DB
+    DB --> API : Espace trouvé ou null
+    deactivate DB
+
+    alt Espace introuvable
+        API --> Frontend : 404 Not Found
+        deactivate API
+        Frontend --> Admin : Afficher "Espace introuvable"
+        deactivate Frontend
+    else Espace trouvé
+        API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
+        activate DB
+        DB --> API : Liste des réservations futures
+        deactivate DB
+
+        alt Réservations futures existantes
+            API --> Frontend : 200 OK\n{ warning: "X utilisateurs notifiés" }
+        end
+
+        API -> DB : DELETE FROM workspaces WHERE id = ?
+        activate DB
+        DB --> API : Espace supprimé
+        deactivate DB
+
+        API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
+        activate DB
+        DB --> API : Réservations annulées
+        deactivate DB
+
+        API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, affectedBookings: [...], timestamp }
+        activate Mongo
+        Mongo --> API : Log enregistré
+        deactivate Mongo
+
+        API --> Frontend : 200 OK
+        deactivate API
+        Frontend --> Admin : Afficher confirmation
+        deactivate Frontend
+    end
 end
-
-API -> DB : Rechercher l'espace par ID
-
-alt Espace introuvable
-    DB --> API : null
-    API --> Frontend : 404 Not Found
-    Frontend --> Admin : Afficher "Espace introuvable"
-end
-
-API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
-DB --> API : Liste des réservations futures
-
-alt Réservations futures existantes
-    API -> Notif : Envoyer notification\n{ type: SPACE_DELETED,\nrecipients: [user_emails],\nspaceName: workspace.name }
-    Notif --> API : Notifications envoyées
-end
-
-API -> DB : DELETE FROM workspaces WHERE id = ?
-DB --> API : Espace supprimé
-
-API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
-DB --> API : Réservations annulées
-
-API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, affectedBookings: [...], timestamp }
-Mongo --> API : Log enregistré
-
-API --> Frontend : 200 OK
-Frontend --> Admin : Afficher la confirmation de suppression
 
 @enduml

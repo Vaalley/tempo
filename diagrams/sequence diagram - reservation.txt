@@ -10,43 +10,103 @@ database "PostgreSQL" as DB
 == Consultation des espaces ==
 
 User -> Frontend : Accéder à la page des espaces
+activate Frontend
+
 Frontend -> API : GET /api/workspaces
+activate API
+
 API -> DB : Récupérer tous les espaces
+activate DB
 DB --> API : Liste des espaces
+deactivate DB
+
 API --> Frontend : 200 OK
+deactivate API
+
 Frontend --> User : Afficher les espaces disponibles
+deactivate Frontend
 
 == Création de la réservation ==
 
-User -> Frontend : Sélectionner un espace,\nchoisir un créneau et confirmer
-Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt }
+User -> Frontend : Sélectionner un espace,\nchoisir un créneau,\ndéfinir public/privé,\nsaisir emails invités (optionnel)\net confirmer
+activate Frontend
+
+Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt,\nisPublic, invitedEmails[] }
+activate API
 
 API -> API : Vérifier le JWT
 
 alt JWT invalide
     API --> Frontend : 401 Unauthorized
+    deactivate API
     Frontend --> User : Afficher message d'erreur
+    deactivate Frontend
 end
 
 API -> DB : Vérifier que l'espace existe
+activate DB
+DB --> API : Espace ou null
+deactivate DB
 
 alt Espace introuvable
-    DB --> API : null
     API --> Frontend : 404 Not Found
+    deactivate API
     Frontend --> User : Afficher "Espace introuvable"
+    deactivate Frontend
 end
 
 API -> DB : Vérifier les chevauchements de réservations
+activate DB
+DB --> API : Conflit ou OK
+deactivate DB
 
 alt Créneau déjà réservé
-    DB --> API : Conflit détecté
     API --> Frontend : 409 Conflict
+    deactivate API
     Frontend --> User : Afficher "Créneau non disponible"
+    deactivate Frontend
 end
 
-API -> DB : Insérer la réservation (status: CONFIRMED)
-DB --> API : Réservation créée
-API --> Frontend : 201 Created
-Frontend --> User : Afficher la confirmation
+API -> DB : Insérer la réservation\n(status: CONFIRMED,\nis_public, owner_id)
+activate DB
+DB --> API : Réservation créée avec ID
+deactivate DB
+
+alt Invitations à envoyer
+    loop Pour chaque email invité
+        API -> DB : INSERT INTO booking_invitations\n{ booking_id, email, status: PENDING }
+        activate DB
+        DB --> API : Invitation enregistrée
+        deactivate DB
+    end
+end
+
+API --> Frontend : 201 Created\n{ reservation, invitationsCount }
+deactivate API
+
+Frontend --> User : Afficher la confirmation\net les invitations envoyées
+
+deactivate Frontend
+
+== Réception des réponses (asynchrone) ==
+
+User -> Frontend : Recevoir notification invitation
+activate Frontend
+Frontend --> User : Afficher invitation reçue
+deactivate Frontend
+
+alt Invité accepte
+    User -> Frontend : Accepter l'invitation
+    Frontend -> API : POST /api/invitations/:id/accept
+    API -> DB : UPDATE booking_invitations\nSET status = 'ACCEPTED'
+    API --> Frontend : 200 OK
+    Frontend --> User : Afficher "Invitation acceptée"
+else Invité décline
+    User -> Frontend : Décliner l'invitation
+    Frontend -> API : POST /api/invitations/:id/decline
+    API -> DB : UPDATE booking_invitations\nSET status = 'DECLINED'
+    API --> Frontend : 200 OK
+    Frontend --> User : Afficher "Invitation déclinée"
+end
 
 @enduml

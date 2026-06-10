@@ -82,12 +82,24 @@ tempo/
 - **Workspaces (`workspaces`)**
     - `id`: Serial (PK)
     - `name`, `capacity`, `type`
+    - `max_quota`: Integer (quota maximum de personnes pour les réservations)
+    - `qr_code`: String (identifiant unique pour le check-in)
 
 - **Bookings (`bookings`)**
     - `id`: UUID (PK)
     - `user_id`, `workspace_id`, `start_at`, `end_at`
     - `status`: Enum ('CONFIRMED', 'CHECKED_IN', 'CANCELLED', 'NO_SHOW')
+    - `is_public`: Boolean (réservation visible par tous ou privée)
     - `checked_in_at`: Timestamp (nullable)
+    - `cancelled_at`: Timestamp (nullable)
+    - `max_attendees`: Integer (nombre max de participants pour les réservations collectives)
+
+- **Booking Invitations (`booking_invitations`)**
+    - `id`: UUID (PK)
+    - `booking_id`: UUID (FK)
+    - `email`: String (email de l'invité)
+    - `status`: Enum ('PENDING', 'ACCEPTED', 'DECLINED')
+    - `created_at`: Timestamp
 
 ### 4.2 Base Documentaire (MongoDB)
 
@@ -111,20 +123,31 @@ tempo/
 | Feature | Acteur | Description | Fichiers Diagrammes |
 |---------|--------|-------------|---------------------|
 | **Authentification** | Collaborateur, Admin | Inscription, connexion JWT, déconnexion | `use case diagram.txt` |
-| **Réservation d'espace** | Collaborateur | Consulter, filtrer, créer une réservation avec vérification de disponibilité | `activity diagram - reservation.txt`, `sequence diagram - reservation.txt` |
-| **Gestion des espaces** | Administrateur | CRUD espaces + notification automatique aux utilisateurs lors de suppression | `activity diagram - gestion espaces admin.txt`, `sequence diagram - gestion espaces admin.txt` |
-| **Check-in / Présence** | Collaborateur | Confirmer sa présence sur place, suivi temps réel de l'occupation | `activity diagram - checkin.txt`, `sequence diagram - checkin.txt` |
+| **Réservation d'espace** | Collaborateur | Consulter, filtrer, créer une réservation (publique/privée) avec vérification de disponibilité et invitation de collaborateurs | `activity diagram - reservation.txt`, `sequence diagram - reservation.txt` |
+| **Annulation de réservation** | Collaborateur | Annuler sa réservation avec notification automatique | `activity diagram - annulation reservation.txt`, `sequence diagram - annulation reservation.txt` |
+| **Gestion des espaces** | Administrateur | CRUD espaces avec quota + notification automatique lors de suppression | `activity diagram - gestion espaces admin.txt`, `sequence diagram - gestion espaces admin.txt` |
+| **Check-in / Présence** | Collaborateur | Scanner QR code pour confirmer sa présence dans la salle réservée | `activity diagram - checkin.txt`, `sequence diagram - checkin.txt` |
 
 ### 5.2 Règles Métier Clés
 
 **Réservation :**
 - Vérification des chevauchements de créneaux avant création
 - Un espace ne peut être réservé que s'il est disponible
+- **Type de réservation** : Publique (visible par tous) ou Privée (par invitation uniquement)
+- **Invitations** : Possibilité d'inviter des collaborateurs après création de la réservation
+- **Quota** : Chaque espace a un quota maximum de personnes défini par l'administrateur
 
 **Check-in :**
+- **Scan QR Code** : Le collaborateur scanne un QR code physique présent dans la salle
+- Vérification que le QR code correspond bien à l'espace réservé
 - Uniquement pendant le créneau de réservation (`start_at <= now <= end_at`)
 - Changement de statut : `CONFIRMED` → `CHECKED_IN`
 - Historisation de l'heure de check-in
+
+**Annulation :**
+- Un collaborateur peut annuler sa propre réservation
+- **Délai** : L'annulation doit être faite au minimum 24h avant le début (règle métier optionnelle)
+- **Notification** : Le créateur de la réservation reçoit une confirmation d'annulation
 
 **Suppression d'espace :**
 - L'administrateur peut supprimer un espace

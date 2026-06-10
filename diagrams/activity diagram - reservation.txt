@@ -1,48 +1,56 @@
 @startuml
 
-title Diagramme d'activité — Réservation d'un espace (Tempo)
+title Diagramme d'activite - Reservation d'un espace (Tempo)
 
 |Collaborateur|
 start
-
 :Consulter les espaces disponibles;
-:Sélectionner un espace et un créneau;
-:Confirmer la réservation;
+:Selectionner un espace et un creneau;
+:Choisir le type de reservation\n(publique ou privee);
+:Saisir les emails des collaborateurs\na inviter (optionnel);
+:Confirmer la reservation;
 
-|Système|
-
-:Vérifier l'authentification (JWT);
-
-if (Authentifié ?) then (non)
+|Systeme|
+:Verifier l'authentification (JWT);
+if (Authentifie ?) then (non)
     :Retourner 401 Unauthorized;
+    |Collaborateur|
+    :Afficher "Authentification requise";
     stop
 else (oui)
 endif
 
-:Vérifier que l'espace existe;
-
-if (Espace trouvé ?) then (non)
+|Systeme|
+:Verifier que l'espace existe;
+if (Espace trouve ?) then (non)
     :Retourner 404 Not Found;
+    |Collaborateur|
+    :Afficher "Espace introuvable";
     stop
 else (oui)
 endif
 
-:Vérifier les chevauchements\nde réservations;
-
-if (Créneau disponible ?) then (non)
+|Systeme|
+:Verifier les chevauchements\nde reservations;
+if (Creneau disponible ?) then (non)
     :Retourner 409 Conflict;
     |Collaborateur|
-    :Afficher "Créneau déjà réservé";
+    :Afficher "Creneau deja reserve";
     stop
 else (oui)
 endif
 
-:Enregistrer la réservation (CONFIRMED);
+|Systeme|
+:Enregistrer la reservation (CONFIRMED);
+if (Invitations a envoyer ?) then (oui)
+    :Enregistrer les invitations en base;
+    :Envoyer les invitations\naux collaborateurs;
+else (non)
+endif
 
 |Collaborateur|
-
-:Afficher la confirmation de réservation;
-
+:Afficher la confirmation de reservation;
+:Recevoir les confirmations\nde participation (asynchrone);
 stop
 
 @enduml

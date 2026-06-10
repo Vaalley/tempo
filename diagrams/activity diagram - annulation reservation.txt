@@ -1,47 +1,54 @@
 @startuml
 
-title Diagramme d'activité — Annulation d'une réservation (Tempo)
+title Diagramme d'activite - Annulation d'une reservation (Tempo)
 
 |Collaborateur|
 start
-
-:Consulter ses réservations;
-:Sélectionner une réservation à annuler;
+:Acceder a "Mes reservations";
+:Selectionner une reservation;
 :Confirmer l'annulation;
 
-|Système|
-
-:Vérifier l'authentification (JWT);
-
-if (Authentifié ?) then (non)
+|Systeme|
+:Verifier l'authentification (JWT);
+if (Authentifie ?) then (non)
     :Retourner 401 Unauthorized;
+    |Collaborateur|
+    :Afficher "Authentification requise";
     stop
 else (oui)
 endif
 
-:Rechercher la réservation par ID;
-
-if (Réservation trouvée ?) then (non)
-    :Retourner 404 Not Found;
+|Systeme|
+:Verifier que la reservation existe\net appartient a l'utilisateur;
+if (Reservation trouvee et proprietaire ?) then (non)
+    :Retourner 404 Not Found ou 403 Forbidden;
+    |Collaborateur|
+    :Afficher "Reservation introuvable\nou acces refuse";
     stop
 else (oui)
 endif
 
-:Vérifier que la réservation\nappartient à l'utilisateur;
-
-if (Propriétaire ?) then (non)
-    :Retourner 403 Forbidden;
+|Systeme|
+:Verifier que l'annulation est possible\n(au moins 24h avant le debut);
+if (Annulation possible ?) then (non)
+    :Retourner 400 Bad Request;
+    |Collaborateur|
+    :Afficher "Annulation impossible\n(delai trop court)";
     stop
 else (oui)
 endif
 
-:Supprimer la réservation (PostgreSQL);
-:Enregistrer l'action dans le journal d'audit\n(MongoDB : CANCEL_BOOKING);
+|Systeme|
+:Mettre a jour le statut de la reservation;
+note right
+  CONFIRMED -> CANCELLED
+end note
+:Recuperer tous les participants\n(createur + invites ayant accepte);
+:Notifier chaque participant\nde l'annulation;
 
 |Collaborateur|
-
-:Afficher la confirmation d'annulation;
-
+:Afficher confirmation d'annulation;
+:Recevoir notification de confirmation;
 stop
 
 @enduml

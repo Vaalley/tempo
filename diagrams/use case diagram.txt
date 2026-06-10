@@ -5,7 +5,7 @@ left to right direction
 ' Acteurs
 actor "Collaborateur\n(User)" as User
 actor "Administrateur\n(Admin)" as Admin
-actor "Système\n(Scheduler)" as System
+actor "Système" as System
 
 ' L'Admin hérite des droits du User
 Admin --|> User
@@ -31,9 +31,11 @@ rectangle "Tempo - Gestion d'espaces flex-office" {
 
     ' --- Réservations ---
     package "Gestion des réservations" {
-        usecase "Créer une réservation" as UC_CreateBooking
+        usecase "Créer une réservation\n(publique ou privée)" as UC_CreateBooking
+        usecase "Inviter des collaborateurs\nà une réservation" as UC_InviteToBooking
         usecase "Consulter ses réservations" as UC_ViewMyBookings
         usecase "Annuler sa réservation" as UC_CancelBooking
+        usecase "Confirmer sa présence\n(Check-in QR Code)" as UC_CheckIn
         usecase "Consulter toutes\nles réservations" as UC_ViewAllBookings
         usecase "Annuler n'importe\nquelle réservation" as UC_AdminCancelBooking
         usecase "Détecter les chevauchements" as UC_OverlapCheck
@@ -59,8 +61,10 @@ User --> UC_FilterWorkspaces
 User --> UC_CheckAvailability
 
 User --> UC_CreateBooking
+User --> UC_InviteToBooking
 User --> UC_ViewMyBookings
 User --> UC_CancelBooking
+User --> UC_CheckIn
 
 ' --- Relations Admin (fonctionnalités exclusives) ---
 Admin --> UC_CreateWorkspace
@@ -80,14 +84,6 @@ System --> UC_WriteAuditLog
 ' --- Inclusions & Extensions ---
 UC_CreateBooking .> UC_CheckAvailability : <<include>>
 UC_CreateBooking .> UC_OverlapCheck : <<include>>
-UC_CreateBooking .> UC_WriteAuditLog : <<include>>
-
-UC_CancelBooking .> UC_WriteAuditLog : <<include>>
-UC_AdminCancelBooking .> UC_WriteAuditLog : <<include>>
-
-UC_CreateWorkspace .> UC_WriteAuditLog : <<include>>
-UC_EditWorkspace .> UC_WriteAuditLog : <<include>>
-UC_DeleteWorkspace .> UC_WriteAuditLog : <<include>>
 
 UC_ListWorkspaces .> UC_FilterWorkspaces : <<extend>>
 
@@ -98,9 +94,14 @@ note bottom of UC_OverlapCheck
   créneaux demandés (startAt/endAt)
 end note
 
-note bottom of UC_WriteAuditLog
-  Persisté en MongoDB
-  (AuditLog collection)
+note bottom of UC_CheckIn
+  Scan QR code dans la salle
+  pour valider la présence physique
+end note
+
+note bottom of UC_CreateBooking
+  Réservation publique : visible par tous
+  Réservation privée : invitation uniquement
 end note
 
 @enduml

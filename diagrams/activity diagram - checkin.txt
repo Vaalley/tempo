@@ -1,62 +1,65 @@
 @startuml
 
-title Diagramme d'activité — Check-in / Suivi de présence (Tempo)
+title Diagramme d'activite - Check-in / Suivi de presence (Tempo)
 
 |Collaborateur|
 start
-
-:Arriver sur le site;
 :Ouvrir l'application Tempo;
-:Accéder à "Mes réservations";
-:Sélectionner la réservation en cours;
-:Confirmer la présence (Check-in);
+:Acceder a "Mes reservations";
+:Selectionner la reservation en cours;
+:Scanner le QR code present dans la salle;
 
-|Système|
-
-:Vérifier l'authentification (JWT);
-
-if (Authentifié ?) then (non)
+|Systeme|
+:Decoder le QR code (identifiant de l'espace);
+:Verifier l'authentification (JWT);
+if (Authentifie ?) then (non)
     :Retourner 401 Unauthorized;
-    stop
-else (oui)
-endif
-
-:Vérifier que la réservation existe;
-
-if (Réservation trouvée ?) then (non)
-    :Retourner 404 Not Found;
-    stop
-else (oui)
-endif
-
-:Vérifier que l'utilisateur est le propriétaire de la réservation;
-
-if (Propriétaire ?) then (non)
-    :Retourner 403 Forbidden;
-    stop
-else (oui)
-endif
-
-:Vérifier le créneau horaire;
-
-if (Dans la fenêtre de check-in ?) then (non)
     |Collaborateur|
-    :Afficher "Check-in non disponible";
+    :Afficher "Authentification requise";
     stop
 else (oui)
 endif
 
-:Mettre à jour le statut de la réservation;
-note right
-  CONFIRMED → CHECKED_IN
-end note
+|Systeme|
+:Verifier que la reservation existe\net que l'utilisateur est autorise\n(createur ou participant accepte);
+if (Reservation trouvee et acces autorise ?) then (non)
+    :Retourner 404 Not Found ou 403 Forbidden;
+    |Collaborateur|
+    :Afficher "Reservation introuvable\nou acces refuse";
+    stop
+else (oui)
+endif
 
+|Systeme|
+:Verifier que le QR code correspond\na l'espace reserve;
+if (QR code valide ?) then (non)
+    :Retourner 404 Not Found;
+    |Collaborateur|
+    :Afficher "QR code incorrect\n(Mauvaise salle)";
+    stop
+else (oui)
+endif
+
+|Systeme|
+:Verifier le creneau horaire\n(start_at <= now <= end_at);
+if (Dans la fenetre de check-in ?) then (non)
+    :Retourner 400 Bad Request;
+    |Collaborateur|
+    :Afficher "Check-in non disponible\n(hors creneau)";
+    stop
+else (oui)
+endif
+
+|Systeme|
+:Mettre a jour le statut de la reservation;
+note right
+  CONFIRMED -> CHECKED_IN
+end note
 :Enregistrer l'heure de check-in;
+:Enregistrer l'action dans le journal\nd'audit (MongoDB);
 
 |Collaborateur|
-
-:Afficher "Présence confirmée";
-
+:Afficher "Presence confirmee";
 stop
 
 @enduml

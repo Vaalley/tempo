@@ -1,55 +1,85 @@
 @startuml
 
-title Diagramme de séquence — Annulation d'une réservation (Tempo)
+title Diagramme de sequence - Annulation d'une reservation (Tempo)
 
 actor "Collaborateur" as User
 participant "Frontend" as Frontend
 participant "API" as API
 database "PostgreSQL" as DB
-database "MongoDB\n(Audit)" as Mongo
 
-== Consultation des réservations ==
+== Consultation des reservations ==
 
-User -> Frontend : Accéder à "Mes réservations"
-Frontend -> API : GET /api/bookings/me
-API -> API : Vérifier le JWT
-API -> DB : SELECT bookings WHERE user_id = ?
-DB --> API : Liste des réservations
+User -> Frontend : Acceder a "Mes reservations"
+activate Frontend
+
+Frontend -> API : GET /api/bookings/my
+activate API
+
+API -> DB : SELECT * FROM bookings WHERE user_id = ? ORDER BY start_at DESC
+activate DB
+DB --> API : Liste des reservations
+deactivate DB
+
 API --> Frontend : 200 OK
-Frontend --> User : Afficher les réservations
+deactivate API
 
-== Annulation de la réservation ==
+Frontend --> User : Afficher les reservations
+deactivate Frontend
 
-User -> Frontend : Sélectionner une réservation\net confirmer l'annulation
+== Annulation d'une reservation ==
+
+User -> Frontend : Selectionner une reservation et confirmer l'annulation
+activate Frontend
+
 Frontend -> API : DELETE /api/bookings/:id
+activate API
 
-API -> API : Vérifier le JWT
+API -> API : Verifier le JWT
 
 alt JWT invalide
     API --> Frontend : 401 Unauthorized
-    Frontend --> User : Afficher message d'erreur
+    deactivate API
+    Frontend --> User : Afficher "Authentification requise"
+    deactivate Frontend
 end
 
-API -> DB : Rechercher la réservation par ID
+API -> DB : SELECT * FROM bookings WHERE id = ? AND user_id = ?
+activate DB
+DB --> API : Reservation ou null
+deactivate DB
 
-alt Réservation introuvable
-    DB --> API : null
+alt Reservation introuvable
     API --> Frontend : 404 Not Found
-    Frontend --> User : Afficher "Réservation introuvable"
+    deactivate API
+    Frontend --> User : Afficher "Reservation introuvable"
+    deactivate Frontend
 end
 
-API -> API : Vérifier que booking.user_id == JWT user_id
+API -> API : Verifier delai d'annulation (start_at - now() > 24h)
 
-alt Utilisateur non propriétaire
-    API --> Frontend : 403 Forbidden
-    Frontend --> User : Afficher "Accès refusé"
+alt Delai insuffisant (< 24h avant debut)
+    API --> Frontend : 400 Bad Request
+    deactivate API
+    Frontend --> User : Afficher "Annulation impossible (delai trop court)"
+    deactivate Frontend
 end
 
-API -> DB : DELETE FROM bookings WHERE id = ?
-DB --> API : Réservation supprimée
-API -> Mongo : Enregistrer l'action\n{ action: CANCEL_BOOKING,\nperformedBy, bookingId, timestamp }
-Mongo --> API : Log enregistré
+API -> DB : UPDATE bookings SET status = 'CANCELLED', cancelled_at = now() WHERE id = ?
+activate DB
+DB --> API : Reservation annulee
+deactivate DB
+
+API -> DB : SELECT user_id FROM booking_participants\nWHERE booking_id = ? AND status = 'ACCEPTED'
+activate DB
+DB --> API : Liste des participants (createur + invites)
+deactivate DB
+
+API -> API : Envoyer notification a chaque participant
+
 API --> Frontend : 200 OK
-Frontend --> User : Afficher la confirmation d'annulation
+deactivate API
+
+Frontend --> User : Afficher confirmation d'annulation et notification
+deactivate Frontend
 
 @enduml
