@@ -7,6 +7,7 @@ participant "Frontend" as Frontend
 participant "API" as API
 database "PostgreSQL" as DB
 database "MongoDB\n(Audit)" as Mongo
+participant "Notification\nService" as Notif
 
 == Création d'un espace ==
 
@@ -52,10 +53,23 @@ alt Espace introuvable
     Frontend --> Admin : Afficher "Espace introuvable"
 end
 
+API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
+DB --> API : Liste des réservations futures
+
+alt Réservations futures existantes
+    API -> Notif : Envoyer notification\n{ type: SPACE_DELETED,\nrecipients: [user_emails],\nspaceName: workspace.name }
+    Notif --> API : Notifications envoyées
+end
+
 API -> DB : DELETE FROM workspaces WHERE id = ?
 DB --> API : Espace supprimé
-API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, timestamp }
+
+API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
+DB --> API : Réservations annulées
+
+API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, affectedBookings: [...], timestamp }
 Mongo --> API : Log enregistré
+
 API --> Frontend : 200 OK
 Frontend --> Admin : Afficher la confirmation de suppression
 

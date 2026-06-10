@@ -1,0 +1,62 @@
+@startuml
+
+title Diagramme d'activité — Check-in / Suivi de présence (Tempo)
+
+|Collaborateur|
+start
+
+:Arriver sur le site;
+:Ouvrir l'application Tempo;
+:Accéder à "Mes réservations";
+:Sélectionner la réservation en cours;
+:Confirmer la présence (Check-in);
+
+|Système|
+
+:Vérifier l'authentification (JWT);
+
+if (Authentifié ?) then (non)
+    :Retourner 401 Unauthorized;
+    stop
+else (oui)
+endif
+
+:Vérifier que la réservation existe;
+
+if (Réservation trouvée ?) then (non)
+    :Retourner 404 Not Found;
+    stop
+else (oui)
+endif
+
+:Vérifier que l'utilisateur est le propriétaire de la réservation;
+
+if (Propriétaire ?) then (non)
+    :Retourner 403 Forbidden;
+    stop
+else (oui)
+endif
+
+:Vérifier le créneau horaire;
+
+if (Dans la fenêtre de check-in ?) then (non)
+    |Collaborateur|
+    :Afficher "Check-in non disponible";
+    stop
+else (oui)
+endif
+
+:Mettre à jour le statut de la réservation;
+note right
+  CONFIRMED → CHECKED_IN
+end note
+
+:Enregistrer l'heure de check-in;
+
+|Collaborateur|
+
+:Afficher "Présence confirmée";
+
+stop
+
+@enduml

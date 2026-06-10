@@ -62,7 +62,15 @@ else (Supprimer un espace)
     else (oui)
     endif
 
+    :Rechercher les réservations futures\nsur cet espace;
+
+    if (Réservations futures ?) then (oui)
+        :Notifier les utilisateurs concernés\n(annulation de leurs réservations);
+    else (non)
+    endif
+
     :Supprimer l'espace;
+    :Annuler les réservations associées\n(status: CANCELLED);
     :Enregistrer l'action dans le journal d'audit\n(MongoDB);
 
     |Administrateur|

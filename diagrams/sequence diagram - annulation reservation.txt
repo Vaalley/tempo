@@ -1,0 +1,55 @@
+@startuml
+
+title Diagramme de séquence — Annulation d'une réservation (Tempo)
+
+actor "Collaborateur" as User
+participant "Frontend" as Frontend
+participant "API" as API
+database "PostgreSQL" as DB
+database "MongoDB\n(Audit)" as Mongo
+
+== Consultation des réservations ==
+
+User -> Frontend : Accéder à "Mes réservations"
+Frontend -> API : GET /api/bookings/me
+API -> API : Vérifier le JWT
+API -> DB : SELECT bookings WHERE user_id = ?
+DB --> API : Liste des réservations
+API --> Frontend : 200 OK
+Frontend --> User : Afficher les réservations
+
+== Annulation de la réservation ==
+
+User -> Frontend : Sélectionner une réservation\net confirmer l'annulation
+Frontend -> API : DELETE /api/bookings/:id
+
+API -> API : Vérifier le JWT
+
+alt JWT invalide
+    API --> Frontend : 401 Unauthorized
+    Frontend --> User : Afficher message d'erreur
+end
+
+API -> DB : Rechercher la réservation par ID
+
+alt Réservation introuvable
+    DB --> API : null
+    API --> Frontend : 404 Not Found
+    Frontend --> User : Afficher "Réservation introuvable"
+end
+
+API -> API : Vérifier que booking.user_id == JWT user_id
+
+alt Utilisateur non propriétaire
+    API --> Frontend : 403 Forbidden
+    Frontend --> User : Afficher "Accès refusé"
+end
+
+API -> DB : DELETE FROM bookings WHERE id = ?
+DB --> API : Réservation supprimée
+API -> Mongo : Enregistrer l'action\n{ action: CANCEL_BOOKING,\nperformedBy, bookingId, timestamp }
+Mongo --> API : Log enregistré
+API --> Frontend : 200 OK
+Frontend --> User : Afficher la confirmation d'annulation
+
+@enduml

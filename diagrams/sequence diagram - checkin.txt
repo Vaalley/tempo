@@ -1,0 +1,64 @@
+@startuml
+
+title Diagramme de séquence — Check-in / Suivi de présence (Tempo)
+
+actor "Collaborateur" as User
+participant "Frontend" as Frontend
+participant "API" as API
+database "PostgreSQL" as DB
+database "MongoDB\n(Audit)" as Mongo
+
+== Consultation des réservations ==
+
+User -> Frontend : Accéder à "Mes réservations"
+Frontend -> API : GET /api/bookings/my
+API -> API : Vérifier le JWT
+API -> DB : Récupérer les réservations de l'utilisateur
+DB --> API : Liste des réservations
+API --> Frontend : 200 OK
+Frontend --> User : Afficher les réservations actives
+
+== Check-in ==
+
+User -> Frontend : Sélectionner une réservation\net confirmer la présence
+Frontend -> API : POST /api/bookings/:id/checkin
+
+API -> API : Vérifier le JWT
+
+alt JWT invalide
+    API --> Frontend : 401 Unauthorized
+    Frontend --> User : Afficher message d'erreur
+end
+
+API -> DB : Récupérer la réservation par ID
+
+alt Réservation introuvable
+    DB --> API : null
+    API --> Frontend : 404 Not Found
+    Frontend --> User : Afficher "Réservation introuvable"
+end
+
+API -> API : Vérifier que user_id correspond au JWT
+
+alt Non autorisé
+    API --> Frontend : 403 Forbidden
+    Frontend --> User : Afficher "Accès refusé"
+end
+
+API -> API : Vérifier que le créneau est actif\n(startAt <= now <= endAt)
+
+alt Hors créneau
+    API --> Frontend : 400 Bad Request
+    Frontend --> User : Afficher "Check-in indisponible"
+end
+
+API -> DB : UPDATE bookings SET status = 'CHECKED_IN',\ncheckedInAt = now()
+DB --> API : Réservation mise à jour
+
+API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN,\nbookingId, userId, timestamp }
+Mongo --> API : Log enregistré
+
+API --> Frontend : 200 OK
+Frontend --> User : Afficher "Présence confirmée"
+
+@enduml

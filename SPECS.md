@@ -86,6 +86,8 @@ tempo/
 - **Bookings (`bookings`)**
     - `id`: UUID (PK)
     - `user_id`, `workspace_id`, `start_at`, `end_at`
+    - `status`: Enum ('CONFIRMED', 'CHECKED_IN', 'CANCELLED', 'NO_SHOW')
+    - `checked_in_at`: Timestamp (nullable)
 
 ### 4.2 Base Documentaire (MongoDB)
 
@@ -104,16 +106,41 @@ tempo/
 
 ## 5. Fonctionnalités & Communication (User Stories)
 
-### Backend (Hono)
+### 5.1 Fonctionnalités Principales
 
+| Feature | Acteur | Description | Fichiers Diagrammes |
+|---------|--------|-------------|---------------------|
+| **Authentification** | Collaborateur, Admin | Inscription, connexion JWT, déconnexion | `use case diagram.txt` |
+| **Réservation d'espace** | Collaborateur | Consulter, filtrer, créer une réservation avec vérification de disponibilité | `activity diagram - reservation.txt`, `sequence diagram - reservation.txt` |
+| **Gestion des espaces** | Administrateur | CRUD espaces + notification automatique aux utilisateurs lors de suppression | `activity diagram - gestion espaces admin.txt`, `sequence diagram - gestion espaces admin.txt` |
+| **Check-in / Présence** | Collaborateur | Confirmer sa présence sur place, suivi temps réel de l'occupation | `activity diagram - checkin.txt`, `sequence diagram - checkin.txt` |
+
+### 5.2 Règles Métier Clés
+
+**Réservation :**
+- Vérification des chevauchements de créneaux avant création
+- Un espace ne peut être réservé que s'il est disponible
+
+**Check-in :**
+- Uniquement pendant le créneau de réservation (`start_at <= now <= end_at`)
+- Changement de statut : `CONFIRMED` → `CHECKED_IN`
+- Historisation de l'heure de check-in
+
+**Suppression d'espace :**
+- L'administrateur peut supprimer un espace
+- **Notification automatique** : les utilisateurs ayant des réservations futures sur cet espace sont notifiés
+- Les réservations futures sont annulées (`status: CANCELLED`)
+
+### 5.3 Architecture Technique
+
+**Backend (Hono)**
 - **API RPC :** Le backend exporte un type TypeScript `AppType`. Le frontend l'importe pour avoir l'autocomplétion des routes et des retours.
 - **Architecture 3-Tiers :**
     1.  **Route (Controller) :** Validation HTTP et appel de service.
     2.  **Service :** Logique métier pure (Hashing, Règles business).
     3.  **DB (Repository) :** Appels Drizzle/Mongo.
 
-### Frontend (Svelte 5)
-
+**Frontend (Svelte 5)**
 - **Runes :** Utilisation de `$state`, `$derived`, `$effect` pour la réactivité.
 - **Client Hono :** `const client = hc<AppType>(url)` pour des appels API sûrs.
 

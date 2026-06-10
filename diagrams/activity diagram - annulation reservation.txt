@@ -1,0 +1,47 @@
+@startuml
+
+title Diagramme d'activité — Annulation d'une réservation (Tempo)
+
+|Collaborateur|
+start
+
+:Consulter ses réservations;
+:Sélectionner une réservation à annuler;
+:Confirmer l'annulation;
+
+|Système|
+
+:Vérifier l'authentification (JWT);
+
+if (Authentifié ?) then (non)
+    :Retourner 401 Unauthorized;
+    stop
+else (oui)
+endif
+
+:Rechercher la réservation par ID;
+
+if (Réservation trouvée ?) then (non)
+    :Retourner 404 Not Found;
+    stop
+else (oui)
+endif
+
+:Vérifier que la réservation\nappartient à l'utilisateur;
+
+if (Propriétaire ?) then (non)
+    :Retourner 403 Forbidden;
+    stop
+else (oui)
+endif
+
+:Supprimer la réservation (PostgreSQL);
+:Enregistrer l'action dans le journal d'audit\n(MongoDB : CANCEL_BOOKING);
+
+|Collaborateur|
+
+:Afficher la confirmation d'annulation;
+
+stop
+
+@enduml
