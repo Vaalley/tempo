@@ -92,16 +92,13 @@ Réalisé avec [Looping](https://www.looping-mcd.fr/) (fichier source : `diagram
 
 ![MCD](../../diagrams/merise/MCD.png)
 
-**Entités** : USER, WORKSPACE, BOOKING, BOOKING_INVITATION (entité associative résolvant la relation n,n entre USER et BOOKING, porteuse des attributs email, status, created_at).
-
-
 ### 4.2. MLD (MERISE)
 
-Passage MCD → MLD via looping ([fichier complet](../../diagrams/merise/MLD.txt)) 
+![MLD](../../diagrams/merise/MLD.png)
 
 ### 4.3. MPD (MERISE)
 
-Implémentation **PostgreSQL** ([script complet](../../diagrams/merise/MPD.txt)) : types `UUID` / `ENUM` / `TIMESTAMP WITH TIME ZONE`
+![MPD](../../diagrams/merise/MPD.png)
 
 ### 4.4. Diagramme de classes (UML)
 
@@ -153,59 +150,77 @@ CREATE TABLE "bookings" (
 Pour aligner le schéma physique avec le MPD complet (sections 4.1-4.3), les migrations suivantes seraient nécessaires :
 
 ```sql
--- Ajout des champs manquants sur workspaces
-ALTER TABLE "workspaces" ADD COLUMN "max_quota" integer;
-ALTER TABLE "workspaces" ADD COLUMN "qr_code" text;
-ALTER TABLE "workspaces" ADD COLUMN "admin_id" uuid REFERENCES "users"("id");
-ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_qr_code_unique" UNIQUE("qr_code");
+-- Tables de référence
+CREATE TABLE "roles" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "name" varchar(50) NOT NULL UNIQUE
+);
 
--- Ajout des champs métier sur bookings
-ALTER TABLE "bookings" ADD COLUMN "status" text DEFAULT 'CONFIRMED';
+CREATE TABLE "companies" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "name" varchar(50) NOT NULL,
+    "day_start_hour" time NOT NULL,
+    "day_end_hour" time NOT NULL
+);
+
+CREATE TABLE "types" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "name" varchar(50) NOT NULL UNIQUE
+);
+
+-- Enrichissement de users (profil + rattachements)
+ALTER TABLE "users" ADD COLUMN "first_name" varchar(50);
+ALTER TABLE "users" ADD COLUMN "last_name" varchar(50);
+ALTER TABLE "users" ADD COLUMN "civility" varchar(50);
+ALTER TABLE "users" ADD COLUMN "last_login" timestamp;
+ALTER TABLE "users" ADD COLUMN "company_id" integer REFERENCES "companies"("id");
+ALTER TABLE "users" ADD COLUMN "role_id" integer REFERENCES "roles"("id");
+
+-- Enrichissement de workspaces (localisation + rattachements)
+ALTER TABLE "workspaces" ADD COLUMN "max_quota" integer;
+ALTER TABLE "workspaces" ADD COLUMN "location" varchar(50);
+ALTER TABLE "workspaces" ADD COLUMN "accurate_location" varchar(50);
+ALTER TABLE "workspaces" ADD COLUMN "company_id" integer REFERENCES "companies"("id");
+ALTER TABLE "workspaces" ADD COLUMN "type_id" integer REFERENCES "types"("id");
+
+-- Enrichissement de bookings (cycle de vie)
+ALTER TABLE "bookings" ADD COLUMN "status" varchar(50) DEFAULT 'CONFIRMED';
 ALTER TABLE "bookings" ADD COLUMN "is_public" boolean DEFAULT false;
 ALTER TABLE "bookings" ADD COLUMN "checked_in_at" timestamp;
 ALTER TABLE "bookings" ADD COLUMN "cancelled_at" timestamp;
 ALTER TABLE "bookings" ADD COLUMN "max_attendees" integer;
 ALTER TABLE "bookings" ADD CONSTRAINT "valid_dates" CHECK ("end_at" > "start_at");
 
--- Création de la table booking_invitations
-CREATE TYPE "invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED');
-
-CREATE TABLE "booking_invitations" (
-    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade,
-    "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE cascade,
-    "email" text NOT NULL,
-    "status" "invitation_status" DEFAULT 'PENDING',
+-- QR codes générés par réservation
+CREATE TABLE "qr_codes" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "name" varchar(50) NOT NULL,
     "created_at" timestamp DEFAULT now(),
-    CONSTRAINT "unique_invitation" UNIQUE("booking_id", "user_id")
+    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade
 );
 ```
 
 ### 4.7. Script de modification (exemple de migration)
 
-Exemple concret : ajout du système d'invitations (booking_invitations) dans une migration ultérieure.
+Exemple concret : ajout du système d'invitations (table issue de l'association porteuse **Inviter**) dans une migration ultérieure.
 
-**Fichier** : `apps/backend/drizzle/0001_add_invitations.sql`
+**Fichier** : `apps/backend/drizzle/0001_add_inviter.sql`
 
 ```sql
--- Création du type ENUM pour les statuts d'invitation
-CREATE TYPE "invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED');
-
--- Création de la table de liaison n,n entre bookings et users
-CREATE TABLE "booking_invitations" (
-    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade,
+-- Table de liaison n,n entre users et bookings (association porteuse Inviter)
+CREATE TABLE "inviter" (
     "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE cascade,
-    "email" text NOT NULL,
-    "status" "invitation_status" NOT NULL DEFAULT 'PENDING',
-    "created_at" timestamp with time zone NOT NULL DEFAULT now(),
-    CONSTRAINT "unique_invitation" UNIQUE("booking_id", "user_id")
+    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade,
+    "created_at" timestamp NOT NULL DEFAULT now(),
+    "status" char(2) NOT NULL,
+    "checked_in_at" timestamp,
+    "manual_override" boolean NOT NULL DEFAULT false,
+    CONSTRAINT "inviter_pk" PRIMARY KEY ("user_id", "booking_id")
 );
 
--- Index pour optimiser les recherches par réservation
-CREATE INDEX "idx_invitations_booking_id" ON "booking_invitations" ("booking_id");
-CREATE INDEX "idx_invitations_user_id" ON "booking_invitations" ("user_id");
-CREATE INDEX "idx_invitations_status" ON "booking_invitations" ("status");
+-- Index pour optimiser les recherches
+CREATE INDEX "idx_inviter_booking_id" ON "inviter" ("booking_id");
+CREATE INDEX "idx_inviter_status" ON "inviter" ("status");
 ```
 
 **Commandes** :
@@ -226,8 +241,8 @@ bunx drizzle-kit migrate
 | Backend | **Hono** | Ultra-léger, typage RPC natif (`AppType`) |
 | Frontend | **Svelte 5** | Runes (`$state`, `$derived`), sans Virtual DOM |
 | Style | **Tailwind CSS 4 + shadcn-svelte** | Utility-first, composants accessibles |
-| Base SQL | **PostgreSQL + Drizzle ORM** | Intégrité relationnelle, migrations type-safe |
-| Base NoSQL | **MongoDB** | Logs d'audit : volume variable, schéma flexible |
+| Base SQL | **PostgreSQL 18 + Drizzle ORM** | Intégrité relationnelle, migrations type-safe |
+| Base NoSQL | **MongoDB 8** | Logs d'audit : volume variable, schéma flexible |
 | Auth | **JWT (hono/jwt)** | Stateless, sécurisation de toutes les routes |
 | Qualité | **Oxlint + Oxfmt + EditorConfig** | Linter et formatter Rust ultra-rapide, tabs 4, guillemets simples |
 | Tests | **Bun Test** (backend) + **Vitest** (frontend) | Intégrés aux runtimes respectifs |

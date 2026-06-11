@@ -72,19 +72,36 @@ tempo/
 
 ### 4.1 Base Relationnelle (PostgreSQL + Drizzle)
 
+- **Roles (`roles`)**
+    - `id`: Serial (PK)
+    - `name`: Varchar (Unique — ex: 'ADMIN', 'USER')
+
+- **Companies (`companies`)**
+    - `id`: Serial (PK)
+    - `name`: Varchar
+    - `day_start_hour`, `day_end_hour`: Time (plage horaire d'ouverture)
+
+- **Types (`types`)**
+    - `id`: Serial (PK)
+    - `name`: Varchar (Unique — ex: 'DESK', 'MEETING_ROOM', 'PHONE_BOOTH')
+
 - **Users (`users`)**
     - `id`: UUID (PK)
     - `email`: Varchar (Unique)
     - `password`: Varchar (Hashed via Bun.password)
-    - `role`: Enum ('ADMIN', 'USER')
+    - `first_name`, `last_name`, `civility`: Varchar
+    - `last_login`: Timestamp (nullable)
     - `created_at`: Timestamp
+    - `company_id`: Integer (FK — entreprise de rattachement)
+    - `role_id`: Integer (FK — rôle de l'utilisateur)
 
 - **Workspaces (`workspaces`)**
     - `id`: Serial (PK)
-    - `name`, `capacity`, `type`
+    - `name`, `capacity`
     - `max_quota`: Integer (quota maximum de personnes pour les réservations)
-    - `qr_code`: String (identifiant unique pour le check-in)
-    - `admin_id`: UUID (FK — administrateur gestionnaire de l'espace)
+    - `location`, `accurate_location`: Varchar (localisation de l'espace)
+    - `company_id`: Integer (FK — entreprise propriétaire)
+    - `type_id`: Integer (FK — type d'espace)
 
 - **Bookings (`bookings`)**
     - `id`: UUID (PK)
@@ -95,13 +112,19 @@ tempo/
     - `cancelled_at`: Timestamp (nullable)
     - `max_attendees`: Integer (nombre max de participants pour les réservations collectives)
 
-- **Booking Invitations (`booking_invitations`)**
-    - `id`: UUID (PK)
-    - `booking_id`: UUID (FK)
-    - `user_id`: UUID (FK — collaborateur invité)
-    - `email`: String (email de l'invité)
+- **Inviter (`inviter`)** — table de liaison n,n issue de l'association porteuse du MCD
+    - `user_id`: UUID (PK, FK — collaborateur invité)
+    - `booking_id`: UUID (PK, FK)
     - `status`: Enum ('PENDING', 'ACCEPTED', 'DECLINED')
     - `created_at`: Timestamp
+    - `checked_in_at`: Timestamp (nullable — présence de l'invité)
+    - `manual_override`: Boolean (check-in forcé manuellement)
+
+- **QR Codes (`qr_codes`)**
+    - `id`: Serial (PK)
+    - `name`: Varchar (contenu/identifiant du QR code)
+    - `created_at`: Timestamp
+    - `booking_id`: UUID (FK — réservation associée)
 
 ### 4.2 Base Documentaire (MongoDB)
 
@@ -140,8 +163,8 @@ tempo/
 - **Quota** : Chaque espace a un quota maximum de personnes défini par l'administrateur
 
 **Check-in :**
-- **Scan QR Code** : Le collaborateur scanne un QR code physique présent dans la salle
-- Vérification que le QR code correspond bien à l'espace réservé
+- **Scan QR Code** : Un QR code est généré pour chaque réservation ; le collaborateur le scanne pour confirmer sa présence
+- Vérification que le QR code correspond bien à la réservation
 - Uniquement pendant le créneau de réservation (`start_at <= now <= end_at`)
 - Changement de statut : `CONFIRMED` → `CHECKED_IN`
 - Historisation de l'heure de check-in

@@ -1,7 +1,0 @@
-MLD (Modèle Logique des Données) - Projet Tempo
-=================================================
-
-USER_ = (id INT, email VARCHAR(50), password VARCHAR(50), role VARCHAR(50), created_at DATETIME);
-WORKSPACE = (id INT, name VARCHAR(50), type VARCHAR(50), capacity INT, max_quota INT, qr_code VARCHAR(50), #id_1);
-BOOKING = (id INT, start_at DATETIME, end_at DATETIME, status VARCHAR(50), is_public LOGICAL, checked_in_at DATETIME, cancelled_at DATETIME, max_attendees INT, #id_1, #id_2);
-BOOKING_INVITATION = (id INT, email VARCHAR(50), status VARCHAR(50), created_at DATETIME, #id_1, #id_2);

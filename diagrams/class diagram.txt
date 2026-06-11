@@ -6,48 +6,47 @@ skinparam classAttributeIconSize 0
 
 package "Domain Model (Data Persistence)" {
 
-    enum Role {
-        ADMIN
-        USER
+    class "Role (PostgreSQL)" as Role {
+        + id: Serial <<PK>>
+        + name: Varchar(50)
     }
 
-    enum WorkspaceType {
-        MEETING_ROOM
-        DESK
-        PHONE_BOOTH
+    class "Company (PostgreSQL)" as Company {
+        + id: Serial <<PK>>
+        + name: Varchar(50)
+        + dayStartHour: Time
+        + dayEndHour: Time
     }
 
-    enum BookingStatus {
-        CONFIRMED
-        CHECKED_IN
-        CANCELLED
-        NO_SHOW
-    }
-
-    enum InvitationStatus {
-        PENDING
-        ACCEPTED
-        DECLINED
+    class "Type (PostgreSQL)" as Type {
+        + id: Serial <<PK>>
+        + name: Varchar(50)
     }
 
     class "User (PostgreSQL)" as User {
         + id: UUID <<PK>>
         + email: Varchar(255)
         + password: Varchar
-        + role: Role
+        + firstName: Varchar(50)
+        + lastName: Varchar(50)
+        + civility: Varchar(50)
+        + lastLogin: Timestamp
         + createdAt: Timestamp
+        + companyId: Integer <<FK>>
+        + roleId: Integer <<FK>>
         --
         + verifyPassword(input: string): boolean
     }
 
     class "Workspace (PostgreSQL)" as Workspace {
         + id: Serial <<PK>>
-        + adminId: UUID <<FK>>
-        + name: Varchar
-        + type: WorkspaceType
+        + name: Varchar(50)
         + capacity: Integer
         + maxQuota: Integer
-        + qrCode: Varchar
+        + location: Varchar(50)
+        + accurateLocation: Varchar(50)
+        + companyId: Integer <<FK>>
+        + typeId: Integer <<FK>>
     }
 
     class "Booking (PostgreSQL)" as Booking {
@@ -56,7 +55,7 @@ package "Domain Model (Data Persistence)" {
         + workspaceId: Integer <<FK>>
         + startAt: Timestamp
         + endAt: Timestamp
-        + status: BookingStatus
+        + status: Varchar(50)
         + isPublic: Boolean
         + checkedInAt: Timestamp
         + cancelledAt: Timestamp
@@ -65,13 +64,20 @@ package "Domain Model (Data Persistence)" {
         + duration(): Integer
     }
 
-    class "BookingInvitation (PostgreSQL)" as BookingInvitation {
-        + id: UUID <<PK>>
-        + bookingId: UUID <<FK>>
-        + userId: UUID <<FK>>
-        + email: Varchar(255)
-        + status: InvitationStatus
+    class "Inviter (PostgreSQL)" as Inviter {
+        + userId: UUID <<PK, FK>>
+        + bookingId: UUID <<PK, FK>>
         + createdAt: Timestamp
+        + status: Char(2)
+        + checkedInAt: Timestamp
+        + manualOverride: Boolean
+    }
+
+    class "QrCode (PostgreSQL)" as QrCode {
+        + id: Serial <<PK>>
+        + name: Varchar(50)
+        + createdAt: Timestamp
+        + bookingId: UUID <<FK>>
     }
 
     class "AuditLog (MongoDB)" as AuditLog {
@@ -94,7 +100,7 @@ package "Business Logic (Services)" {
     class BookingService {
         + create(userId, workspaceId, dates): Promise<Booking>
         + checkAvailability(workspaceId, dates): Boolean
-        + invite(bookingId, email): Promise<BookingInvitation>
+        + invite(bookingId, userId): Promise<Inviter>
         + checkIn(bookingId, qrCode): Promise<Booking>
         + cancel(bookingId): void
     }
@@ -107,16 +113,21 @@ package "Business Logic (Services)" {
 }
 
 ' Relations entre les entités
+Role "1" *-- "0..*" User : "characterizes" >
+Company "1" *-- "0..*" User : "employs" >
+Company "1" *-- "0..*" Workspace : "owns" >
+Type "1" *-- "0..*" Workspace : "defines" >
 User "1" *-- "0..*" Booking : "creates" >
 Workspace "1" *-- "0..*" Booking : "is reserved in" >
-User "1" *-- "0..*" Workspace : "manages (admin)" >
-Booking "1" *-- "0..*" BookingInvitation : "has" >
-User "1" *-- "0..*" BookingInvitation : "receives" >
+User "1" *-- "0..*" Inviter : "is invited via" >
+Booking "1" *-- "0..*" Inviter : "has invitations" >
+Booking "1" *-- "0..*" QrCode : "generates" >
 
 ' Relations logiques
 UserService ..> User : "manages"
 BookingService ..> Booking : "manages"
-BookingService ..> BookingInvitation : "manages"
+BookingService ..> Inviter : "manages"
+BookingService ..> QrCode : "verifies"
 WorkspaceService ..> Workspace : "manages"
 BookingService ..> AuditLog : "logs actions to"
 
