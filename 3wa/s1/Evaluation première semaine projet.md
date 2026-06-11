@@ -93,24 +93,32 @@ L'administrateur crée, modifie ou supprime des espaces. La suppression annule a
 
 ### 4.1. MCD (MERISE)
 
-> _À compléter_
+Réalisé avec [Looping](https://www.looping-mcd.fr/) (fichier source : `diagrams/merise/Looping1.loo`).
+
+![MCD](../../diagrams/merise/MCD.png)
+
+**Entités** : USER, WORKSPACE, BOOKING, BOOKING_INVITATION (entité associative résolvant la relation n,n entre USER et BOOKING, porteuse des attributs email, status, created_at).
+
 
 ### 4.2. MLD (MERISE)
 
-> _À compléter_
+Passage MCD → MLD ([fichier complet](../../diagrams/merise/MLD.txt)) : chaque entité devient une table, les associations (1,1) génèrent une clé étrangère côté "1".
+
+```
+users               = (id, email, password, role, created_at)
+workspaces          = (id, name, type, capacity, max_quota, qr_code, #admin_id)
+bookings            = (id, start_at, end_at, status, is_public, checked_in_at,
+                       cancelled_at, max_attendees, #user_id, #workspace_id)
+booking_invitations = (id, email, status, created_at, #booking_id, #user_id)
+```
 
 ### 4.3. MPD (MERISE)
 
-> _À compléter_
+Implémentation **PostgreSQL 16** ([script complet](../../diagrams/merise/MPD.txt)) : types `UUID` / `ENUM` / `TIMESTAMP WITH TIME ZONE`, contraintes `CHECK` (dates valides, capacités positives), clés étrangères avec `ON DELETE CASCADE`, index sur les colonnes de recherche fréquente (créneaux, statuts, FK).
 
 ### 4.4. Diagramme de classes (UML)
 
 ![Diagramme de classes](../../diagrams/class%20diagram.png)
-
-- **User** : id (UUID), email, password, role (ADMIN|USER), created_at
-- **Workspace** : id, name, type, capacity, max_quota, qr_code
-- **Booking** : id, user_id (FK), workspace_id (FK), start_at, end_at, status (CONFIRMED|CHECKED_IN|CANCELLED|NO_SHOW), is_public, checked_in_at, cancelled_at, max_attendees
-- **BookingInvitation** : id, booking_id (FK), email, status (PENDING|ACCEPTED|DECLINED), created_at
 
 ### 4.5. Script de création de la base de données
 

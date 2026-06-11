@@ -84,6 +84,7 @@ tempo/
     - `name`, `capacity`, `type`
     - `max_quota`: Integer (quota maximum de personnes pour les réservations)
     - `qr_code`: String (identifiant unique pour le check-in)
+    - `admin_id`: UUID (FK — administrateur gestionnaire de l'espace)
 
 - **Bookings (`bookings`)**
     - `id`: UUID (PK)
@@ -97,6 +98,7 @@ tempo/
 - **Booking Invitations (`booking_invitations`)**
     - `id`: UUID (PK)
     - `booking_id`: UUID (FK)
+    - `user_id`: UUID (FK — collaborateur invité)
     - `email`: String (email de l'invité)
     - `status`: Enum ('PENDING', 'ACCEPTED', 'DECLINED')
     - `created_at`: Timestamp

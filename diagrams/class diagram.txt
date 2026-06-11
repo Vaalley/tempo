@@ -19,8 +19,15 @@ package "Domain Model (Data Persistence)" {
 
     enum BookingStatus {
         CONFIRMED
+        CHECKED_IN
         CANCELLED
+        NO_SHOW
+    }
+
+    enum InvitationStatus {
         PENDING
+        ACCEPTED
+        DECLINED
     }
 
     class "User (PostgreSQL)" as User {
@@ -35,11 +42,12 @@ package "Domain Model (Data Persistence)" {
 
     class "Workspace (PostgreSQL)" as Workspace {
         + id: Serial <<PK>>
+        + adminId: UUID <<FK>>
         + name: Varchar
         + type: WorkspaceType
         + capacity: Integer
-        + amenities: JSONB
-        + isAvailable: Boolean
+        + maxQuota: Integer
+        + qrCode: Varchar
     }
 
     class "Booking (PostgreSQL)" as Booking {
@@ -49,8 +57,21 @@ package "Domain Model (Data Persistence)" {
         + startAt: Timestamp
         + endAt: Timestamp
         + status: BookingStatus
+        + isPublic: Boolean
+        + checkedInAt: Timestamp
+        + cancelledAt: Timestamp
+        + maxAttendees: Integer
         --
         + duration(): Integer
+    }
+
+    class "BookingInvitation (PostgreSQL)" as BookingInvitation {
+        + id: UUID <<PK>>
+        + bookingId: UUID <<FK>>
+        + userId: UUID <<FK>>
+        + email: Varchar(255)
+        + status: InvitationStatus
+        + createdAt: Timestamp
     }
 
     class "AuditLog (MongoDB)" as AuditLog {
@@ -73,17 +94,30 @@ package "Business Logic (Services)" {
     class BookingService {
         + create(userId, workspaceId, dates): Promise<Booking>
         + checkAvailability(workspaceId, dates): Boolean
+        + invite(bookingId, email): Promise<BookingInvitation>
+        + checkIn(bookingId, qrCode): Promise<Booking>
         + cancel(bookingId): void
+    }
+
+    class WorkspaceService {
+        + create(dto: CreateWorkspaceDto): Promise<Workspace>
+        + update(id, dto): Promise<Workspace>
+        + delete(id): void
     }
 }
 
 ' Relations entre les entités
-User "1" *-- "0..*" Booking : "makes" >
+User "1" *-- "0..*" Booking : "creates" >
 Workspace "1" *-- "0..*" Booking : "is reserved in" >
+User "1" *-- "0..*" Workspace : "manages (admin)" >
+Booking "1" *-- "0..*" BookingInvitation : "has" >
+User "1" *-- "0..*" BookingInvitation : "receives" >
 
 ' Relations logiques
 UserService ..> User : "manages"
 BookingService ..> Booking : "manages"
+BookingService ..> BookingInvitation : "manages"
+WorkspaceService ..> Workspace : "manages"
 BookingService ..> AuditLog : "logs actions to"
 
 note right of AuditLog
