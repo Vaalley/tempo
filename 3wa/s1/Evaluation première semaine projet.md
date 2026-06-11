@@ -52,11 +52,6 @@ Pas de contenu médiatique ni de DRM. Une suppression de compte devra être pré
 
 ![Diagramme de cas d'utilisation](../../diagrams/use%20case%20diagram.png)
 
-Relations notables :
-- `Créer une réservation` **<<include>>** `Vérifier disponibilité` et `Détecter chevauchements`
-- `Consulter les espaces` **<<extend>>** `Filtrer par type`
-- Admin hérite des droits User (`Admin --|> User`)
-
 ### 3.2. Fonctionnalités détaillées
 
 #### 3.2.1. Réservation d'un espace
@@ -102,19 +97,11 @@ Réalisé avec [Looping](https://www.looping-mcd.fr/) (fichier source : `diagram
 
 ### 4.2. MLD (MERISE)
 
-Passage MCD → MLD ([fichier complet](../../diagrams/merise/MLD.txt)) : chaque entité devient une table, les associations (1,1) génèrent une clé étrangère côté "1".
-
-```
-users               = (id, email, password, role, created_at)
-workspaces          = (id, name, type, capacity, max_quota, qr_code, #admin_id)
-bookings            = (id, start_at, end_at, status, is_public, checked_in_at,
-                       cancelled_at, max_attendees, #user_id, #workspace_id)
-booking_invitations = (id, email, status, created_at, #booking_id, #user_id)
-```
+Passage MCD → MLD via looping ([fichier complet](../../diagrams/merise/MLD.txt)) 
 
 ### 4.3. MPD (MERISE)
 
-Implémentation **PostgreSQL 16** ([script complet](../../diagrams/merise/MPD.txt)) : types `UUID` / `ENUM` / `TIMESTAMP WITH TIME ZONE`, contraintes `CHECK` (dates valides, capacités positives), clés étrangères avec `ON DELETE CASCADE`, index sur les colonnes de recherche fréquente (créneaux, statuts, FK).
+Implémentation **PostgreSQL** ([script complet](../../diagrams/merise/MPD.txt)) : types `UUID` / `ENUM` / `TIMESTAMP WITH TIME ZONE`
 
 ### 4.4. Diagramme de classes (UML)
 
@@ -122,20 +109,113 @@ Implémentation **PostgreSQL 16** ([script complet](../../diagrams/merise/MPD.tx
 
 ### 4.5. Script de création de la base de données
 
-> _À compléter — généré via `bunx drizzle-kit generate && bunx drizzle-kit migrate`_
+Généré par **Drizzle Kit** (`bunx drizzle-kit generate`) à partir du schéma TypeScript :
 
-### 4.6. Script de création
+```sql
+-- Enumérations
+CREATE TYPE "public"."role" AS ENUM('ADMIN', 'USER');
+CREATE TYPE "public"."workspace_type" AS ENUM('DESK', 'MEETING_ROOM');
 
-> _À compléter_
+-- Table users
+CREATE TABLE "users" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "email" text NOT NULL,
+    "password" text NOT NULL,
+    "role" "role" DEFAULT 'USER',
+    "created_at" timestamp DEFAULT now(),
+    CONSTRAINT "users_email_unique" UNIQUE("email")
+);
 
-**Argumentation** : Drizzle ORM génère des migrations TypeScript-first versionnées. UUIDs pour les entités métier (anti-énumération).
+-- Table workspaces
+CREATE TABLE "workspaces" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "name" text NOT NULL,
+    "type" "workspace_type" NOT NULL,
+    "capacity" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp DEFAULT now()
+);
 
-### 4.7. Script de modification
+-- Table bookings
+CREATE TABLE "bookings" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE cascade,
+    "workspace_id" integer NOT NULL REFERENCES "workspaces"("id") ON DELETE cascade,
+    "start_at" timestamp NOT NULL,
+    "end_at" timestamp NOT NULL,
+    "created_at" timestamp DEFAULT now()
+);
+```
 
-> _À compléter_
+**Argumentation** : Drizzle ORM génère des migrations TypeScript-first versionnées dans `apps/backend/drizzle/`. Les UUIDs pour `users` et `bookings` empêchent l'énumération d'IDs. Les clés étrangères utilisent `ON DELETE CASCADE` pour maintenir l'intégrité référentielle.
 
-**Argumentation** : Chaque modification de schéma génère un nouveau fichier SQL dans `apps/backend/drizzle/`, permettant un rollback contrôlé.
+### 4.6. Script de création (complément MPD)
 
+Pour aligner le schéma physique avec le MPD complet (sections 4.1-4.3), les migrations suivantes seraient nécessaires :
+
+```sql
+-- Ajout des champs manquants sur workspaces
+ALTER TABLE "workspaces" ADD COLUMN "max_quota" integer;
+ALTER TABLE "workspaces" ADD COLUMN "qr_code" text;
+ALTER TABLE "workspaces" ADD COLUMN "admin_id" uuid REFERENCES "users"("id");
+ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_qr_code_unique" UNIQUE("qr_code");
+
+-- Ajout des champs métier sur bookings
+ALTER TABLE "bookings" ADD COLUMN "status" text DEFAULT 'CONFIRMED';
+ALTER TABLE "bookings" ADD COLUMN "is_public" boolean DEFAULT false;
+ALTER TABLE "bookings" ADD COLUMN "checked_in_at" timestamp;
+ALTER TABLE "bookings" ADD COLUMN "cancelled_at" timestamp;
+ALTER TABLE "bookings" ADD COLUMN "max_attendees" integer;
+ALTER TABLE "bookings" ADD CONSTRAINT "valid_dates" CHECK ("end_at" > "start_at");
+
+-- Création de la table booking_invitations
+CREATE TYPE "invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED');
+
+CREATE TABLE "booking_invitations" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade,
+    "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE cascade,
+    "email" text NOT NULL,
+    "status" "invitation_status" DEFAULT 'PENDING',
+    "created_at" timestamp DEFAULT now(),
+    CONSTRAINT "unique_invitation" UNIQUE("booking_id", "user_id")
+);
+```
+
+### 4.7. Script de modification (exemple de migration)
+
+Exemple concret : ajout du système d'invitations (booking_invitations) dans une migration ultérieure.
+
+**Fichier** : `apps/backend/drizzle/0001_add_invitations.sql`
+
+```sql
+-- Création du type ENUM pour les statuts d'invitation
+CREATE TYPE "invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED');
+
+-- Création de la table de liaison n,n entre bookings et users
+CREATE TABLE "booking_invitations" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "booking_id" uuid NOT NULL REFERENCES "bookings"("id") ON DELETE cascade,
+    "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE cascade,
+    "email" text NOT NULL,
+    "status" "invitation_status" NOT NULL DEFAULT 'PENDING',
+    "created_at" timestamp with time zone NOT NULL DEFAULT now(),
+    CONSTRAINT "unique_invitation" UNIQUE("booking_id", "user_id")
+);
+
+-- Index pour optimiser les recherches par réservation
+CREATE INDEX "idx_invitations_booking_id" ON "booking_invitations" ("booking_id");
+CREATE INDEX "idx_invitations_user_id" ON "booking_invitations" ("user_id");
+CREATE INDEX "idx_invitations_status" ON "booking_invitations" ("status");
+```
+
+**Commandes** :
+```bash
+# Générer la migration depuis schema.ts
+bunx drizzle-kit generate
+
+# Appliquer les migrations en base
+bunx drizzle-kit migrate
+```
 ---
 
 ## 5. Environnement technique
@@ -146,10 +226,10 @@ Implémentation **PostgreSQL 16** ([script complet](../../diagrams/merise/MPD.tx
 | Backend | **Hono** | Ultra-léger, typage RPC natif (`AppType`) |
 | Frontend | **Svelte 5** | Runes (`$state`, `$derived`), sans Virtual DOM |
 | Style | **Tailwind CSS 4 + shadcn-svelte** | Utility-first, composants accessibles |
-| Base SQL | **PostgreSQL 16 + Drizzle ORM** | Intégrité relationnelle, migrations type-safe |
-| Base NoSQL | **MongoDB 7** | Logs d'audit : volume variable, schéma flexible |
+| Base SQL | **PostgreSQL + Drizzle ORM** | Intégrité relationnelle, migrations type-safe |
+| Base NoSQL | **MongoDB** | Logs d'audit : volume variable, schéma flexible |
 | Auth | **JWT (hono/jwt)** | Stateless, sécurisation de toutes les routes |
-| Qualité | **Oxlint + EditorConfig** | Linter Rust ultra-rapide, tabs 4, guillemets simples |
+| Qualité | **Oxlint + Oxfmt + EditorConfig** | Linter et formatter Rust ultra-rapide, tabs 4, guillemets simples |
 | Tests | **Bun Test** (backend) + **Vitest** (frontend) | Intégrés aux runtimes respectifs |
 | CI/CD | **GitHub Actions** | Lint + test + build à chaque push |
 | Conteneurs | **Docker + Docker Compose** | Multi-stage builds, reproductibilité locale et prod |
