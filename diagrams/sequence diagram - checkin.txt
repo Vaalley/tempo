@@ -18,7 +18,7 @@ activate API
 
 API -> API : Vérifier le JWT
 
-API -> DB : Récupérer les réservations\nde l'utilisateur
+API -> DB : Récupérer les réservations de l'utilisateur
 activate DB
 DB --> API : Liste des réservations
 deactivate DB
@@ -31,13 +31,13 @@ deactivate Frontend
 
 == Check-in via QR Code ==
 
-User -> Frontend : Scanner le QR code\ndans la salle
+User -> Frontend : Scanner le QR code dans la salle
 activate Frontend
 
 Frontend -> API : POST /api/bookings/checkin\n{ qrCodeData }
 activate API
 
-API -> API : Décoder le QR code\n(extract workspaceId)
+API -> API : Décoder le QR code (extract workspaceId)
 
 API -> API : Vérifier le JWT
 
@@ -46,26 +46,28 @@ alt JWT invalide
     deactivate API
     Frontend --> User : Afficher "Authentification requise"
     deactivate Frontend
+else Authentification OK
 end
 
-API -> DB : SELECT b.* FROM bookings b\nLEFT JOIN booking_participants bp\n  ON bp.booking_id = b.id\nWHERE b.workspace_id = ?\nAND (b.user_id = ? OR (bp.user_id = ? AND bp.status = 'ACCEPTED'))\nAND b.status = 'CONFIRMED'\nAND b.start_at <= now()\nAND b.end_at >= now()
+API -> DB : SELECT b.* FROM bookings b\nLEFT JOIN booking_participants bp ON bp.booking_id = b.id\nWHERE b.workspace_id = ?\nAND (b.user_id = ? OR (bp.user_id = ? AND bp.status = 'ACCEPTED'))\nAND b.status = 'CONFIRMED'\nAND b.start_at <= now()\nAND b.end_at >= now()
 activate DB
 DB --> API : Réservation ou null
 deactivate DB
 
-alt Aucune réservation active sur cet espace\nou utilisateur non autorisé (ni créateur ni participant)
-    API --> Frontend : 404 Not Found\n{ error: "Aucune réservation active\nou accès non autorisé" }
+alt Aucune réservation active ou accès non autorisé
+    API --> Frontend : 404 Not Found\n{ error: "Aucune réservation active ou accès non autorisé" }
     deactivate API
-    Frontend --> User : Afficher "Check-in impossible\n(aucune réservation ou accès refusé)"
+    Frontend --> User : Afficher "Check-in impossible (aucune réservation ou accès refusé)"
     deactivate Frontend
+else Reservation trouvee
 end
 
-API -> DB : UPDATE bookings\nSET status = 'CHECKED_IN',\nchecked_in_at = now()\nWHERE id = ?
+API -> DB : UPDATE bookings SET status = 'CHECKED_IN', checked_in_at = now() WHERE id = ?
 activate DB
 DB --> API : Réservation mise à jour
 deactivate DB
 
-API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN,\nbookingId, userId, workspaceId,\ntimestamp }
+API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN, bookingId, userId, workspaceId, timestamp }
 activate Mongo
 Mongo --> API : Log enregistré
 deactivate Mongo

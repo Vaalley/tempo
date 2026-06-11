@@ -28,7 +28,7 @@ deactivate Frontend
 
 == Annulation d'une reservation ==
 
-User -> Frontend : Selectionner une reservation et confirmer l'annulation
+User -> Frontend : Selectionner une reservation
 activate Frontend
 
 Frontend -> API : DELETE /api/bookings/:id
@@ -41,6 +41,7 @@ alt JWT invalide
     deactivate API
     Frontend --> User : Afficher "Authentification requise"
     deactivate Frontend
+else Authentification OK
 end
 
 API -> DB : SELECT * FROM bookings WHERE id = ? AND user_id = ?
@@ -53,6 +54,7 @@ alt Reservation introuvable
     deactivate API
     Frontend --> User : Afficher "Reservation introuvable"
     deactivate Frontend
+else Reservation trouvee
 end
 
 API -> API : Verifier delai d'annulation (start_at - now() > 24h)
@@ -62,6 +64,7 @@ alt Delai insuffisant (< 24h avant debut)
     deactivate API
     Frontend --> User : Afficher "Annulation impossible (delai trop court)"
     deactivate Frontend
+else Delai OK
 end
 
 API -> DB : UPDATE bookings SET status = 'CANCELLED', cancelled_at = now() WHERE id = ?

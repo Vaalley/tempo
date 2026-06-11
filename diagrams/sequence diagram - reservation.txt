@@ -1,6 +1,6 @@
 @startuml
 
-title Diagramme de séquence — Réservation d'un espace (Tempo)
+title Diagramme de sequence — Réservation d'un espace (Tempo)
 
 actor "Collaborateur" as User
 participant "Frontend" as Frontend
@@ -28,10 +28,10 @@ deactivate Frontend
 
 == Création de la réservation ==
 
-User -> Frontend : Sélectionner un espace,\nchoisir un créneau,\ndéfinir public/privé,\nsaisir emails invités (optionnel)\net confirmer
+User -> Frontend : Sélectionner un espace, choisir créneau, définir public/privé, saisir invités
 activate Frontend
 
-Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt,\nisPublic, invitedEmails[] }
+Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt, isPublic, invitedEmails[] }
 activate API
 
 API -> API : Vérifier le JWT
@@ -41,6 +41,7 @@ alt JWT invalide
     deactivate API
     Frontend --> User : Afficher message d'erreur
     deactivate Frontend
+else Authentification OK
 end
 
 API -> DB : Vérifier que l'espace existe
@@ -53,6 +54,7 @@ alt Espace introuvable
     deactivate API
     Frontend --> User : Afficher "Espace introuvable"
     deactivate Frontend
+else Espace trouve
 end
 
 API -> DB : Vérifier les chevauchements de réservations
@@ -65,9 +67,10 @@ alt Créneau déjà réservé
     deactivate API
     Frontend --> User : Afficher "Créneau non disponible"
     deactivate Frontend
+else Creneau disponible
 end
 
-API -> DB : Insérer la réservation\n(status: CONFIRMED,\nis_public, owner_id)
+API -> DB : Insérer la réservation (status: CONFIRMED, is_public, owner_id)
 activate DB
 DB --> API : Réservation créée avec ID
 deactivate DB
@@ -84,8 +87,7 @@ end
 API --> Frontend : 201 Created\n{ reservation, invitationsCount }
 deactivate API
 
-Frontend --> User : Afficher la confirmation\net les invitations envoyées
-
+Frontend --> User : Afficher la confirmation et les invitations envoyées
 deactivate Frontend
 
 == Réception des réponses (asynchrone) ==
@@ -97,16 +99,30 @@ deactivate Frontend
 
 alt Invité accepte
     User -> Frontend : Accepter l'invitation
+    activate Frontend
     Frontend -> API : POST /api/invitations/:id/accept
-    API -> DB : UPDATE booking_invitations\nSET status = 'ACCEPTED'
+    activate API
+    API -> DB : UPDATE booking_invitations SET status = 'ACCEPTED'
+    activate DB
+    DB --> API : OK
+    deactivate DB
     API --> Frontend : 200 OK
+    deactivate API
     Frontend --> User : Afficher "Invitation acceptée"
+    deactivate Frontend
 else Invité décline
     User -> Frontend : Décliner l'invitation
+    activate Frontend
     Frontend -> API : POST /api/invitations/:id/decline
-    API -> DB : UPDATE booking_invitations\nSET status = 'DECLINED'
+    activate API
+    API -> DB : UPDATE booking_invitations SET status = 'DECLINED'
+    activate DB
+    DB --> API : OK
+    deactivate DB
     API --> Frontend : 200 OK
+    deactivate API
     Frontend --> User : Afficher "Invitation déclinée"
+    deactivate Frontend
 end
 
 @enduml

@@ -10,7 +10,7 @@ database "MongoDB\n(Audit)" as Mongo
 
 == Création d'un espace ==
 
-Admin -> Frontend : Renseigner nom, type, capacité,\nquota et confirmer
+Admin -> Frontend : Renseigner nom, type, capacité, quota et confirmer
 activate Frontend
 
 Frontend -> API : POST /api/workspaces\n{ name, type, capacity, maxQuota }
@@ -24,29 +24,32 @@ alt JWT invalide ou rôle insuffisant
     Frontend --> Admin : Afficher "Accès refusé"
     deactivate Frontend
 else Authentification OK
-    API -> API : Valider les données (Zod)
-
-    alt Données invalides
-        API --> Frontend : 400 Bad Request
-        deactivate API
-        Frontend --> Admin : Afficher les erreurs de saisie
-        deactivate Frontend
-    else Données valides
-        API -> DB : INSERT INTO workspaces\n{ name, type, capacity, max_quota }
-        activate DB
-        DB --> API : Espace créé
-        deactivate DB
-
-        API --> Frontend : 201 Created
-        deactivate API
-        Frontend --> Admin : Afficher l'espace créé
-        deactivate Frontend
-    end
 end
+
+API -> API : Valider les données (Zod)
+
+alt Données invalides
+    API --> Frontend : 400 Bad Request
+    deactivate API
+    Frontend --> Admin : Afficher les erreurs de saisie
+    deactivate Frontend
+else Donnees valides
+end
+
+API -> DB : INSERT INTO workspaces\n{ name, type, capacity, max_quota }
+activate DB
+DB --> API : Espace créé
+deactivate DB
+
+API --> Frontend : 201 Created
+deactivate API
+
+Frontend --> Admin : Afficher l'espace créé
+deactivate Frontend
 
 == Suppression d'un espace ==
 
-Admin -> Frontend : Sélectionner un espace\net confirmer la suppression
+Admin -> Frontend : Sélectionner un espace et confirmer la suppression
 activate Frontend
 
 Frontend -> API : DELETE /api/workspaces/:id
@@ -60,46 +63,49 @@ alt JWT invalide ou rôle insuffisant
     Frontend --> Admin : Afficher "Accès refusé"
     deactivate Frontend
 else Authentification OK
-    API -> DB : SELECT * FROM workspaces WHERE id = ?
-    activate DB
-    DB --> API : Espace trouvé ou null
-    deactivate DB
-
-    alt Espace introuvable
-        API --> Frontend : 404 Not Found
-        deactivate API
-        Frontend --> Admin : Afficher "Espace introuvable"
-        deactivate Frontend
-    else Espace trouvé
-        API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
-        activate DB
-        DB --> API : Liste des réservations futures
-        deactivate DB
-
-        alt Réservations futures existantes
-            API --> Frontend : 200 OK\n{ warning: "X utilisateurs notifiés" }
-        end
-
-        API -> DB : DELETE FROM workspaces WHERE id = ?
-        activate DB
-        DB --> API : Espace supprimé
-        deactivate DB
-
-        API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
-        activate DB
-        DB --> API : Réservations annulées
-        deactivate DB
-
-        API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE,\nperformedBy, affectedBookings: [...], timestamp }
-        activate Mongo
-        Mongo --> API : Log enregistré
-        deactivate Mongo
-
-        API --> Frontend : 200 OK
-        deactivate API
-        Frontend --> Admin : Afficher confirmation
-        deactivate Frontend
-    end
 end
+
+API -> DB : SELECT * FROM workspaces WHERE id = ?
+activate DB
+DB --> API : Espace trouvé ou null
+deactivate DB
+
+alt Espace introuvable
+    API --> Frontend : 404 Not Found
+    deactivate API
+    Frontend --> Admin : Afficher "Espace introuvable"
+    deactivate Frontend
+else Espace trouve
+end
+
+API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
+activate DB
+DB --> API : Liste des réservations futures
+deactivate DB
+
+alt Réservations futures existantes
+    API -> API : Notifier les utilisateurs concernés
+end
+
+API -> DB : DELETE FROM workspaces WHERE id = ?
+activate DB
+DB --> API : Espace supprimé
+deactivate DB
+
+API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
+activate DB
+DB --> API : Réservations annulées
+deactivate DB
+
+API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE, performedBy, affectedBookings: [...], timestamp }
+activate Mongo
+Mongo --> API : Log enregistré
+deactivate Mongo
+
+API --> Frontend : 200 OK\n{ warning: "X utilisateurs notifiés" }
+deactivate API
+
+Frontend --> Admin : Afficher confirmation
+deactivate Frontend
 
 @enduml

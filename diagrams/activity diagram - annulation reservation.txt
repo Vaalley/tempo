@@ -6,7 +6,11 @@ title Diagramme d'activite - Annulation d'une reservation (Tempo)
 start
 :Acceder a "Mes reservations";
 :Selectionner une reservation;
-:Confirmer l'annulation;
+if (Confirmer l'annulation ?) then (oui)
+else (non)
+    :Annuler l'operation;
+    stop
+endif
 
 |Systeme|
 :Verifier l'authentification (JWT);
