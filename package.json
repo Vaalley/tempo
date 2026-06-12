@@ -16,7 +16,9 @@
 		"diagrams:png": "bun run scripts/export-diagrams.ts"
 	},
 	"devDependencies": {
+		"marked": "^18.0.5",
 		"oxfmt": "^0.21.0",
-		"oxlint": "^1.68.0"
+		"oxlint": "^1.68.0",
+		"puppeteer": "^25.1.0"
 	}
 }

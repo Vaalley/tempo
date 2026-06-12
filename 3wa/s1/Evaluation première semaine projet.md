@@ -2,8 +2,8 @@
 
 ## 1. Introduction
 
-- **Besoins** : Gérer les espaces flex-office (bureaux, salles, cabines) et permettre aux collaborateurs de les réserver.
-- **Cible** : Entreprises pratiquant le flex-office (télétravail partiel, coworking, campus).
+- **Besoins** : Gérer les espaces office (bureaux, salles, cabines) et permettre aux collaborateurs de les réserver.
+- **Cible** : Entreprises necessitant une solution de gestion de bureaux.
 - **Contraintes** : Disponibilité dégradée préférable à une indisponibilité totale. Authentification JWT obligatoire. Annulation 24h minimum avant le début. Détection des chevauchements de créneaux.
 
 ---
@@ -22,7 +22,7 @@ L'Administrateur hérite de tous les droits du Collaborateur.
 
 ### 2.2. Informations relatives aux contenus
 
-- **Données utilisateurs** : email, mot de passe hashé, rôle — soumises au RGPD
+- **Données utilisateurs** : email, mot de passe hashé, rôle, nom, prenom et civilite — soumises au RGPD
 - **Données espaces** : nom, type, capacité, quota max, QR code
 - **Données réservations** : créneaux, statut, participants, historique
 - **Logs d'audit** : actions sensibles horodatées (MongoDB), non exposées publiquement
