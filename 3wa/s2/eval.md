@@ -25,9 +25,9 @@ Les phases de gestion de projet suivies sont : cadrage (rédaction du cahier des
 
 Outils utilisés pour le suivi :
 
-- **Trello** (tableau Kanban) pour le suivi des tâches ; ![trello board](/3wa/trello.png)
-- **Git / GitHub** pour le versioning et l'historique des commits ; ![github ci](/3wa/github-commits.png)
-- **GitHub Actions** pour l'intégration continue (lint, tests, build Docker) ; ![github ci](/3wa/github-ci.png)
+- **Trello** (tableau Kanban) pour le suivi des tâches ; ![trello board](../trello.png)
+- **Git / GitHub** pour le versioning et l'historique des commits ; ![github ci](../github-commits.png)
+- **GitHub Actions** pour l'intégration continue (lint, tests, build Docker) ; ![github ci](../github-ci.png)
 
     1.4. Objectifs de qualité
 
@@ -42,6 +42,8 @@ Les objectifs de qualité fixés pour le projet sont :
 2. Maquettes et enchainement des maquettes
 
 2.1. Cartographie
+
+![file-structure](../file-structure.png)
 
 Cartographie des écrans de l'application (routing SvelteKit) :
 
