@@ -1,6 +1,3 @@
-  
-  
-
 ![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)
 
 Certification professionnelle
@@ -9,21 +6,11 @@ Titre professionnel: **Concepteur développeur d'applications**
 
 RNCP**:** **37873**
 
-  
-
-  
-
-  
-
 DOSSIER PROJET
-
-  
 
 PROJET :
 
 **Tempo**
-
-  
 
 Rédacteur :
 
@@ -31,20 +18,7 @@ Valentin Musset
 
 Date : _7 Octobre 2026_
 
-  
-
-  
-
-  
-  
-
-  
-  
-
 **SOMMAIRE**
-
-  
-  
 
 [**1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET 5**](#_heading=h.q0csxcn7m3b6)
 
@@ -250,28 +224,11 @@ Date : _7 Octobre 2026_
 
 [**11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ 20**](#_heading=h.r2ma1mm4epee)
 
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET
-================================================================
+# 1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET
 
 Exprimer à la première du singulier vos compétences mises en œuvre dans votre projet. Adapter la description des activités à votre projet et à vos activités
 
-1.1 Développer une application sécurisée
-----------------------------------------
+## 1.1 Développer une application sécurisée
 
 ### 1.1.1. Installer et configurer son environnement de travail en fonction du projet
 
@@ -285,14 +242,10 @@ J'ai installé et configuré mon environnement de travail à partir des besoins 
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les outils de développement nécessaires sont installés
-    
-*   Les outils de gestion des versions et de collaboration sont installés
-    
-*   Les conteneurs implémentent les services requis
-    
-*   La documentation technique de l’environnement de travail est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
-    
+- Les outils de développement nécessaires sont installés
+- Les outils de gestion des versions et de collaboration sont installés
+- Les conteneurs implémentent les services requis
+- La documentation technique de l’environnement de travail est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
 
 ### 1.1.2. Développer des interfaces utilisateur
 
@@ -306,28 +259,17 @@ J'ai développé les interfaces utilisateur du frontend avec **Svelte 5** (Runes
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   L’interface est conforme au dossier de conception
-    
-*   L’interface s’adapte au type d’utilisation de l‘application et notamment à la taille, au type et à la disposition du support
-    
-*   La charte graphique est respectée
-    
-*   La réglementation en vigueur est respectée
-    
-*   Le code est documenté
-    
-*   Les tests unitaires ont été réalisés pour les composants concernés
-    
-*   Le jeu d’essai fonctionnel est complet
-    
-*   Les tests de sécurité sont réalisés
-    
-*   La documentation technique des interfaces utilisateur est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
-    
-*   La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-    
-*   Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les interfaces utilisateur
-    
+- L’interface est conforme au dossier de conception
+- L’interface s’adapte au type d’utilisation de l‘application et notamment à la taille, au type et à la disposition du support
+- La charte graphique est respectée
+- La réglementation en vigueur est respectée
+- Le code est documenté
+- Les tests unitaires ont été réalisés pour les composants concernés
+- Le jeu d’essai fonctionnel est complet
+- Les tests de sécurité sont réalisés
+- La documentation technique des interfaces utilisateur est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
+- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
+- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les interfaces utilisateur
 
 ### 1.1.3. Développer des composants métier
 
@@ -343,24 +285,15 @@ J'ai développé les composants métier du backend en TypeScript, organisés en 
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les bonnes pratiques de la programmation orientée objet (POO) sont respectées
-    
-*   Les composants métier sont sécurisés
-    
-*   Les règles de nommage sont conformes aux normes de qualité de l’entreprise
-    
-*   Le code source est documenté
-    
-*   Les traitements répondent aux fonctionnalités décrites dans le dossier de conception
-    
-*   Les tests unitaires sont réalisés
-    
-*   Les tests de sécurité sont réalisés
-    
-*   La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-    
-*   Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les composants métier d’une application
-    
+- Les bonnes pratiques de la programmation orientée objet (POO) sont respectées
+- Les composants métier sont sécurisés
+- Les règles de nommage sont conformes aux normes de qualité de l’entreprise
+- Le code source est documenté
+- Les traitements répondent aux fonctionnalités décrites dans le dossier de conception
+- Les tests unitaires sont réalisés
+- Les tests de sécurité sont réalisés
+- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
+- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les composants métier d’une application
 
 ### 1.1.4. Contribuer à la gestion d’un projet informatique
 
@@ -374,21 +307,14 @@ Ayant mené ce projet seul, j'ai assuré moi-même la gestion de projet : planif
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les tâches de conception et de développement sont planifiées en fonction du délai défini
-    
-*   Le suivi des tâches est mis en rapprochement avec la planification, les éventuels retards sont identifiés et les acteurs concernés sont alertés
-    
-*   Les procédures qualité sont mises en œuvre
-    
-*   L’environnement de développement défini est en adéquation avec l’architecture du projet
-    
-*   Les outils collaboratifs sont choisis en fonction de la méthode de développement
-    
-*   Les comptes rendus de réunion sont structurés, rédigés dans un style adapté, dans le respect des règles orthographiques et grammaticales, et contiennent les informations nécessaires
-    
+- Les tâches de conception et de développement sont planifiées en fonction du délai défini
+- Le suivi des tâches est mis en rapprochement avec la planification, les éventuels retards sont identifiés et les acteurs concernés sont alertés
+- Les procédures qualité sont mises en œuvre
+- L’environnement de développement défini est en adéquation avec l’architecture du projet
+- Les outils collaboratifs sont choisis en fonction de la méthode de développement
+- Les comptes rendus de réunion sont structurés, rédigés dans un style adapté, dans le respect des règles orthographiques et grammaticales, et contiennent les informations nécessaires
 
-1.2. Concevoir et développer une application sécurisée organisée en couches
----------------------------------------------------------------------------
+## 1.2. Concevoir et développer une application sécurisée organisée en couches
 
 ### 1.2.1. Analyser les besoins et maquetter une application
 
@@ -404,14 +330,10 @@ J'ai rédigé le cahier des charges technique du projet (`SPECS.md`), en identif
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les besoins recensés couvrent l’ensemble des exigences utilisateur exprimées dans le cahier des charges
-    
-*   Les maquettes sont réalisées conformément au cahier des charges en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
-    
-*   L’enchaînement des maquettes est formalisé par un schéma
-    
-*   Le dossier de conception est structuré, en conformité avec la démarche de conception
-    
+- Les besoins recensés couvrent l’ensemble des exigences utilisateur exprimées dans le cahier des charges
+- Les maquettes sont réalisées conformément au cahier des charges en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
+- L’enchaînement des maquettes est formalisé par un schéma
+- Le dossier de conception est structuré, en conformité avec la démarche de conception
 
 ### 1.2.2. Définir l’architecture logicielle d’une application
 
@@ -425,12 +347,9 @@ J'ai conçu une architecture 3-tiers (présentation / métier / persistance) ré
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   L’architecture logicielle est conforme aux bonnes pratiques d’une architecture multicouche répartie sécurisée
-    
-*   Le rôle de chaque couche est bien défini en tenant compte de la stratégie de sécurité
-    
-*   Les besoins d’éco-conception de l’application sont identifiés
-    
+- L’architecture logicielle est conforme aux bonnes pratiques d’une architecture multicouche répartie sécurisée
+- Le rôle de chaque couche est bien défini en tenant compte de la stratégie de sécurité
+- Les besoins d’éco-conception de l’application sont identifiés
 
 ### 1.2.3. Concevoir et mettre en place une base de données relationnelle
 
@@ -444,18 +363,12 @@ _Ma contribution sur le projet Tempo_
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Le schéma conceptuel respecte les règles du relationnel
-    
-*   Le schéma physique est conforme aux besoins exprimés dans le cahier des charges
-    
-*   Les règles de nommage ont été respectées
-    
-*   L’intégrité, la sécurité et la confidentialité des données est assurée
-    
-*   La base de données de test est créée avec un jeu d’essai complet et peut être restaurée en cas d’incident
-    
-*   La documentation technique des bases de données est comprise, en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
-    
+- Le schéma conceptuel respecte les règles du relationnel
+- Le schéma physique est conforme aux besoins exprimés dans le cahier des charges
+- Les règles de nommage ont été respectées
+- L’intégrité, la sécurité et la confidentialité des données est assurée
+- La base de données de test est créée avec un jeu d’essai complet et peut être restaurée en cas d’incident
+- La documentation technique des bases de données est comprise, en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
 
 ### 1.2.4. Développer des composants d’accès aux données SQL et NoSQL
 
@@ -471,25 +384,16 @@ J'ai développé les composants d'accès aux données SQL avec **Drizzle ORM** (
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les traitements relatifs aux manipulations des données répondent aux fonctionnalités décrites dans le dossier de conception
-    
-*   Les cas d’exception sont pris en compte
-    
-*   L’intégrité et la confidentialité des données sont maintenues
-    
-*   Les conflits d’accès aux données sont gérés
-    
-*   Toutes les entrées sont contrôlées et validées dans les composants serveurs sécurisés
-    
-*   Les tests unitaires et de sécurité sont associés à chaque composant
-    
-*   La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-    
-*   Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées aux bases de données SQL et NoSQL
-    
+- Les traitements relatifs aux manipulations des données répondent aux fonctionnalités décrites dans le dossier de conception
+- Les cas d’exception sont pris en compte
+- L’intégrité et la confidentialité des données sont maintenues
+- Les conflits d’accès aux données sont gérés
+- Toutes les entrées sont contrôlées et validées dans les composants serveurs sécurisés
+- Les tests unitaires et de sécurité sont associés à chaque composant
+- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
+- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées aux bases de données SQL et NoSQL
 
-1.3. Préparer le déploiement d’une application sécurisée
---------------------------------------------------------
+## 1.3. Préparer le déploiement d’une application sécurisée
 
 ### 1.3.1. Préparer et exécuter les plans de tests d’une application
 
@@ -505,16 +409,11 @@ J'ai préparé un plan de tests couvrant les règles métier critiques du projet
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Le plan de tests couvre l’ensemble des fonctionnalités retenues pour l’application
-    
-*   Un environnement de tests est créé
-    
-*   L’intégralité des tests exécutés sont conformes au plan de tests défini
-    
-*   Les résultats obtenus sont cohérents avec les résultats attendus
-    
-*   Le plan de tests tient compte des évolutions technologiques et des problèmes de sécurité liés aux tests logiciels
-    
+- Le plan de tests couvre l’ensemble des fonctionnalités retenues pour l’application
+- Un environnement de tests est créé
+- L’intégralité des tests exécutés sont conformes au plan de tests défini
+- Les résultats obtenus sont cohérents avec les résultats attendus
+- Le plan de tests tient compte des évolutions technologiques et des problèmes de sécurité liés aux tests logiciels
 
 ### 1.3.2. Préparer et documenter le déploiement d’une application
 
@@ -528,14 +427,10 @@ J'ai écrit et documenté les scripts de déploiement de l'application : deux `D
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   La procédure de déploiement est rédigée
-    
-*   Les scripts de déploiement sont écrits et documentés
-    
-*   Les environnements de tests sont définis et la procédure d’exécution des tests d’intégration, système et d’acceptation client est rédigée
-    
-*   Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées au déploiement d’une application
-    
+- La procédure de déploiement est rédigée
+- Les scripts de déploiement sont écrits et documentés
+- Les environnements de tests sont définis et la procédure d’exécution des tests d’intégration, système et d’acceptation client est rédigée
+- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées au déploiement d’une application
 
 ### 1.3.3. Contribuer à la mise en production dans une démarche DevOps
 
@@ -553,78 +448,60 @@ Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et 
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
-*   Les outils de qualité de code sont utilisés
-    
-*   Les outils d’automatisation de tests sont utilisés
-    
-*   Les scripts d’intégration continue s’exécutent sans erreur
-    
-*   Le serveur d’automatisation est paramétré pour les livrables et les tests
-    
-*   Les rapports de l’Intégration Continue sont interprétés
-    
-*   La documentation technique des différents outils est comprise, en langue française ou anglaise (niveau B1du CECRL pour l’anglais)
-    
-*   La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-    
-*   Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées à la démarche DevOps
-    
+- Les outils de qualité de code sont utilisés
+- Les outils d’automatisation de tests sont utilisés
+- Les scripts d’intégration continue s’exécutent sans erreur
+- Le serveur d’automatisation est paramétré pour les livrables et les tests
+- Les rapports de l’Intégration Continue sont interprétés
+- La documentation technique des différents outils est comprise, en langue française ou anglaise (niveau B1du CECRL pour l’anglais)
+- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
+- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées à la démarche DevOps
 
-  
-  
-
-2\. CAHIER DES CHARGES
-======================
+# 2\. CAHIER DES CHARGES
 
 S’exprimer au présent et d’une façon totalement impersonnelle. Éviter les termes techniques dans le CDC.
 
-2.1. Description de l’existant
-------------------------------
+## 2.1. Description de l’existant
 
 Tempo est un projet réalisé en dehors de tout contexte professionnel (projet personnel de certification, sans lien avec la structure qui accueille mon alternance). Il n’existe donc pas d’application antérieure à reprendre : il s’agit d’une création complète (« greenfield »).
 
 Le constat de départ est le suivant : de nombreuses entreprises ont adopté le flex-office (postes de travail non attitrés) sans toujours disposer d’un outil simple pour réserver un bureau ou une salle et pour permettre aux équipes de piloter le taux d’occupation des locaux. Les solutions actuelles (tableur partagé, plan papier, outils de réservation de salles génériques) ne couvrent ni la gestion des chevauchements de créneaux, ni le suivi de présence, ni la vision d’ensemble pour un administrateur. Tempo répond à ce besoin avec une application web dédiée.
 
-2.2. Reprise de l’existant
---------------------------
+## 2.2. Reprise de l’existant
 
 Aucune version précédente n’existe. Aucun élément (nom de domaine, hébergement, documentation) n’est donc à reprendre. Le patrimoine documentaire du projet (cahier des charges `SPECS.md`, diagrammes MERISE/UML, README) a été rédigé intégralement dans le cadre de ce projet.
 
-2.3. Principes de référencement
--------------------------------
+## 2.3. Principes de référencement
 
 Tempo est une application métier interne (SaaS B2B) destinée à être utilisée par les collaborateurs et administrateurs d’une entreprise après authentification. Elle n’a donc pas vocation à être référencée sur les moteurs de recherche publics : aucune stratégie SEO n’est requise pour les pages applicatives situées derrière l’authentification.
 
-2.4. Exigences de performances et de volumétrie
------------------------------------------------
+## 2.4. Exigences de performances et de volumétrie
 
 Le projet vise une PME type de 50 à 300 collaborateurs répartis sur un ou plusieurs sites en flex-office. Ordres de grandeur retenus pour dimensionner l’architecture :
 
-*   Nombre d’utilisateurs actifs simultanés : quelques dizaines (usage concentré aux heures d’arrivée/de départ de bureau) ;
-*   Nombre de réservations créées par jour : quelques centaines pour une entreprise de cette taille ;
-*   Disponibilité attendue : disponibilité aux heures ouvrées (l’indisponibilité en dehors de ces plages a un impact limité) ;
-*   Temps de réponse attendu : inférieur à 300 ms sur les endpoints de consultation/réservation.
+- Nombre d’utilisateurs actifs simultanés : quelques dizaines (usage concentré aux heures d’arrivée/de départ de bureau) ;
+- Nombre de réservations créées par jour : quelques centaines pour une entreprise de cette taille ;
+- Disponibilité attendue : disponibilité aux heures ouvrées (l’indisponibilité en dehors de ces plages a un impact limité) ;
+- Temps de réponse attendu : inférieur à 300 ms sur les endpoints de consultation/réservation.
 
 Ce niveau de volumétrie reste modéré, ce qui justifie une architecture monolithique modulaire (backend Hono + PostgreSQL) plutôt qu’une architecture micro-services, tout en gardant une séparation claire par couches et par modules pour permettre une montée en charge ultérieure.
 
-2.5. Multilinguisme & adaptations pour un public spécifique
------------------------------------------------------------
+## 2.5. Multilinguisme & adaptations pour un public spécifique
 
 L’application est développée uniquement en français dans sa version actuelle. Aucune traduction n’est prévue à ce stade du projet.
 
 Aucune adaptation spécifique n’a été mise en place à ce jour ; l’accessibilité (RGAA — sémantique HTML, labels ARIA) est identifiée comme un axe d’amélioration pour une évolution future de l’application.
 
-2.6. Description graphique et ergonomique
------------------------------------------
+## 2.6. Description graphique et ergonomique
 
 ### 2.6.1. Composants de la charte graphique
 
 Identité visuelle :
 
-*   Logo : logotype simple « Tempo », sans identité graphique poussée (le projet n’a pas de charte graphique de marque, il s’agit d’une application interne) ;
-*   Police et taille de caractères : police système par défaut (sans-serif) via Tailwind CSS, tailles harmonisées par les composants shadcn-svelte ;
-*   Palette de couleurs : palette neutre (« zinc/slate ») générée via variables CSS OKLCH (`--primary`, `--secondary`, `--accent`, `--destructive`, …), avec un thème clair et un thème sombre (`.dark`) ;
-*   Déclinaison de l’identité visuelle : cohérence assurée par la librairie de composants shadcn-svelte (boutons, cartes, tableaux, badges, alertes) réutilisés sur l’ensemble des écrans (connexion, réservations, administration des espaces).
+- Logo : logotype simple « Tempo », sans identité graphique poussée (le projet n’a pas de charte graphique de marque, il s’agit d’une application interne) ;
+- Police et taille de caractères : police système par défaut (sans-serif) via Tailwind CSS, tailles harmonisées par les composants shadcn-svelte ;
+- Palette de couleurs : palette neutre (« zinc/slate ») générée via variables CSS OKLCH (`--primary`, `--secondary`, `--accent`, `--destructive`, …), avec un thème clair et un thème sombre (`.dark`) ;
+- Déclinaison de l’identité visuelle : cohérence assurée par la librairie de composants shadcn-svelte (boutons, cartes, tableaux, badges, alertes) réutilisés sur l’ensemble des écrans (connexion, réservations, administration des espaces).
 
 ### 2.6.2. Design, Responsive design et autres exigences liées au design
 
@@ -632,15 +509,14 @@ L’application est conçue en responsive design grâce à Tailwind CSS (approch
 
 Aucune exigence de design particulière (flat design, parallaxe, …) n’a été formulée : le parti pris est un design sobre et fonctionnel, cohérent avec les standards des outils métier (shadcn-svelte).
 
-2.7. Besoins fonctionnels « métier »
-------------------------------------
+## 2.7. Besoins fonctionnels « métier »
 
 ### 2.7.1. Utilisateurs du projet
 
 Deux profils d’utilisateurs sont identifiés (voir diagramme de cas d’utilisation `use case diagram.png`) :
 
-*   **Collaborateur (`USER`)** : s’inscrit, se connecte, consulte les espaces disponibles, crée/consulte/annule ses réservations, confirme sa présence (check-in) ;
-*   **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, et gère en plus les espaces de travail (création, modification, suppression), consulte l’ensemble des réservations et les logs d’audit.
+- **Collaborateur (`USER`)** : s’inscrit, se connecte, consulte les espaces disponibles, crée/consulte/annule ses réservations, confirme sa présence (check-in) ;
+- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, et gère en plus les espaces de travail (création, modification, suppression), consulte l’ensemble des réservations et les logs d’audit.
 
 Le processus métier impacté est la **gestion des ressources immobilières / facilities management** (occupation des locaux), en lien avec les fonctions RH et Office Management de l’entreprise.
 
@@ -648,140 +524,127 @@ Le processus métier impacté est la **gestion des ressources immobilières / fa
 
 L’application ne diffuse pas de contenu éditorial (articles, images, vidéos). Les données manipulées sont exclusivement des données métier :
 
-*   Données d’identité et de compte (email, mot de passe haché, rôle) ;
-*   Données de réservation (espace réservé, créneau horaire, statut) ;
-*   Données d’audit (traçabilité des actions sensibles : suppression d’un espace, d’une réservation, d’un utilisateur).
+- Données d’identité et de compte (email, mot de passe haché, rôle) ;
+- Données de réservation (espace réservé, créneau horaire, statut) ;
+- Données d’audit (traçabilité des actions sensibles : suppression d’un espace, d’une réservation, d’un utilisateur).
 
 Ces données étant à caractère personnel (compte utilisateur, historique de présence), le projet applique une logique de protection des données dès la conception (mot de passe haché avec `Bun.password`, validation stricte des entrées via Zod, journalisation des actions de suppression dans MongoDB à des fins de traçabilité RGPD).
 
 ### 2.7.3. Inventaire des besoins fonctionnels
 
-| Thème | Qui | Quoi | Pourquoi |
-| --- | --- | --- | --- |
-| Authentification | Collaborateur | S'inscrire | Créer un compte pour accéder à l'application |
-| Authentification | Collaborateur | Se connecter | Accéder à l'application de manière sécurisée |
-| Authentification | Collaborateur | Se déconnecter | Quitter l'application en sécurité |
-| Espaces | Collaborateur | Consulter les espaces disponibles | Trouver un bureau ou une salle libre |
-| Espaces | Collaborateur | Filtrer les espaces par type/capacité | Trouver rapidement l'espace adapté au besoin |
-| Espaces | Administrateur | Créer / modifier / supprimer un espace | Tenir à jour l'inventaire des espaces disponibles |
-| Réservations | Collaborateur | Créer une réservation (publique ou privée) | Réserver un espace pour un créneau donné |
-| Réservations | Collaborateur | Consulter ses réservations | Suivre ses réservations passées et à venir |
-| Réservations | Collaborateur | Annuler sa réservation | Libérer un espace qui ne sera plus utilisé |
-| Réservations | Collaborateur | Confirmer sa présence (check-in QR code) | Valider l'occupation réelle de l'espace réservé |
-| Réservations | Système | Détecter les chevauchements de créneaux | Garantir qu'un espace n'est jamais réservé deux fois sur le même créneau |
-| Supervision | Administrateur | Consulter toutes les réservations | Piloter le taux d'occupation des locaux |
-| Supervision | Administrateur | Consulter les logs d'audit | Assurer la traçabilité des actions sensibles (RGPD) |
+| Thème            | Qui            | Quoi                                       | Pourquoi                                                                 |
+| ---------------- | -------------- | ------------------------------------------ | ------------------------------------------------------------------------ |
+| Authentification | Collaborateur  | S'inscrire                                 | Créer un compte pour accéder à l'application                             |
+| Authentification | Collaborateur  | Se connecter                               | Accéder à l'application de manière sécurisée                             |
+| Authentification | Collaborateur  | Se déconnecter                             | Quitter l'application en sécurité                                        |
+| Espaces          | Collaborateur  | Consulter les espaces disponibles          | Trouver un bureau ou une salle libre                                     |
+| Espaces          | Collaborateur  | Filtrer les espaces par type/capacité      | Trouver rapidement l'espace adapté au besoin                             |
+| Espaces          | Administrateur | Créer / modifier / supprimer un espace     | Tenir à jour l'inventaire des espaces disponibles                        |
+| Réservations     | Collaborateur  | Créer une réservation (publique ou privée) | Réserver un espace pour un créneau donné                                 |
+| Réservations     | Collaborateur  | Consulter ses réservations                 | Suivre ses réservations passées et à venir                               |
+| Réservations     | Collaborateur  | Annuler sa réservation                     | Libérer un espace qui ne sera plus utilisé                               |
+| Réservations     | Collaborateur  | Confirmer sa présence (check-in QR code)   | Valider l'occupation réelle de l'espace réservé                          |
+| Réservations     | Système        | Détecter les chevauchements de créneaux    | Garantir qu'un espace n'est jamais réservé deux fois sur le même créneau |
+| Supervision      | Administrateur | Consulter toutes les réservations          | Piloter le taux d'occupation des locaux                                  |
+| Supervision      | Administrateur | Consulter les logs d'audit                 | Assurer la traçabilité des actions sensibles (RGPD)                      |
 
 Le détail exhaustif des cas d'utilisation et de leurs relations (inclusions/extensions) est disponible dans le diagramme de cas d'utilisation (`use case diagram.png`, section 5.6).
 
 Aucun besoin non formulé de type e-commerce, boutique en ligne ou moteur de recherche n'a été identifié : Tempo est un outil métier interne, sans catalogue ni paiement. Les règles de gestion métier identifiées sont détaillées en section 5 (contrôle des chevauchements, quotas d'espaces, statuts de réservation).
 
-2.8. Budget
------------
+## 2.8. Budget
 
 S'agissant d'un projet personnel réalisé en parallèle de mon alternance, aucun budget financier n'a été alloué. L'investissement se mesure en temps de travail personnel, réparti approximativement comme suit :
 
-| Phase | Charge estimée |
-| --- | --- |
-| Cadrage & cahier des charges (`SPECS.md`) | quelques jours |
-| Conception (MERISE, UML, maquettage) | quelques jours |
+| Phase                                        | Charge estimée     |
+| -------------------------------------------- | ------------------ |
+| Cadrage & cahier des charges (`SPECS.md`)    | quelques jours     |
+| Conception (MERISE, UML, maquettage)         | quelques jours     |
 | Développement backend (API, base de données) | plusieurs semaines |
-| Développement frontend (interfaces Svelte) | plusieurs semaines |
-| Tests, CI/CD, containerisation | quelques jours |
-| Rédaction de la documentation / dossier | quelques jours |
+| Développement frontend (interfaces Svelte)   | plusieurs semaines |
+| Tests, CI/CD, containerisation               | quelques jours     |
+| Rédaction de la documentation / dossier      | quelques jours     |
 
-*(à ajuster avec mes propres estimations de temps réel passé)*
+_(à ajuster avec mes propres estimations de temps réel passé)_
 
-3\. PRESENTATION DE L’ENTREPRISE ET DU SERVICE
-==============================================
+# 3\. PRESENTATION DE L’ENTREPRISE ET DU SERVICE
 
-3.1. Présentation de l’entreprise et du service
------------------------------------------------
+## 3.1. Présentation de l’entreprise et du service
 
 Tempo n'est pas développé pour le compte d'une entreprise existante : il s'agit d'un projet personnel, mené en autonomie en dehors du cadre de mon alternance, dans l'objectif de démontrer l'ensemble des compétences du référentiel CDA sur un cas d'usage réaliste.
 
 Le projet est pensé comme un produit SaaS destiné à être commercialisé auprès de PME ayant adopté le flex-office : je me positionne à la fois comme porteur du besoin (maîtrise d'ouvrage fictive), concepteur et développeur (maîtrise d'œuvre) de l'application, ce qui m'a permis de mettre en œuvre l'ensemble de la démarche projet (cadrage, conception, développement, tests, déploiement).
 
-3.2. Objectifs du projet
-------------------------
+## 3.2. Objectifs du projet
 
 Le projet répond à un besoin métier réel et répandu : la gestion des espaces en flex-office. Les objectifs poursuivis sont :
 
-*   Permettre à un collaborateur de consulter en temps réel les espaces disponibles (bureaux, salles de réunion) et de réserver un créneau sans conflit ;
-*   Permettre à un administrateur de gérer le parc d'espaces (création, modification, suppression) et de superviser le taux d'occupation ;
-*   Fiabiliser la présence réelle grâce à un mécanisme de check-in par QR code ;
-*   Assurer la traçabilité des actions sensibles (audit) dans une logique de conformité RGPD.
+- Permettre à un collaborateur de consulter en temps réel les espaces disponibles (bureaux, salles de réunion) et de réserver un créneau sans conflit ;
+- Permettre à un administrateur de gérer le parc d'espaces (création, modification, suppression) et de superviser le taux d'occupation ;
+- Fiabiliser la présence réelle grâce à un mécanisme de check-in par QR code ;
+- Assurer la traçabilité des actions sensibles (audit) dans une logique de conformité RGPD.
 
 Il ne s'agit pas d'un site e-commerce, mais d'une application métier interne (SaaS B2B) de gestion de ressources.
 
-3.3. Cible adressée par le projet
----------------------------------
+## 3.3. Cible adressée par le projet
 
 La cible est exclusivement BtoB : des entreprises (PME à ETI, 50 à 300 collaborateurs) ayant mis en place le flex-office sur un ou plusieurs sites. Deux segments d'utilisateurs internes à ces entreprises sont adressés : les collaborateurs (utilisateurs finaux, priorité à la simplicité d'usage) et les administrateurs/office managers (priorité au pilotage et à la supervision).
 
-3.4. Processus utilisateur impacté
-----------------------------------
+## 3.4. Processus utilisateur impacté
 
 Le projet impacte principalement les fonctions **RH / Office Management** (gestion des espaces de travail et suivi de l'occupation des locaux) et, de manière indirecte, la **Gestion** (optimisation de la surface immobilière utilisée).
 
-4\. GESTION DE PROJET
-=====================
+# 4\. GESTION DE PROJET
 
 S’exprimer à la première du singulier. Vous parlez de vos compétences projet mises en œuvre dans le cadre de votre projet.
 
-4.1. Intervenants sur le projet
--------------------------------
+## 4.1. Intervenants sur le projet
 
 Le projet a été mené en solo. J'ai assuré l'ensemble des rôles :
 
-*   **Maîtrise d'ouvrage (MOA)** : expression du besoin, rédaction du cahier des charges (`SPECS.md`) ;
-*   **Maîtrise d'œuvre (MOE)** : conception (MERISE, UML, architecture logicielle) et développement (backend, frontend, base de données) ;
-*   **Recette** : rédaction et exécution des tests unitaires (Bun Test / Vitest) ;
-*   **Exploitation** : mise en place de la conteneurisation Docker et du pipeline CI/CD (GitHub Actions).
+- **Maîtrise d'ouvrage (MOA)** : expression du besoin, rédaction du cahier des charges (`SPECS.md`) ;
+- **Maîtrise d'œuvre (MOE)** : conception (MERISE, UML, architecture logicielle) et développement (backend, frontend, base de données) ;
+- **Recette** : rédaction et exécution des tests unitaires (Bun Test / Vitest) ;
+- **Exploitation** : mise en place de la conteneurisation Docker et du pipeline CI/CD (GitHub Actions).
 
 Aucun autre intervenant (webdesigner, chef de projet, client) n'est intervenu sur ce projet personnel.
 
-4.2. Méthodologie
------------------
+## 4.2. Méthodologie
 
 La méthode Agile repose sur un découpage du travail en itérations courtes, une adaptation continue au fur et à mesure de l'avancement, et une priorisation permanente de la valeur livrée plutôt qu'une planification figée en amont (par opposition au cycle en V).
 
 Dans le cadre de ce projet solo, j'ai adopté une approche inspirée de la méthode **Kanban** : un tableau de tâches (Trello) organisé en colonnes (À faire / En cours / Terminé), avec des tickets représentant des fonctionnalités ou des tâches techniques (ex : « Implémenter la détection de chevauchement de réservations », « Ajouter le middleware JWT »). Cette approche m'a permis de garder une visibilité constante sur l'avancement, de prioriser les fonctionnalités critiques (authentification, réservation) avant les fonctionnalités secondaires, et de livrer par petites itérations testées (chaque fonctionnalité étant accompagnée de ses tests unitaires avant d'être considérée comme terminée).
 
-4.3. Outils, planning et suivi
-------------------------------
+## 4.3. Outils, planning et suivi
 
 Les phases de gestion de projet suivies sont : cadrage (rédaction du cahier des charges `SPECS.md`), conception (diagrammes MERISE/UML, maquettage des écrans), développement (backend puis frontend, en parallèle des tests), intégration continue (vérification automatique à chaque `push`/`pull request`), puis rédaction de la documentation.
 
 Outils utilisés pour le suivi :
 
-*   **Trello** (tableau Kanban) pour le suivi des tâches ;
-*   **Git / GitHub** pour le versioning et l'historique des commits ;
-*   **GitHub Actions** pour l'intégration continue (lint, tests, build Docker) ;
-*   Un fichier `todo.md` à la racine du dépôt pour le suivi des tâches restantes à court terme.
+- **Trello** (tableau Kanban) pour le suivi des tâches ;
+- **Git / GitHub** pour le versioning et l'historique des commits ;
+- **GitHub Actions** pour l'intégration continue (lint, tests, build Docker) ;
+- Un fichier `todo.md` à la racine du dépôt pour le suivi des tâches restantes à court terme.
 
-*(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historique Git.)*
+_(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historique Git.)_
 
-4.4. Objectifs de qualité
--------------------------
+## 4.4. Objectifs de qualité
 
 Les objectifs de qualité fixés pour le projet sont :
 
-*   **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 47 tests unitaires backend au total ;
-*   **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
-*   **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
-*   **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
-*   **Non-régression** : intégration continue (GitHub Actions) bloquant la fusion du code si le format, le lint, les tests ou le build Docker échouent.
+- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 47 tests unitaires backend au total ;
+- **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
+- **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
+- **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
+- **Non-régression** : intégration continue (GitHub Actions) bloquant la fusion du code si le format, le lint, les tests ou le build Docker échouent.
 
-5\. SPECIFICATIONS FONCTIONNELLES
-=================================
+# 5\. SPECIFICATIONS FONCTIONNELLES
 
 S’exprimer au présent et d’une façon totalement impersonnelle. Les spécifications fonctionnelles détaillées sont rédigées par la maîtrise d’œuvre après réception et analyse du cahier des charges. C’est la traduction du cahier des charges en termes plus techniques (données en entrée, données en sortie, description des écrans de l’IHM, règles de calcul, de transformation des données, …) dont le but est de décrire de façon détaillée comment les exigences fonctionnelles vont être implémentées dans le SI, et donc permettre le développement du logiciel. Les SFD doivent être validées par la maîtrise d’ouvrage, elles constituent donc le point d’articulation entre la demande et la solution qui y répond et doivent être compréhensibles par les 2 parties.
 
 Les SFD vont préciser le découpage en traitements, pour chacun d’entre eux la description des écrans si traitement transactionnel, les données en entrée (saisies par un utilisateur ou contenues dans un fichier), leur description et format, les règles de contrôle à appliquer avant traitement, les règles de traitement, les données en sortie, etc…
 
-5.1. Contraintes du projet et livrables attendus
-------------------------------------------------
+## 5.1. Contraintes du projet et livrables attendus
 
 ### 5.1.1. Criticité de l’application
 
@@ -799,28 +662,26 @@ Aucun service tiers externe (Google Analytics, réseaux sociaux, emailing, CRM) 
 
 ### 5.1.4. Livrables attendus
 
-*   Cahier des charges technique (`SPECS.md`) ;
-*   Diagrammes de conception : MERISE (MCD/MLD/MPD), UML (cas d'utilisation, classes, séquence, activité) ;
-*   Code source (backend + frontend) versionné sur GitHub ;
-*   Scripts de création de base de données (migrations Drizzle) ;
-*   Tests unitaires (backend) ;
-*   Conteneurisation Docker (Dockerfiles + `docker-compose.yml`) ;
-*   Pipeline d'intégration continue (GitHub Actions) ;
-*   Documentation (README, présent dossier projet).
+- Cahier des charges technique (`SPECS.md`) ;
+- Diagrammes de conception : MERISE (MCD/MLD/MPD), UML (cas d'utilisation, classes, séquence, activité) ;
+- Code source (backend + frontend) versionné sur GitHub ;
+- Scripts de création de base de données (migrations Drizzle) ;
+- Tests unitaires (backend) ;
+- Conteneurisation Docker (Dockerfiles + `docker-compose.yml`) ;
+- Pipeline d'intégration continue (GitHub Actions) ;
+- Documentation (README, présent dossier projet).
 
-5.2. Architecture logicielle du projet
---------------------------------------
+## 5.2. Architecture logicielle du projet
 
 Tempo repose sur une architecture **3-tiers, en monorepo**, avec une séparation stricte entre le frontend et le backend :
 
-*   **Couche présentation (frontend)** : application Svelte 5 (Vite, SvelteKit) consommant l'API via un client RPC typé (`hc<AppType>`) ;
-*   **Couche métier/API (backend)** : API Hono organisée en modules métier (`auth`, `users`, `workspaces`, `bookings`, `audit`), chaque module suivant le découpage **Route (contrôleur) → Service (logique métier) → Accès aux données (Drizzle/Mongo)** ;
-*   **Couche persistance** : PostgreSQL (via Drizzle ORM) pour les données relationnelles (utilisateurs, espaces, réservations), et MongoDB pour les logs d'audit (données semi-structurées, volumétrie variable).
+- **Couche présentation (frontend)** : application Svelte 5 (Vite, SvelteKit) consommant l'API via un client RPC typé (`hc<AppType>`) ;
+- **Couche métier/API (backend)** : API Hono organisée en modules métier (`auth`, `users`, `workspaces`, `bookings`, `audit`), chaque module suivant le découpage **Route (contrôleur) → Service (logique métier) → Accès aux données (Drizzle/Mongo)** ;
+- **Couche persistance** : PostgreSQL (via Drizzle ORM) pour les données relationnelles (utilisateurs, espaces, réservations), et MongoDB pour les logs d'audit (données semi-structurées, volumétrie variable).
 
 Le frontend et le backend sont deux workspaces distincts au sein d'un monorepo Bun (`apps/frontend`, `apps/backend`), partageant un typage strict de bout en bout grâce à l'export du type `AppType` du backend, importé par le frontend (Hono RPC). Chaque couche est conteneurisée indépendamment (Dockerfiles multi-stage) et orchestrée via `docker-compose.yml`.
 
-5.3. Maquettes et enchainement des maquettes
---------------------------------------------
+## 5.3. Maquettes et enchainement des maquettes
 
 ### 5.3.1. Cartographie
 
@@ -839,10 +700,9 @@ Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après
 
 Aucun outil de maquettage dédié (Figma, Adobe XD, …) n'a été utilisé en amont : les écrans ont été conçus directement avec la librairie de composants shadcn-svelte, ce qui a permis d'itérer rapidement entre conception et implémentation.
 
-*(Insérer ici 3 à 4 captures d'écran des pages principales : connexion, liste des réservations, formulaire de création de réservation, administration des espaces — en version desktop et mobile.)*
+_(Insérer ici 3 à 4 captures d'écran des pages principales : connexion, liste des réservations, formulaire de création de réservation, administration des espaces — en version desktop et mobile.)_
 
-5.4. Diagramme du comportement des fonctionnalités de type cas d’utilisations
------------------------------------------------------------------------------
+## 5.4. Diagramme du comportement des fonctionnalités de type cas d’utilisations
 
 ### 5.4.1. MCD (MERISE)
 
@@ -860,10 +720,9 @@ Aucun outil de maquettage dédié (Figma, Adobe XD, …) n'a été utilisé en a
 
 ![Diagramme de classes](../diagrams/class%20diagram.png)
 
-*Note : les diagrammes MERISE et le diagramme de classes présentent le modèle de données cible du projet (incluant sociétés multi-sites, invitations à une réservation et QR codes de check-in). L'implémentation actuelle de la base de données (`apps/backend/src/db/schema.ts`) couvre le socle fonctionnel prioritaire (utilisateurs, espaces, réservations) ; les entités avancées du modèle cible constituent les prochaines itérations du projet.*
+_Note : les diagrammes MERISE et le diagramme de classes présentent le modèle de données cible du projet (incluant sociétés multi-sites, invitations à une réservation et QR codes de check-in). L'implémentation actuelle de la base de données (`apps/backend/src/db/schema.ts`) couvre le socle fonctionnel prioritaire (utilisateurs, espaces, réservations) ; les entités avancées du modèle cible constituent les prochaines itérations du projet._
 
-5.5. Script de création et/ou de modification de la base de données
--------------------------------------------------------------------
+## 5.5. Script de création et/ou de modification de la base de données
 
 ### 5.5.1. Script de création
 
@@ -907,14 +766,13 @@ Le choix d'un ORM typé (Drizzle) plutôt que du SQL brut permet de garder le sc
 
 ### 5.5.3. Script de modification
 
-*(Insérer ici un exemple de migration d'évolution, par exemple l'ajout futur du statut de réservation ou de la table `companies`, générée via `bunx drizzle-kit generate`.)*
+_(Insérer ici un exemple de migration d'évolution, par exemple l'ajout futur du statut de réservation ou de la table `companies`, générée via `bunx drizzle-kit generate`.)_
 
 ### 5.5.4. Argumentation
 
-*(Expliquer pourquoi cette évolution est nécessaire, ex : passage d'un modèle mono-entreprise à un modèle multi-entreprises, ajout du statut de réservation `CHECKED_IN`/`CANCELLED`.)*
+_(Expliquer pourquoi cette évolution est nécessaire, ex : passage d'un modèle mono-entreprise à un modèle multi-entreprises, ajout du statut de réservation `CHECKED_IN`/`CANCELLED`.)_
 
-5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
------------------------------------------------------------------------------
+## 5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
 
 ### 5.6.1. Diagramme de cas d’utilisation global (UML)
 
@@ -922,8 +780,7 @@ Le choix d'un ORM typé (Drizzle) plutôt que du SQL brut permet de garder le sc
 
 Le diagramme identifie trois acteurs : le **Collaborateur**, l'**Administrateur** (qui hérite des droits du collaborateur) et le **Système** (déclencheur automatique de l'écriture des logs d'audit). Les cas d'utilisation « Créer une réservation » incluent systématiquement la vérification de disponibilité et la détection de chevauchement, tandis que la consultation des espaces peut être étendue par un filtrage par type.
 
-5.7. Fonctionnalités détaillées les plus significatives
--------------------------------------------------------
+## 5.7. Fonctionnalités détaillées les plus significatives
 
 ### 5.7.1. Fonctionnalité 1 — Réservation d'un espace
 
@@ -941,8 +798,8 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée | Traitement | En sortie | Contrôles |
-| --- | --- | --- | --- |
+| En entrée                         | Traitement                                                                                                                   | En sortie                              | Contrôles                                                                                                      |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `workspaceId`, `startAt`, `endAt` | Vérification de l'existence de l'espace, détection de chevauchement (`checkOverlap`), création de l'enregistrement `booking` | Objet `Booking` créé (statut confirmé) | Espace existant, `startAt < endAt`, absence de chevauchement avec une réservation existante sur le même espace |
 
 _Ecran/Affichage_
@@ -965,8 +822,8 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée | Traitement | En sortie | Contrôles |
-| --- | --- | --- | --- |
+| En entrée   | Traitement                                                                                                                       | En sortie                   | Contrôles                                                        |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------- |
 | `bookingId` | Vérification que la réservation existe et appartient à l'utilisateur, suppression de l'enregistrement, écriture d'un log d'audit | Confirmation de suppression | Réservation existante, utilisateur propriétaire (HTTP 403 sinon) |
 
 _Ecran/Affichage_
@@ -989,8 +846,8 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée | Traitement | En sortie | Contrôles |
-| --- | --- | --- | --- |
+| En entrée                  | Traitement                                                                                                        | En sortie                    | Contrôles                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
 | `name`, `type`, `capacity` | Validation des données (Zod), création/modification/suppression en base, journalisation de la suppression (audit) | Espace créé/modifié/supprimé | Rôle `ADMIN` requis, capacité entière positive |
 
 _Ecran/Affichage_
@@ -1013,8 +870,8 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée | Traitement | En sortie | Contrôles |
-| --- | --- | --- | --- |
+| En entrée                              | Traitement                                                                                                | En sortie                           | Contrôles                        |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------- | -------------------------------- |
 | Contenu du QR code scanné, `bookingId` | Vérification de la correspondance QR code / réservation et du créneau horaire (`startAt <= now <= endAt`) | Statut de la réservation mis à jour | Créneau en cours, QR code valide |
 
 _Ecran/Affichage_
@@ -1033,46 +890,42 @@ Voir `use case diagram.png` (section 5.6) pour la vue d'ensemble des cas d'utili
 
 _Données/Actions_
 
-| En entrée | Traitement | En sortie | Contrôles |
-| --- | --- | --- | --- |
+| En entrée           | Traitement                                                                                                                                      | En sortie                              | Contrôles                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- |
 | `email`, `password` | Hachage du mot de passe (`Bun.password.hash`) à l'inscription, vérification (`Bun.password.verify`) et génération d'un JWT signé à la connexion | Compte créé / jeton JWT (validité 24h) | Email unique, format email valide (Zod), mot de passe correct à la connexion |
 
 _Ecran/Affichage_
 
 Formulaire unique de connexion/inscription (`/login`), redirection vers `/bookings` après authentification réussie.
 
-6\. SPECIFICATIONS TECHNIQUES
-=============================
+# 6\. SPECIFICATIONS TECHNIQUES
 
-6.1. Référencement
-------------------
+## 6.1. Référencement
 
 Sans objet : Tempo est une application interne, protégée par authentification, qui n'a pas vocation à être indexée par les moteurs de recherche (aucune balise SEO spécifique n'est nécessaire au-delà des balises `<title>` et `<meta charset>` standards générées par SvelteKit).
 
-6.2. Environnement technique
-----------------------------
+## 6.2. Environnement technique
 
-| Domaine | Technologie | Justification |
-| --- | --- | --- |
-| Runtime | Bun 1.x | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré |
-| Monorepo | Bun Workspaces | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées |
-| Backend | Hono 4.x | Framework web ultra-léger, performant, compatible Edge |
-| Validation | Zod 4.x | Validation stricte et typée des entrées (sécurité by design) |
-| Frontend | Svelte 5.x (Runes) + SvelteKit | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
-| Style | Tailwind CSS 4.x + shadcn-svelte | Développement rapide, cohérent et responsive des interfaces |
-| Base SQL | PostgreSQL 18 | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle |
-| ORM SQL | Drizzle ORM | Typesafe, léger, génération automatique de migrations SQL |
-| Base NoSQL | MongoDB 8 | Stockage souple des logs d'audit (volumétrie variable, schéma flexible) |
-| Authentification | `hono/jwt` + `Bun.password` | Jetons JWT signés HS256, hachage natif des mots de passe |
-| Qualité de code | Oxlint / Oxfmt | Linting et formatage haute performance (Rust), homogénéité du code |
-| Tests | Bun Test (backend) / Vitest (frontend) | Tests unitaires natifs, rapides, intégrés à l'écosystème Bun/Vite |
-| CI/CD | GitHub Actions | Automatisation du contrôle qualité et de la construction des images Docker |
-| Conteneurs | Docker / Docker Compose | Isolation des services, environnement reproductible identique dev/prod |
+| Domaine          | Technologie                            | Justification                                                                                 |
+| ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Runtime          | Bun 1.x                                | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
+| Monorepo         | Bun Workspaces                         | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées        |
+| Backend          | Hono 4.x                               | Framework web ultra-léger, performant, compatible Edge                                        |
+| Validation       | Zod 4.x                                | Validation stricte et typée des entrées (sécurité by design)                                  |
+| Frontend         | Svelte 5.x (Runes) + SvelteKit         | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
+| Style            | Tailwind CSS 4.x + shadcn-svelte       | Développement rapide, cohérent et responsive des interfaces                                   |
+| Base SQL         | PostgreSQL 18                          | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
+| ORM SQL          | Drizzle ORM                            | Typesafe, léger, génération automatique de migrations SQL                                     |
+| Base NoSQL       | MongoDB 8                              | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
+| Authentification | `hono/jwt` + `Bun.password`            | Jetons JWT signés HS256, hachage natif des mots de passe                                      |
+| Qualité de code  | Oxlint / Oxfmt                         | Linting et formatage haute performance (Rust), homogénéité du code                            |
+| Tests            | Bun Test (backend) / Vitest (frontend) | Tests unitaires natifs, rapides, intégrés à l'écosystème Bun/Vite                             |
+| CI/CD            | GitHub Actions                         | Automatisation du contrôle qualité et de la construction des images Docker                    |
+| Conteneurs       | Docker / Docker Compose                | Isolation des services, environnement reproductible identique dev/prod                        |
 
 Le choix de Bun et Hono répond à un objectif de performance et de modernité technique ; le choix conjoint PostgreSQL + MongoDB répond au besoin de démontrer une persistance hybride (données structurées vs. données de log) ; aucune contrainte technique n'a été imposée par un tiers, tous les choix ont été faits librement dans une logique d'apprentissage et de démonstration de compétences.
 
-6.3. Navigation et accessibilité
---------------------------------
+## 6.3. Navigation et accessibilité
 
 L'application est actuellement accessible uniquement en local, via Docker Compose (`docker compose up --build`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place (axe d'évolution identifié).
 
@@ -1080,13 +933,11 @@ Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`
 
 La conception est responsive (Tailwind CSS) et compatible avec les navigateurs modernes (Chrome, Firefox, Edge, Safari).
 
-6.4. Services tiers
--------------------
+## 6.4. Services tiers
 
 Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux sociaux, pas d'emailing, pas de CRM). Le projet reste autonome pour rester démontrable sans dépendance externe.
 
-6.5. Sécurité
--------------
+## 6.5. Sécurité
 
 **Rôles et droits :** deux rôles (`ADMIN`, `USER`) portés par un enum PostgreSQL et embarqués dans le payload du JWT ; chaque route sensible vérifie le rôle avant d'autoriser l'action (ex : suppression d'un espace réservée à `ADMIN`).
 
@@ -1100,17 +951,15 @@ Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux
 
 **Versioning :** Git/GitHub, avec intégration continue (GitHub Actions) empêchant la fusion de code non testé ou mal formaté sur la branche principale.
 
-7\. REALISATIONS
-================
+# 7\. REALISATIONS
 
 S’exprimer à la première du singulier. Vous parlez de vos réalisations mises en œuvre dans le cadre de votre projet.
 
-7.1. Détection de chevauchement de réservations (Composants Métier)
----------------------------------------------------------------------
+## 7.1. Détection de chevauchement de réservations (Composants Métier)
 
 ### 7.1.1. Affichage
 
-*(Insérer une capture d'écran du message d'erreur affiché à l'utilisateur lorsqu'un créneau est déjà réservé : « Ce créneau est déjà réservé pour cet espace ».)*
+_(Insérer une capture d'écran du message d'erreur affiché à l'utilisateur lorsqu'un créneau est déjà réservé : « Ce créneau est déjà réservé pour cet espace ».)_
 
 ### 7.1.2. Extrait(s) de code
 
@@ -1148,12 +997,11 @@ async checkOverlap(
 
 Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé systématiquement avant toute création de réservation (`bookingService.create`), garantissant qu'un espace ne peut jamais être doublement réservé sur un même créneau. La fonction est entièrement couverte par 6 tests unitaires (cas limites inclus : réservations consécutives sans chevauchement, chevauchement partiel en début/fin, inclusion totale).
 
-7.2. Middleware d'authentification et de contrôle des rôles (Composants Métier)
-----------------------------------------------------------------------------------
+## 7.2. Middleware d'authentification et de contrôle des rôles (Composants Métier)
 
 ### 7.2.1. Affichage
 
-*(Insérer une capture d'écran de la réponse HTTP 401/403 retournée par l'API lorsqu'un utilisateur non authentifié ou non autorisé tente d'accéder à une route protégée.)*
+_(Insérer une capture d'écran de la réponse HTTP 401/403 retournée par l'API lorsqu'un utilisateur non authentifié ou non autorisé tente d'accéder à une route protégée.)_
 
 ### 7.2.2. Extrait(s) de code
 
@@ -1192,12 +1040,11 @@ app.get('/', async (c) => {
 
 Le middleware `authGuard` est appliqué à l'ensemble des routes sensibles (`app.use('*', authGuard)`), ce qui centralise la vérification du jeton JWT et évite toute duplication de logique de sécurité dans les contrôleurs. Le payload décodé (`jwtPayload`) est ensuite exploité dans chaque route pour adapter le comportement au rôle de l'utilisateur (un `USER` ne voit que ses propres réservations, un `ADMIN` voit l'ensemble), démontrant une gestion fine des autorisations (RBAC) au-delà de la simple authentification.
 
-7.3. Accès aux données relationnelles avec Drizzle ORM (Composants d’accès aux données)
---------------------------------------------------------------------------------------------
+## 7.3. Accès aux données relationnelles avec Drizzle ORM (Composants d’accès aux données)
 
 ### 7.3.1. Affichage
 
-*(Insérer une capture d'écran de la liste des réservations affichées côté frontend, alimentée par cette requête.)*
+_(Insérer une capture d'écran de la liste des réservations affichées côté frontend, alimentée par cette requête.)_
 
 ### 7.3.2. Extrait(s) de code
 
@@ -1218,12 +1065,11 @@ async getByUser(userId: string): Promise<Booking[]> {
 
 Ce composant illustre l'utilisation de l'ORM Drizzle en mode « relational query » : la jointure avec la table `workspaces` (`with: { workspace: true }`) est exprimée de façon déclarative et typée, sans écrire de SQL manuel, tout en conservant les avantages du typage strict. Le tri par date décroissante (`orderBy`) répond au besoin métier d'afficher les réservations les plus récentes en premier.
 
-7.4. Accès aux données NoSQL — Logs d'audit MongoDB (Composants d’accès aux données)
-------------------------------------------------------------------------------------------
+## 7.4. Accès aux données NoSQL — Logs d'audit MongoDB (Composants d’accès aux données)
 
 ### 7.4.1. Affichage
 
-*(Insérer une capture d'écran de l'écran d'administration listant les logs d'audit — suppression d'un espace, d'une réservation.)*
+_(Insérer une capture d'écran de l'écran d'administration listant les logs d'audit — suppression d'un espace, d'une réservation.)_
 
 ### 7.4.2. Extrait(s) de code
 
@@ -1255,12 +1101,11 @@ async logDeletion(
 
 Ce composant démontre l'utilisation conjointe de deux systèmes de persistance selon la nature des données : PostgreSQL pour les données métier structurées (contraintes fortes, relations), MongoDB pour les logs d'audit dont le volume est potentiellement important et le schéma peut évoluer sans migration lourde. Chaque suppression sensible (espace, réservation, utilisateur) est tracée avec l'identité de l'auteur de l'action, répondant à une exigence de traçabilité RGPD.
 
-7.5. Client RPC typé de bout en bout (Autres)
-------------------------------------------------
+## 7.5. Client RPC typé de bout en bout (Autres)
 
 ### 7.5.1. Affichage
 
-*(Insérer une capture d'écran de l'auto-complétion TypeScript dans l'éditeur, montrant l'inférence des routes/typages côté frontend.)*
+_(Insérer une capture d'écran de l'auto-complétion TypeScript dans l'éditeur, montrant l'inférence des routes/typages côté frontend.)_
 
 ### 7.5.2. Extrait(s) de code
 
@@ -1283,94 +1128,86 @@ export function getAuthClient() {
 
 Cette approche (Hono RPC) permet au frontend Svelte d'importer directement le type `AppType` exporté par le backend, sans génération de code ni client SDK séparé. Toute évolution d'une route côté backend est immédiatement répercutée côté frontend par une erreur de compilation TypeScript, ce qui sécurise fortement l'intégration entre les deux couches de l'application dans un contexte de monorepo.
 
-8\. ELEMENTS DE SECURITE DE L’APPLICATION
-=========================================
+# 8\. ELEMENTS DE SECURITE DE L’APPLICATION
 
 Plusieurs mesures de sécurité ont été mises en place à chaque couche de l'application :
 
-*   **Authentification** : JWT signé (HS256), durée de vie limitée (24h), middleware `authGuard` appliqué systématiquement aux routes sensibles ;
-*   **Autorisation (RBAC)** : contrôle du rôle (`ADMIN`/`USER`) dans les routes, restreignant les actions d'administration (gestion des espaces, vue globale des réservations) ;
-*   **Mots de passe** : hachage via `Bun.password` (Argon2id), aucun mot de passe en clair en base ni dans les logs ;
-*   **Validation des entrées** : schémas Zod appliqués à chaque route (`@hono/zod-validator`), limitant les risques d'injection ou de données malformées ;
-*   **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
-*   **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
-*   **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage et tests unitaires avant toute fusion de code ;
-*   **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via variables d'environnement, jamais commités dans le dépôt Git.
+- **Authentification** : JWT signé (HS256), durée de vie limitée (24h), middleware `authGuard` appliqué systématiquement aux routes sensibles ;
+- **Autorisation (RBAC)** : contrôle du rôle (`ADMIN`/`USER`) dans les routes, restreignant les actions d'administration (gestion des espaces, vue globale des réservations) ;
+- **Mots de passe** : hachage via `Bun.password` (Argon2id), aucun mot de passe en clair en base ni dans les logs ;
+- **Validation des entrées** : schémas Zod appliqués à chaque route (`@hono/zod-validator`), limitant les risques d'injection ou de données malformées ;
+- **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
+- **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
+- **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage et tests unitaires avant toute fusion de code ;
+- **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via variables d'environnement, jamais commités dans le dépôt Git.
 
 Axes d'amélioration identifiés : mise en place d'un rate-limiting sur les routes d'authentification, rotation du secret JWT, et chiffrement TLS lors d'un déploiement en production.
 
-9\. PLAN DE TESTS
-=================
+# 9\. PLAN DE TESTS
 
 Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
 
-| Module | Fichier de test | Ce qui est testé |
-| --- | --- | --- |
-| `auth` | `auth.service.spec.ts` | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
-| `bookings` | `bookings.service.spec.ts` | Détection de chevauchement, création, consultation, suppression, autorisations |
-| `workspaces` | `workspaces.service.spec.ts` | CRUD des espaces |
-| `users` | `users.service.spec.ts` | Gestion des comptes utilisateurs |
-| `audit` | `audit.service.spec.ts` | Écriture et lecture des logs d'audit MongoDB |
+| Module       | Fichier de test              | Ce qui est testé                                                                |
+| ------------ | ---------------------------- | ------------------------------------------------------------------------------- |
+| `auth`       | `auth.service.spec.ts`       | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
+| `bookings`   | `bookings.service.spec.ts`   | Détection de chevauchement, création, consultation, suppression, autorisations  |
+| `workspaces` | `workspaces.service.spec.ts` | CRUD des espaces                                                                |
+| `users`      | `users.service.spec.ts`      | Gestion des comptes utilisateurs                                                |
+| `audit`      | `audit.service.spec.ts`      | Écriture et lecture des logs d'audit MongoDB                                    |
 
 Au total, **47 tests unitaires** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
-10\. JEU D’ESSAI DE LA FONCTIONNALITE LA PLUS REPRESENTATIVE
-============================================================
+# 10\. JEU D’ESSAI DE LA FONCTIONNALITE LA PLUS REPRESENTATIVE
 
-10.1. Fonctionnalité testée
----------------------------
+## 10.1. Fonctionnalité testée
 
 La fonctionnalité retenue comme la plus représentative est la **création d'une réservation avec détection de chevauchement** (module `bookings`), car elle concentre à la fois une règle métier non triviale (intersection d'intervalles de temps), une logique d'autorisation, et une gestion d'erreurs métier explicite (espace introuvable, créneau déjà réservé).
 
-10.2. Description des scenarios
--------------------------------
+## 10.2. Description des scenarios
 
-| Jeu d'essai | Description | Résultat attendu |
-| --- | --- | --- |
-| JE1 | Création d'une réservation sur un espace existant, créneau libre (10h-11h) | Réservation créée (HTTP 201) |
-| JE2 | Création d'une réservation sur un espace inexistant | Erreur `WORKSPACE_NOT_FOUND` (HTTP 404) |
-| JE3 | Création d'une réservation sur un créneau totalement identique à une réservation existante (10h-11h vs 10h-11h) | Erreur `BOOKING_OVERLAP` (HTTP 409) |
-| JE4 | Création d'une réservation chevauchant partiellement le début d'une réservation existante (9h-11h vs 10h-12h) | Erreur `BOOKING_OVERLAP` (HTTP 409) |
-| JE5 | Création d'une réservation chevauchant partiellement la fin d'une réservation existante (11h-13h vs 10h-12h) | Erreur `BOOKING_OVERLAP` (HTTP 409) |
-| JE6 | Création d'une réservation totalement incluse dans une réservation existante (11h-12h vs 10h-14h) | Erreur `BOOKING_OVERLAP` (HTTP 409) |
-| JE7 | Création d'une réservation immédiatement consécutive à une réservation existante (12h-13h juste après 10h-12h) | Réservation créée (HTTP 201), pas de chevauchement |
-| JE8 | Suppression d'une réservation par son propriétaire | Réservation supprimée, log d'audit créé |
-| JE9 | Suppression d'une réservation par un autre utilisateur que le propriétaire | Erreur `UNAUTHORIZED` (HTTP 403) |
+| Jeu d'essai | Description                                                                                                     | Résultat attendu                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| JE1         | Création d'une réservation sur un espace existant, créneau libre (10h-11h)                                      | Réservation créée (HTTP 201)                       |
+| JE2         | Création d'une réservation sur un espace inexistant                                                             | Erreur `WORKSPACE_NOT_FOUND` (HTTP 404)            |
+| JE3         | Création d'une réservation sur un créneau totalement identique à une réservation existante (10h-11h vs 10h-11h) | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
+| JE4         | Création d'une réservation chevauchant partiellement le début d'une réservation existante (9h-11h vs 10h-12h)   | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
+| JE5         | Création d'une réservation chevauchant partiellement la fin d'une réservation existante (11h-13h vs 10h-12h)    | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
+| JE6         | Création d'une réservation totalement incluse dans une réservation existante (11h-12h vs 10h-14h)               | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
+| JE7         | Création d'une réservation immédiatement consécutive à une réservation existante (12h-13h juste après 10h-12h)  | Réservation créée (HTTP 201), pas de chevauchement |
+| JE8         | Suppression d'une réservation par son propriétaire                                                              | Réservation supprimée, log d'audit créé            |
+| JE9         | Suppression d'une réservation par un autre utilisateur que le propriétaire                                      | Erreur `UNAUTHORIZED` (HTTP 403)                   |
 
-10.3. Résultats des tests
--------------------------
+## 10.3. Résultats des tests
 
-| Jeu d'essai | Résultat attendu | Résultat obtenu |
-| --- | --- | --- |
-| JE1 | Réservation créée (201) | Conforme ✅ |
-| JE2 | `WORKSPACE_NOT_FOUND` (404) | Conforme ✅ |
-| JE3 | `BOOKING_OVERLAP` (409) | Conforme ✅ |
-| JE4 | `BOOKING_OVERLAP` (409) | Conforme ✅ |
-| JE5 | `BOOKING_OVERLAP` (409) | Conforme ✅ |
-| JE6 | `BOOKING_OVERLAP` (409) | Conforme ✅ |
-| JE7 | Réservation créée (201) | Conforme ✅ |
-| JE8 | Suppression + log d'audit | Conforme ✅ |
-| JE9 | `UNAUTHORIZED` (403) | Conforme ✅ |
+| Jeu d'essai | Résultat attendu            | Résultat obtenu |
+| ----------- | --------------------------- | --------------- |
+| JE1         | Réservation créée (201)     | Conforme ✅     |
+| JE2         | `WORKSPACE_NOT_FOUND` (404) | Conforme ✅     |
+| JE3         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
+| JE4         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
+| JE5         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
+| JE6         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
+| JE7         | Réservation créée (201)     | Conforme ✅     |
+| JE8         | Suppression + log d'audit   | Conforme ✅     |
+| JE9         | `UNAUTHORIZED` (403)        | Conforme ✅     |
 
-*(Les résultats ci-dessus correspondent à l'exécution des tests unitaires `bookings.service.spec.ts`, tous passants via `bun test`. Insérer ici une capture d'écran de l'exécution `bun test` en local ou du job CI GitHub Actions.)*
+_(Les résultats ci-dessus correspondent à l'exécution des tests unitaires `bookings.service.spec.ts`, tous passants via `bun test`. Insérer ici une capture d'écran de l'exécution `bun test` en local ou du job CI GitHub Actions.)_
 
-10.4. Conclusion
-----------------
+## 10.4. Conclusion
 
 L'ensemble des jeux d'essai sur la fonctionnalité de réservation sont concluants : la logique de détection de chevauchement couvre correctement tous les cas d'intersection d'intervalles (chevauchement partiel, total, réservations consécutives). Aucune réserve n'a été identifiée sur cette fonctionnalité à ce stade.
 
 Action à accomplir : compléter ces tests unitaires par un test d'intégration bout-en-bout (appel HTTP réel sur une base de données de test) pour valider l'ensemble de la chaîne route → service → base de données.
 
-11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ
-==============================================
+# 11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ
 
-*(Section à rédiger personnellement : décrire ma pratique réelle de veille sécurité — sources suivies (ex : newsletters CERT-FR, blogs sécurité, OWASP, changelogs de sécurité des dépendances npm/Bun), fréquence, et actions concrètes menées sur ce projet, par exemple :*
+_(Section à rédiger personnellement : décrire ma pratique réelle de veille sécurité — sources suivies (ex : newsletters CERT-FR, blogs sécurité, OWASP, changelogs de sécurité des dépendances npm/Bun), fréquence, et actions concrètes menées sur ce projet, par exemple :_
 
-*   *Vérification régulière des vulnérabilités connues dans les dépendances (`bun audit` / Dependabot / GitHub Security Advisories) ;*
-*   *Application du principe du moindre privilège pour les rôles applicatifs ;*
-*   *Choix de fonctions de hachage de mot de passe recommandées (Argon2id via `Bun.password`) plutôt que des algorithmes obsolètes ;*
-*   *Suivi des bonnes pratiques OWASP (validation des entrées, gestion des erreurs sans fuite d'information, expiration des jetons JWT).)*
+- _Vérification régulière des vulnérabilités connues dans les dépendances (`bun audit` / Dependabot / GitHub Security Advisories) ;_
+- _Application du principe du moindre privilège pour les rôles applicatifs ;_
+- _Choix de fonctions de hachage de mot de passe recommandées (Argon2id via `Bun.password`) plutôt que des algorithmes obsolètes ;_
+- _Suivi des bonnes pratiques OWASP (validation des entrées, gestion des erreurs sans fuite d'information, expiration des jetons JWT).)_
 
 23 Dossier Projet MUSSET \- VALENTIN ![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)

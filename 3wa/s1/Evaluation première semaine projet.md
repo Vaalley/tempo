@@ -12,11 +12,11 @@
 
 ### 2.1. Utilisateurs du projet
 
-| Rôle | Processus impactés |
-|------|--------------------|
-| **Collaborateur (USER)** | Consultation, réservation, annulation, check-in |
-| **Administrateur (ADMIN)** | Gestion des espaces, supervision des réservations, audit |
-| **Système** | Vérification JWT, notifications automatiques, logs d'audit |
+| Rôle                       | Processus impactés                                         |
+| -------------------------- | ---------------------------------------------------------- |
+| **Collaborateur (USER)**   | Consultation, réservation, annulation, check-in            |
+| **Administrateur (ADMIN)** | Gestion des espaces, supervision des réservations, audit   |
+| **Système**                | Vérification JWT, notifications automatiques, logs d'audit |
 
 L'Administrateur hérite de tous les droits du Collaborateur.
 
@@ -31,18 +31,18 @@ Pas de contenu médiatique ni de DRM. Une suppression de compte devra être pré
 
 ### 2.3. Inventaire des besoins fonctionnels
 
-| Fonctionnalité | Collab. | Admin | Description |
-|---|:---:|:---:|---|
-| S'inscrire / Se connecter / Se déconnecter | ✓ | ✓ | Authentification JWT |
-| Consulter et filtrer les espaces | ✓ | ✓ | Par type, capacité, disponibilité |
-| Créer une réservation (publique/privée) | ✓ | ✓ | Avec vérification de disponibilité et quota |
-| Inviter des collaborateurs | ✓ | ✓ | Invitation par email, statut PENDING/ACCEPTED/DECLINED |
-| Consulter ses réservations | ✓ | ✓ | Historique et à venir |
-| Annuler sa réservation | ✓ | ✓ | Délai 24h, notification de tous les participants |
-| Check-in QR code | ✓ | ✓ | Scanner le QR code de la salle pour confirmer la présence |
-| Créer / Modifier / Supprimer un espace | — | ✓ | Suppression avec annulation + notification des réservations futures |
-| Consulter toutes les réservations | — | ✓ | Vue globale de l'occupation |
-| Tableau de bord & logs d'audit | — | ✓ | Statistiques d'occupation, traçabilité |
+| Fonctionnalité                             | Collab. | Admin | Description                                                         |
+| ------------------------------------------ | :-----: | :---: | ------------------------------------------------------------------- |
+| S'inscrire / Se connecter / Se déconnecter |    ✓    |   ✓   | Authentification JWT                                                |
+| Consulter et filtrer les espaces           |    ✓    |   ✓   | Par type, capacité, disponibilité                                   |
+| Créer une réservation (publique/privée)    |    ✓    |   ✓   | Avec vérification de disponibilité et quota                         |
+| Inviter des collaborateurs                 |    ✓    |   ✓   | Invitation par email, statut PENDING/ACCEPTED/DECLINED              |
+| Consulter ses réservations                 |    ✓    |   ✓   | Historique et à venir                                               |
+| Annuler sa réservation                     |    ✓    |   ✓   | Délai 24h, notification de tous les participants                    |
+| Check-in QR code                           |    ✓    |   ✓   | Scanner le QR code de la salle pour confirmer la présence           |
+| Créer / Modifier / Supprimer un espace     |    —    |   ✓   | Suppression avec annulation + notification des réservations futures |
+| Consulter toutes les réservations          |    —    |   ✓   | Vue globale de l'occupation                                         |
+| Tableau de bord & logs d'audit             |    —    |   ✓   | Statistiques d'occupation, traçabilité                              |
 
 ---
 
@@ -224,6 +224,7 @@ CREATE INDEX "idx_inviter_status" ON "inviter" ("status");
 ```
 
 **Commandes** :
+
 ```bash
 # Générer la migration depuis schema.ts
 bunx drizzle-kit generate
@@ -231,23 +232,24 @@ bunx drizzle-kit generate
 # Appliquer les migrations en base
 bunx drizzle-kit migrate
 ```
+
 ---
 
 ## 5. Environnement technique
 
-| Domaine | Technologie | Justification |
-|---------|-------------|---------------|
-| Runtime | **Bun** | Ultra-rapide, remplace Node + npm, test runner intégré |
-| Backend | **Hono** | Ultra-léger, typage RPC natif (`AppType`) |
-| Frontend | **Svelte 5** | Runes (`$state`, `$derived`), sans Virtual DOM |
-| Style | **Tailwind CSS 4 + shadcn-svelte** | Utility-first, composants accessibles |
-| Base SQL | **PostgreSQL 18 + Drizzle ORM** | Intégrité relationnelle, migrations type-safe |
-| Base NoSQL | **MongoDB 8** | Logs d'audit : volume variable, schéma flexible |
-| Auth | **JWT (hono/jwt)** | Stateless, sécurisation de toutes les routes |
-| Qualité | **Oxlint + Oxfmt + EditorConfig** | Linter et formatter Rust ultra-rapide, tabs 4, guillemets simples |
-| Tests | **Bun Test** (backend) + **Vitest** (frontend) | Intégrés aux runtimes respectifs |
-| CI/CD | **GitHub Actions** | Lint + test + build à chaque push |
-| Conteneurs | **Docker + Docker Compose** | Multi-stage builds, reproductibilité locale et prod |
-| Gestion projet | **Kanban (Trello)** | Suivi simple de l'avancement |
+| Domaine        | Technologie                                    | Justification                                                     |
+| -------------- | ---------------------------------------------- | ----------------------------------------------------------------- |
+| Runtime        | **Bun**                                        | Ultra-rapide, remplace Node + npm, test runner intégré            |
+| Backend        | **Hono**                                       | Ultra-léger, typage RPC natif (`AppType`)                         |
+| Frontend       | **Svelte 5**                                   | Runes (`$state`, `$derived`), sans Virtual DOM                    |
+| Style          | **Tailwind CSS 4 + shadcn-svelte**             | Utility-first, composants accessibles                             |
+| Base SQL       | **PostgreSQL 18 + Drizzle ORM**                | Intégrité relationnelle, migrations type-safe                     |
+| Base NoSQL     | **MongoDB 8**                                  | Logs d'audit : volume variable, schéma flexible                   |
+| Auth           | **JWT (hono/jwt)**                             | Stateless, sécurisation de toutes les routes                      |
+| Qualité        | **Oxlint + Oxfmt + EditorConfig**              | Linter et formatter Rust ultra-rapide, tabs 4, guillemets simples |
+| Tests          | **Bun Test** (backend) + **Vitest** (frontend) | Intégrés aux runtimes respectifs                                  |
+| CI/CD          | **GitHub Actions**                             | Lint + test + build à chaque push                                 |
+| Conteneurs     | **Docker + Docker Compose**                    | Multi-stage builds, reproductibilité locale et prod               |
+| Gestion projet | **Kanban (Trello)**                            | Suivi simple de l'avancement                                      |
 
 **Ports :** Backend :3000 · Frontend :5173 · PostgreSQL :5432 · MongoDB :27017

@@ -37,8 +37,8 @@ function encode64(data: Uint8Array): string {
 
 		const c1 = b1 >> 2;
 		const c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
-		const c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
-		const c4 = b3 & 0x3F;
+		const c3 = ((b2 & 0xf) << 2) | (b3 >> 6);
+		const c4 = b3 & 0x3f;
 
 		result += encode6bit(c1) + encode6bit(c2);
 		if (i + 1 < data.length) result += encode6bit(c3);
@@ -132,7 +132,9 @@ async function main(): Promise<void> {
 				success++;
 			} catch (error) {
 				const name = file.split('/').pop() ?? file;
-				console.error(`  \u2717 ${name}: ${error instanceof Error ? error.message : error}`);
+				console.error(
+					`  \u2717 ${name}: ${error instanceof Error ? error.message : error}`,
+				);
 				failed++;
 			}
 		}

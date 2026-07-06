@@ -145,17 +145,18 @@ tempo/
 
 ### 5.1 Fonctionnalités Principales
 
-| Feature | Acteur | Description | Fichiers Diagrammes |
-|---------|--------|-------------|---------------------|
-| **Authentification** | Collaborateur, Admin | Inscription, connexion JWT, déconnexion | `use case diagram.txt` |
-| **Réservation d'espace** | Collaborateur | Consulter, filtrer, créer une réservation (publique/privée) avec vérification de disponibilité et invitation de collaborateurs | `activity diagram - reservation.txt`, `sequence diagram - reservation.txt` |
-| **Annulation de réservation** | Collaborateur | Annuler sa réservation avec notification automatique | `activity diagram - annulation reservation.txt`, `sequence diagram - annulation reservation.txt` |
-| **Gestion des espaces** | Administrateur | CRUD espaces avec quota + notification automatique lors de suppression | `activity diagram - gestion espaces admin.txt`, `sequence diagram - gestion espaces admin.txt` |
-| **Check-in / Présence** | Collaborateur | Scanner QR code pour confirmer sa présence dans la salle réservée | `activity diagram - checkin.txt`, `sequence diagram - checkin.txt` |
+| Feature                       | Acteur               | Description                                                                                                                    | Fichiers Diagrammes                                                                              |
+| ----------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Authentification**          | Collaborateur, Admin | Inscription, connexion JWT, déconnexion                                                                                        | `use case diagram.txt`                                                                           |
+| **Réservation d'espace**      | Collaborateur        | Consulter, filtrer, créer une réservation (publique/privée) avec vérification de disponibilité et invitation de collaborateurs | `activity diagram - reservation.txt`, `sequence diagram - reservation.txt`                       |
+| **Annulation de réservation** | Collaborateur        | Annuler sa réservation avec notification automatique                                                                           | `activity diagram - annulation reservation.txt`, `sequence diagram - annulation reservation.txt` |
+| **Gestion des espaces**       | Administrateur       | CRUD espaces avec quota + notification automatique lors de suppression                                                         | `activity diagram - gestion espaces admin.txt`, `sequence diagram - gestion espaces admin.txt`   |
+| **Check-in / Présence**       | Collaborateur        | Scanner QR code pour confirmer sa présence dans la salle réservée                                                              | `activity diagram - checkin.txt`, `sequence diagram - checkin.txt`                               |
 
 ### 5.2 Règles Métier Clés
 
 **Réservation :**
+
 - Vérification des chevauchements de créneaux avant création
 - Un espace ne peut être réservé que s'il est disponible
 - **Type de réservation** : Publique (visible par tous) ou Privée (par invitation uniquement)
@@ -163,6 +164,7 @@ tempo/
 - **Quota** : Chaque espace a un quota maximum de personnes défini par l'administrateur
 
 **Check-in :**
+
 - **Scan QR Code** : Un QR code est généré pour chaque réservation ; le collaborateur le scanne pour confirmer sa présence
 - Vérification que le QR code correspond bien à la réservation
 - Uniquement pendant le créneau de réservation (`start_at <= now <= end_at`)
@@ -170,11 +172,13 @@ tempo/
 - Historisation de l'heure de check-in
 
 **Annulation :**
+
 - Un collaborateur peut annuler sa propre réservation
 - **Délai** : L'annulation doit être faite au minimum 24h avant le début (règle métier optionnelle)
 - **Notification** : Le créateur de la réservation reçoit une confirmation d'annulation
 
 **Suppression d'espace :**
+
 - L'administrateur peut supprimer un espace
 - **Notification automatique** : les utilisateurs ayant des réservations futures sur cet espace sont notifiés
 - Les réservations futures sont annulées (`status: CANCELLED`)
@@ -182,6 +186,7 @@ tempo/
 ### 5.3 Architecture Technique
 
 **Backend (Hono)**
+
 - **API RPC :** Le backend exporte un type TypeScript `AppType`. Le frontend l'importe pour avoir l'autocomplétion des routes et des retours.
 - **Architecture 3-Tiers :**
     1.  **Route (Controller) :** Validation HTTP et appel de service.
@@ -189,6 +194,7 @@ tempo/
     3.  **DB (Repository) :** Appels Drizzle/Mongo.
 
 **Frontend (Svelte 5)**
+
 - **Runes :** Utilisation de `$state`, `$derived`, `$effect` pour la réactivité.
 - **Client Hono :** `const client = hc<AppType>(url)` pour des appels API sûrs.
 

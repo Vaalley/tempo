@@ -1,4 +1,5 @@
 {
+	"ignorePatterns": ["scripts/"],
 	"plugins": ["typescript", "import", "jest", "react"],
 	"categories": {
 		"correctness": "error",

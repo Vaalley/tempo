@@ -50,15 +50,22 @@ md = md.replace(imgRegex, (match, alt, src) => {
 
 	const ext = extname(absPath).toLowerCase().replace('.', '');
 	const mime =
-		ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg'
-		: ext === 'png' ? 'image/png'
-		: ext === 'gif' ? 'image/gif'
-		: ext === 'svg' ? 'image/svg+xml'
-		: ext === 'webp' ? 'image/webp'
-		: 'image/png';
+		ext === 'jpg' || ext === 'jpeg'
+			? 'image/jpeg'
+			: ext === 'png'
+				? 'image/png'
+				: ext === 'gif'
+					? 'image/gif'
+					: ext === 'svg'
+						? 'image/svg+xml'
+						: ext === 'webp'
+							? 'image/webp'
+							: 'image/png';
 
 	const data = readFileSync(absPath).toString('base64');
-	console.log(`  [OK] Embedded ${basename(absPath)} (${(data.length * 0.75 / 1024).toFixed(0)} KB)`);
+	console.log(
+		`  [OK] Embedded ${basename(absPath)} (${((data.length * 0.75) / 1024).toFixed(0)} KB)`,
+	);
 	return `![${alt}](data:${mime};base64,${data})`;
 });
 
