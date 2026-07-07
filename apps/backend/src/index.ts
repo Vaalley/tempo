@@ -5,6 +5,7 @@ import usersRoute from './modules/users/users.route';
 import authRoute from './modules/auth/auth.route';
 import workspacesRoute from './modules/workspaces/workspaces.route';
 import bookingsRoute from './modules/bookings/bookings.route';
+import analyticsRoute from './modules/analytics/analytics.route';
 import { connectMongo } from './db/mongo';
 
 // Initialize MongoDB connection
@@ -14,14 +15,15 @@ const app = new Hono();
 
 // Middlewares
 app.use('*', logger());
-app.use('*', cors()); // Autorise le Frontend à nous appeler
+app.use('*', cors());
 
 // Routes
 const routes = app
 	.route('/auth', authRoute)
 	.route('/users', usersRoute)
 	.route('/workspaces', workspacesRoute)
-	.route('/bookings', bookingsRoute);
+	.route('/bookings', bookingsRoute)
+	.route('/analytics', analyticsRoute);
 
 // Health check
 routes.get('/health', (c) => c.text('OK'));

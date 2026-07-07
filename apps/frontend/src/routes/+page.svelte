@@ -12,6 +12,7 @@
 	import CalendarDays from '@lucide/svelte/icons/calendar-days';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
+	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 
 	let users = $state<any[]>([]);
 	let email = $state('');
@@ -73,6 +74,12 @@
 				<LayoutGrid class="size-4" />
 				Gérer les espaces
 			</Button>
+			{#if auth.user?.role === 'ADMIN'}
+				<Button variant="ghost" size="sm" href="/admin/analytics">
+					<BarChart3 class="size-4" />
+					Analytique
+				</Button>
+			{/if}
 			<Separator orientation="vertical" class="h-6" />
 			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
 			<Button
