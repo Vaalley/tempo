@@ -59,8 +59,9 @@ Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après
 2.2. Maquettes
 
 L'outil de maquettage Figma a été utilisé : les écrans ont été conçus directement avec la librairie de composants shadcn(shadcn-svelte), ce qui a permis d'itérer rapidement entre conception et implémentation.
+[Lien vers le design Figma](https://www.figma.com/design/cvMJhj3qr2kSouD2GR3fE8/Tempo?node-id=0-1&t=08qaUd48S0dcjfgZ-1)
 
-_(Insérer ici 3 à 4 captures d'écran des pages principales : connexion, liste des réservations, formulaire de création de réservation, administration des espaces — en version desktop et mobile.)_
+![Design Figma](../figma-design.png)
 
 3. Réalisation
 
