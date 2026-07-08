@@ -63,6 +63,12 @@ L'outil de maquettage Figma a été utilisé : les écrans ont été conçus dir
 
 ![Design Figma](../figma-design.png)
 
+**Mes Réservations** : écran principal du collaborateur, avec un formulaire de création de réservation (choix de l'espace via un `Select`, dates et horaires via des composants `Input` de type date/heure shadcn-svelte) regroupé dans une `Card`, suivi d'une seconde `Card` listant les réservations en cours (état vide géré explicitement avec le message « Aucune réservation »). La navigation (Accueil, Espaces, Analytique) est portée par une barre supérieure commune à toutes les pages authentifiées.
+
+**Analytique** : tableau de bord réservé à l'administrateur, présentant d'abord une série de `Card` de synthèse (utilisateurs, espaces, réservations, réservations actives, taux d'occupation), puis une `Table` shadcn-svelte détaillant l'utilisation par espace (type affiché via un composant `Badge`, capacité, nombre de réservations, réservations actives, taux d'utilisation).
+
+Les deux écrans ont été déclinés en version desktop et mobile afin de valider le comportement responsive des composants shadcn-svelte (empilement vertical des `Card`, tableau adapté) avant l'implémentation.
+
 3. Réalisation
 
 3.1. Mise en place des environnements
