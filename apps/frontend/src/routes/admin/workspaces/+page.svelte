@@ -13,7 +13,11 @@
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import Plus from '@lucide/svelte/icons/plus';
+	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import X from '@lucide/svelte/icons/x';
+	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
+	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
 	type Workspace = {
 		id: number;
@@ -27,6 +31,7 @@
 	let name = $state('');
 	let type = $state<'DESK' | 'MEETING_ROOM'>('DESK');
 	let capacity = $state(1);
+	let editingId = $state<number | null>(null);
 	let loading = $state(false);
 	let deleting = $state<number | null>(null);
 
@@ -50,23 +55,40 @@
 		}
 	}
 
-	async function createWorkspace() {
+	function resetForm() {
+		name = '';
+		type = 'DESK';
+		capacity = 1;
+		editingId = null;
+	}
+
+	function editWorkspace(workspace: Workspace) {
+		name = workspace.name;
+		type = workspace.type;
+		capacity = workspace.capacity;
+		editingId = workspace.id;
+	}
+
+	async function saveWorkspace() {
 		if (!name) return;
 		loading = true;
 
 		try {
 			const client = getAuthClient();
-			const res = await (client as any).workspaces.$post({
-				json: { name, type, capacity }
-			});
+			const res = editingId === null
+				? await (client as any).workspaces.$post({
+					json: { name, type, capacity },
+				})
+				: await (client as any).workspaces[':id'].$patch({
+					param: { id: String(editingId) },
+					json: { name, type, capacity },
+				});
 
 			if (res.ok) {
 				await fetchWorkspaces();
-				name = '';
-				type = 'DESK';
-				capacity = 1;
+				resetForm();
 			} else {
-				alert('Erreur lors de la création');
+				alert(editingId === null ? 'Erreur lors de la création' : 'Erreur lors de la modification');
 			}
 		} finally {
 			loading = false;
@@ -85,6 +107,7 @@
 
 			if (res.ok) {
 				await fetchWorkspaces();
+				if (editingId === id) resetForm();
 			} else {
 				alert('Erreur lors de la suppression');
 			}
@@ -109,6 +132,14 @@
 				<ArrowLeft class="size-4" />
 				Accueil
 			</Button>
+			<Button variant="ghost" size="sm" href="/admin/analytics">
+				<BarChart3 class="size-4" />
+				Analytique
+			</Button>
+			<Button variant="ghost" size="sm" href="/admin/audit">
+				<ScrollText class="size-4" />
+				Audit
+			</Button>
 			<Separator orientation="vertical" class="h-6" />
 			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
 			<Button
@@ -121,12 +152,17 @@
 		</div>
 	</div>
 
-	<!-- Formulaire de création -->
+	<!-- Formulaire de création ou de modification -->
 	<Card.Root class="mb-8">
 		<Card.Header>
 			<Card.Title>
-				<Plus class="size-5 inline-block mr-1" />
-				Nouvel Espace
+				{#if editingId === null}
+					<Plus class="size-5 inline-block mr-1" />
+					Nouvel Espace
+				{:else}
+					<Pencil class="size-5 inline-block mr-1" />
+					Modifier l'espace
+				{/if}
 			</Card.Title>
 		</Card.Header>
 		<Card.Content>
@@ -155,9 +191,16 @@
 					min={1}
 					placeholder="Capacité"
 				/>
-				<Button onclick={createWorkspace} disabled={loading || !name}>
-					{loading ? '...' : 'Ajouter'}
-				</Button>
+				<div class="flex gap-2">
+					<Button onclick={saveWorkspace} disabled={loading || !name} class="flex-1">
+						{loading ? '...' : editingId === null ? 'Ajouter' : 'Enregistrer'}
+					</Button>
+					{#if editingId !== null}
+						<Button variant="outline" size="icon" onclick={resetForm} aria-label="Annuler la modification">
+							<X class="size-4" />
+						</Button>
+					{/if}
+				</div>
 			</div>
 		</Card.Content>
 	</Card.Root>
@@ -197,6 +240,15 @@
 									{new Date(workspace.createdAt).toLocaleDateString()}
 								</Table.Cell>
 								<Table.Cell class="text-right">
+									<Button
+										variant="ghost"
+										size="sm"
+										onclick={() => editWorkspace(workspace)}
+										disabled={deleting === workspace.id}
+									>
+										<Pencil class="size-4" />
+										Modifier
+									</Button>
 									<Button
 										variant="ghost"
 										size="sm"

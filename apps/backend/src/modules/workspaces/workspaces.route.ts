@@ -3,7 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { workspaceService } from './workspaces.service';
 import { adminGuard, authGuard, type AuthEnv } from '../../middlewares/auth.guard';
-import { createWorkspaceSchema } from './workspaces.dto';
+import { createWorkspaceSchema, updateWorkspaceSchema } from './workspaces.dto';
 import { auditService } from '../audit/audit.service';
 
 const app = new Hono<AuthEnv>();
@@ -12,7 +12,7 @@ const app = new Hono<AuthEnv>();
 app.use('*', authGuard);
 
 const paramIdSchema = z.object({
-	id: z.coerce.number(),
+	id: z.coerce.number().int().positive(),
 });
 
 // GET /workspaces - List all workspaces
@@ -40,6 +40,25 @@ app.post('/', adminGuard, zValidator('json', createWorkspaceSchema), async (c) =
 	const workspace = await workspaceService.create(data);
 	return c.json(workspace, 201);
 });
+
+// PATCH /workspaces/:id - Update a workspace
+app.patch(
+	'/:id',
+	adminGuard,
+	zValidator('param', paramIdSchema),
+	zValidator('json', updateWorkspaceSchema),
+	async (c) => {
+		const { id } = c.req.valid('param');
+		const data = c.req.valid('json');
+		const workspace = await workspaceService.update(id, data);
+
+		if (!workspace) {
+			return c.json({ error: 'Workspace not found' }, 404);
+		}
+
+		return c.json(workspace);
+	},
+);
 
 // DELETE /workspaces/:id - Delete a workspace
 app.delete('/:id', adminGuard, zValidator('param', paramIdSchema), async (c) => {

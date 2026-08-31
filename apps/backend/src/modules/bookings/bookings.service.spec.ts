@@ -290,5 +290,23 @@ describe('BookingService', () => {
 			expect(result).toEqual(mockBooking);
 			expect(mockDelete).toHaveBeenCalled();
 		});
+
+		it("should allow an admin to delete another user's booking", async () => {
+			const mockBooking = {
+				id: 'booking-1',
+				userId: 'booking-owner',
+				workspaceId: 1,
+				startAt: new Date('2024-01-01T10:00:00Z'),
+				endAt: new Date('2024-01-01T11:00:00Z'),
+			};
+
+			mockFindFirst.mockResolvedValue(mockBooking);
+			mockReturning.mockResolvedValue([mockBooking]);
+
+			const result = await bookingService.delete('booking-1', 'admin-1', 'ADMIN');
+
+			expect(result).toEqual(mockBooking);
+			expect(mockDelete).toHaveBeenCalled();
+		});
 	});
 });

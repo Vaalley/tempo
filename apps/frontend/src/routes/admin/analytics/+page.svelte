@@ -15,6 +15,7 @@
 	import Users from '@lucide/svelte/icons/users';
 	import CalendarDays from '@lucide/svelte/icons/calendar-days';
 	import Activity from '@lucide/svelte/icons/activity';
+	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
 	type Overview = {
 		totalUsers: number;
@@ -95,6 +96,10 @@
 			<Button variant="ghost" size="sm" href="/admin/workspaces">
 				<LayoutGrid class="size-4" />
 				Espaces
+			</Button>
+			<Button variant="ghost" size="sm" href="/admin/audit">
+				<ScrollText class="size-4" />
+				Audit
 			</Button>
 			<Separator orientation="vertical" class="h-6" />
 			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>

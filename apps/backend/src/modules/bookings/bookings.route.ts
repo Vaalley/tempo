@@ -56,7 +56,7 @@ app.delete('/:id', async (c) => {
 		const payload = c.get('jwtPayload');
 		const id = c.req.param('id');
 
-		const deleted = await bookingService.delete(id, payload.sub);
+		const deleted = await bookingService.delete(id, payload.sub, payload.role);
 
 		await auditService.logDeletion('booking', id, deleted as Record<string, unknown>, {
 			userId: payload.sub,

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../db';
 import { workspaces } from '../../db/schema';
-import type { CreateWorkspaceDto } from './workspaces.dto';
+import type { CreateWorkspaceDto, UpdateWorkspaceDto } from './workspaces.dto';
 
 type Workspace = typeof workspaces.$inferSelect;
 
@@ -21,6 +21,15 @@ export const workspaceService = {
 		return await db.query.workspaces.findFirst({
 			where: eq(workspaces.id, id),
 		});
+	},
+
+	async update(id: number, data: UpdateWorkspaceDto): Promise<Workspace | undefined> {
+		const [updated] = await db
+			.update(workspaces)
+			.set(data)
+			.where(eq(workspaces.id, id))
+			.returning();
+		return updated;
 	},
 
 	async delete(id: number): Promise<Workspace | undefined> {

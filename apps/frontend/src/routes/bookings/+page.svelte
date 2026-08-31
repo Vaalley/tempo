@@ -17,6 +17,7 @@
 	import CalendarPlus from '@lucide/svelte/icons/calendar-plus';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import X from '@lucide/svelte/icons/x';
+	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
 	type Workspace = {
 		id: number;
@@ -32,6 +33,11 @@
 		endAt: string;
 		createdAt: string;
 		workspace: Workspace;
+		user?: {
+			id: string;
+			email: string;
+			role: 'ADMIN' | 'USER';
+		};
 	};
 
 	let bookings = $state<Booking[]>([]);
@@ -152,14 +158,20 @@
 </script>
 
 <svelte:head>
-	<title>Mes Réservations - Tempo</title>
+	<title>{auth.user?.role === 'ADMIN' ? 'Toutes les réservations' : 'Mes réservations'} - Tempo</title>
 </svelte:head>
 
 <div class="mx-auto max-w-5xl p-10">
 	<div class="flex justify-between items-center mb-6">
 		<div>
-			<h1 class="text-3xl font-bold">Mes Réservations</h1>
-			<p class="text-muted-foreground text-sm mt-1">Gérez vos réservations d'espaces</p>
+			<h1 class="text-3xl font-bold">
+				{auth.user?.role === 'ADMIN' ? 'Toutes les réservations' : 'Mes réservations'}
+			</h1>
+			<p class="text-muted-foreground text-sm mt-1">
+				{auth.user?.role === 'ADMIN'
+					? "Supervisez les réservations de l'ensemble des utilisateurs"
+					: "Gérez vos réservations d'espaces"}
+			</p>
 		</div>
 		<div class="flex items-center gap-2">
 			<Button variant="ghost" size="sm" href="/">
@@ -170,6 +182,10 @@
 				<Button variant="ghost" size="sm" href="/admin/workspaces">
 					<LayoutGrid class="size-4" />
 					Espaces
+				</Button>
+				<Button variant="ghost" size="sm" href="/admin/audit">
+					<ScrollText class="size-4" />
+					Audit
 				</Button>
 			{/if}
 			<Separator orientation="vertical" class="h-6" />
@@ -262,6 +278,9 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>Espace</Table.Head>
+							{#if auth.user?.role === 'ADMIN'}
+								<Table.Head>Propriétaire</Table.Head>
+							{/if}
 							<Table.Head>Début</Table.Head>
 							<Table.Head>Fin</Table.Head>
 							<Table.Head>Statut</Table.Head>
@@ -284,6 +303,12 @@
 										</div>
 									</div>
 								</Table.Cell>
+								{#if auth.user?.role === 'ADMIN'}
+									<Table.Cell>
+										<div class="font-medium">{booking.user?.email ?? 'Utilisateur inconnu'}</div>
+										<div class="text-xs text-muted-foreground">{booking.user?.role ?? '—'}</div>
+									</Table.Cell>
+								{/if}
 								<Table.Cell>{formatDate(booking.startAt)}</Table.Cell>
 								<Table.Cell>{formatDate(booking.endAt)}</Table.Cell>
 								<Table.Cell>

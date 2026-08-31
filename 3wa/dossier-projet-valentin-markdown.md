@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 61 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL et aux bornes temporelles des statistiques. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 71 tests backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL, aux bornes temporelles des statistiques, à la modification des espaces et aux routes administrateur. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -516,7 +516,7 @@ Aucune exigence de design particulière (flat design, parallaxe, …) n’a ét�
 Deux profils d’utilisateurs sont identifiés (voir diagramme de cas d’utilisation `use case diagram.png`) :
 
 - **Collaborateur (`USER`)** : s’inscrit, se connecte, consulte les espaces disponibles, crée/consulte/annule ses réservations, confirme sa présence (check-in) ;
-- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, consulte, crée et supprime les espaces de travail, gère les comptes utilisateurs et accède aux statistiques d'occupation. La modification des espaces et la consultation des logs d'audit sont prévues pour une itération ultérieure.
+- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, consulte, crée, modifie et supprime les espaces de travail, gère les comptes utilisateurs, supervise toutes les réservations, peut les annuler et consulte les statistiques ainsi que les logs d'audit.
 
 Le processus métier impacté est la **gestion des ressources immobilières / facilities management** (occupation des locaux), en lien avec les fonctions RH et Office Management de l’entreprise.
 
@@ -580,7 +580,7 @@ Le projet est pensé comme un produit SaaS destiné à être commercialisé aupr
 Le projet répond à un besoin métier réel et répandu : la gestion des espaces en flex-office. Les objectifs poursuivis sont :
 
 - Permettre à un collaborateur de consulter en temps réel les espaces disponibles (bureaux, salles de réunion) et de réserver un créneau sans conflit ;
-- Permettre à un administrateur de gérer le parc d'espaces (consultation, création et suppression dans le MVP ; modification prévue ultérieurement) et de superviser le taux d'occupation ;
+- Permettre à un administrateur de gérer le parc d'espaces avec un CRUD complet et de superviser le taux d'occupation ;
 - Fiabiliser la présence réelle grâce à un mécanisme de check-in par QR code ;
 - Assurer la traçabilité des actions sensibles (audit) dans une logique de conformité RGPD.
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations et statistiques) — 61 tests unitaires backend au total ;
+- **Fiabilité fonctionnelle** : couverture par tests backend des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations, espaces, routes administrateur et statistiques) — 71 tests au total ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -690,12 +690,13 @@ Cartographie des écrans de l'application (routing SvelteKit) :
 ```
 /                      Page d'accueil
 /login                 Connexion / inscription
-/bookings              Mes réservations (créer, consulter, annuler, check-in)
-/admin/workspaces      Administration des espaces (lecture, création, suppression ; rôle ADMIN)
+/bookings              Réservations personnelles ou vue globale pour un administrateur
+/admin/workspaces      Administration CRUD des espaces (rôle ADMIN)
 /admin/analytics       Statistiques d'occupation (réservé au rôle ADMIN)
+/admin/audit           Consultation des suppressions auditées (réservé au rôle ADMIN)
 ```
 
-Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après connexion, le collaborateur accède à `/bookings` pour gérer ses réservations. Un administrateur dispose en plus d'un accès à `/admin/workspaces` pour gérer le parc d'espaces. L'application est responsive (Tailwind CSS) et s'adapte aux versions desktop, tablette et mobile.
+Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après connexion, le collaborateur accède à `/bookings` pour gérer ses réservations. Un administrateur y voit toutes les réservations avec leur propriétaire et dispose en plus des écrans `/admin/workspaces`, `/admin/analytics` et `/admin/audit`. L'application est responsive (Tailwind CSS) et s'adapte aux versions desktop, tablette et mobile.
 
 ### 5.3.2. Maquettes
 
@@ -837,7 +838,7 @@ Formulaire de réservation avec sélection de l'espace, du créneau (date/heure 
 
 _Description_
 
-Un collaborateur consulte la liste de ses réservations et annule celle de son choix. Seul le propriétaire de la réservation peut l'annuler.
+Un collaborateur consulte la liste de ses réservations et annule celle de son choix. Un utilisateur standard ne peut annuler que ses propres réservations ; un administrateur peut annuler la réservation de n'importe quel utilisateur depuis la vue globale.
 
 _Diagramme d’activité_
 
@@ -849,19 +850,19 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée   | Traitement                                                                                                                       | En sortie                   | Contrôles                                                        |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------- |
-| `bookingId` | Vérification que la réservation existe et appartient à l'utilisateur, suppression de l'enregistrement, écriture d'un log d'audit | Confirmation de suppression | Réservation existante, utilisateur propriétaire (HTTP 403 sinon) |
+| En entrée   | Traitement                                                                                                                      | En sortie                   | Contrôles                                                              |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------- |
+| `bookingId` | Vérification de la réservation, contrôle du propriétaire ou du rôle `ADMIN`, suppression et tentative d'écriture du log d'audit | Confirmation de suppression | Réservation existante, propriétaire ou administrateur (HTTP 403 sinon) |
 
 _Ecran/Affichage_
 
-Bouton « Annuler » sur chaque réservation de la liste, avec confirmation avant suppression.
+Bouton « Annuler » sur chaque réservation à venir, avec confirmation avant suppression. La vue administrateur est intitulée « Toutes les réservations » et affiche le propriétaire de chaque ligne.
 
 ### 5.7.3. Fonctionnalité 3 — Gestion des espaces (Admin)
 
 _Description_
 
-Un administrateur consulte, crée ou supprime un espace de travail (bureau ou salle de réunion) en définissant son nom, son type et sa capacité. La modification d'un espace n'est pas incluse dans le MVP actuel.
+Un administrateur consulte, crée, modifie ou supprime un espace de travail (bureau ou salle de réunion) en définissant son nom, son type et sa capacité.
 
 _Diagramme d’activité_
 
@@ -873,13 +874,13 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée                  | Traitement                                                                                              | En sortie               | Contrôles                                      |
-| -------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------- |
-| `name`, `type`, `capacity` | Validation des données (Zod), création ou suppression en base, journalisation de la suppression (audit) | Espace créé ou supprimé | Rôle `ADMIN` requis, capacité entière positive |
+| En entrée                  | Traitement                                                                                                                   | En sortie                        | Contrôles                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------- |
+| `name`, `type`, `capacity` | Validation Zod, création, modification partielle (`PATCH`) ou suppression en base ; tentative d'audit lors d'une suppression | Espace créé, modifié ou supprimé | Rôle `ADMIN`, corps PATCH non vide, capacité entière positive |
 
 _Ecran/Affichage_
 
-Tableau d'administration des espaces avec actions de création et de suppression, accessible uniquement aux comptes administrateurs. La modification est identifiée comme une évolution du MVP.
+Tableau d'administration des espaces avec formulaire partagé de création/modification et action de suppression, accessible uniquement aux comptes administrateurs.
 
 ### 5.7.4. Fonctionnalité 4 — Check-in par QR Code
 
@@ -974,7 +975,7 @@ Le choix de Bun et Hono répond à un objectif de performance et de modernité t
 
 L'application est actuellement accessible uniquement en local, via Docker Compose (`docker compose up --build`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place (axe d'évolution identifié).
 
-Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
+Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`, `/admin/audit`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
 
 La conception est responsive (Tailwind CSS) et compatible avec les navigateurs modernes (Chrome, Firefox, Edge, Safari).
 
@@ -1114,7 +1115,7 @@ Ce composant illustre l'utilisation de l'ORM Drizzle en mode « relational query
 
 ### 7.4.1. Affichage
 
-_(Insérer une capture d'écran de l'écran d'administration listant les logs d'audit — suppression d'un espace, d'une réservation.)_
+L'écran `/admin/audit` liste les 100 suppressions les plus récentes avec la date, l'action, l'entité concernée, l'auteur et son rôle. Une capture de cet écran alimenté par des données de démonstration reste à insérer dans la version PDF.
 
 ### 7.4.2. Extrait(s) de code
 
@@ -1144,7 +1145,7 @@ async logDeletion(
 
 ### 7.4.3. Argumentation
 
-Ce composant démontre l'utilisation conjointe de deux systèmes de persistance selon la nature des données : PostgreSQL pour les données métier structurées (contraintes fortes, relations), MongoDB pour les logs d'audit dont le volume est potentiellement important et le schéma peut évoluer sans migration lourde. Chaque suppression sensible (espace, réservation, utilisateur) est tracée avec l'identité de l'auteur de l'action, répondant à une exigence de traçabilité RGPD.
+Ce composant démontre l'utilisation conjointe de deux systèmes de persistance selon la nature des données : PostgreSQL pour les données métier structurées (contraintes fortes, relations), MongoDB pour les logs d'audit dont le schéma peut évoluer sans migration SQL. Le service tente d'enregistrer chaque suppression sensible avec l'identité de son auteur. Dans le MVP, une panne MongoDB est journalisée côté serveur sans annuler la suppression PostgreSQL ; cette limite de traçabilité est explicitement conservée comme axe d'amélioration.
 
 ## 7.5. Client RPC typé de bout en bout (Autres)
 
@@ -1192,17 +1193,18 @@ Axes d'amélioration identifiés : mise en place d'un rate-limiting sur les rout
 
 Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
 
-| Module       | Fichier de test              | Ce qui est testé                                                                |
-| ------------ | ---------------------------- | ------------------------------------------------------------------------------- |
-| `auth`       | `auth.service.spec.ts`       | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
-| `bookings`   | `bookings.service.spec.ts`   | Chevauchement, conflit PostgreSQL, création, consultation et suppression        |
-| `workspaces` | `workspaces.service.spec.ts` | Création, consultation et suppression des espaces                               |
-| `users`      | `users.service.spec.ts`      | Gestion des comptes utilisateurs                                                |
-| `audit`      | `audit.service.spec.ts`      | Écriture et lecture des logs d'audit MongoDB                                    |
-| `analytics`  | `analytics.service.spec.ts`  | Indicateurs globaux et agrégation par espace                                    |
-| `authGuard`  | `auth.guard.spec.ts`         | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
+| Module       | Fichier de test                                          | Ce qui est testé                                                                |
+| ------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `auth`       | `auth.service.spec.ts`                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
+| `bookings`   | `bookings.service.spec.ts`                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression        |
+| `workspaces` | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts` | Création, consultation, modification, suppression et validation PATCH           |
+| `users`      | `users.service.spec.ts`                                  | Gestion des comptes utilisateurs                                                |
+| `audit`      | `audit.service.spec.ts`                                  | Écriture et lecture des logs d'audit MongoDB                                    |
+| `analytics`  | `analytics.service.spec.ts`                              | Indicateurs globaux et agrégation par espace                                    |
+| `authGuard`  | `auth.guard.spec.ts`                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
+| Routes admin | `admin.routes.spec.ts`                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces        |
 
-Au total, **61 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **71 tests backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
@@ -1214,17 +1216,18 @@ La fonctionnalité retenue comme la plus représentative est la **création d'un
 
 ## 10.2. Description des scenarios
 
-| Jeu d'essai | Description                                                                                                     | Résultat attendu                                   |
-| ----------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| JE1         | Création d'une réservation sur un espace existant, créneau libre (10h-11h)                                      | Réservation créée (HTTP 201)                       |
-| JE2         | Création d'une réservation sur un espace inexistant                                                             | Erreur `WORKSPACE_NOT_FOUND` (HTTP 404)            |
-| JE3         | Création d'une réservation sur un créneau totalement identique à une réservation existante (10h-11h vs 10h-11h) | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
-| JE4         | Création d'une réservation chevauchant partiellement le début d'une réservation existante (9h-11h vs 10h-12h)   | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
-| JE5         | Création d'une réservation chevauchant partiellement la fin d'une réservation existante (11h-13h vs 10h-12h)    | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
-| JE6         | Création d'une réservation totalement incluse dans une réservation existante (11h-12h vs 10h-14h)               | Erreur `BOOKING_OVERLAP` (HTTP 409)                |
-| JE7         | Création d'une réservation immédiatement consécutive à une réservation existante (12h-13h juste après 10h-12h)  | Réservation créée (HTTP 201), pas de chevauchement |
-| JE8         | Suppression d'une réservation par son propriétaire                                                              | Réservation supprimée, log d'audit créé            |
-| JE9         | Suppression d'une réservation par un autre utilisateur que le propriétaire                                      | Erreur `UNAUTHORIZED` (HTTP 403)                   |
+| Jeu d'essai | Description                                                                                                     | Résultat attendu                                    |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| JE1         | Création d'une réservation sur un espace existant, créneau libre (10h-11h)                                      | Réservation créée (HTTP 201)                        |
+| JE2         | Création d'une réservation sur un espace inexistant                                                             | Erreur `WORKSPACE_NOT_FOUND` (HTTP 404)             |
+| JE3         | Création d'une réservation sur un créneau totalement identique à une réservation existante (10h-11h vs 10h-11h) | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
+| JE4         | Création d'une réservation chevauchant partiellement le début d'une réservation existante (9h-11h vs 10h-12h)   | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
+| JE5         | Création d'une réservation chevauchant partiellement la fin d'une réservation existante (11h-13h vs 10h-12h)    | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
+| JE6         | Création d'une réservation totalement incluse dans une réservation existante (11h-12h vs 10h-14h)               | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
+| JE7         | Création d'une réservation immédiatement consécutive à une réservation existante (12h-13h juste après 10h-12h)  | Réservation créée (HTTP 201), pas de chevauchement  |
+| JE8         | Suppression d'une réservation par son propriétaire                                                              | Réservation supprimée, log d'audit créé             |
+| JE9         | Suppression d'une réservation par un autre utilisateur que le propriétaire                                      | Erreur `UNAUTHORIZED` (HTTP 403)                    |
+| JE10        | Suppression de la réservation d'un utilisateur par un administrateur                                            | Réservation supprimée, auteur administrateur audité |
 
 ## 10.3. Résultats des tests
 

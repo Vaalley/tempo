@@ -13,6 +13,7 @@
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
+	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
 	let users = $state<any[]>([]);
 	let email = $state('');
@@ -70,7 +71,7 @@
 		<div class="flex items-center gap-2">
 			<Button variant="ghost" size="sm" href="/bookings">
 				<CalendarDays class="size-4" />
-				Mes réservations
+				{auth.user?.role === 'ADMIN' ? 'Toutes les réservations' : 'Mes réservations'}
 			</Button>
 			{#if auth.user?.role === 'ADMIN'}
 				<Button variant="ghost" size="sm" href="/admin/workspaces">
@@ -82,6 +83,12 @@
 				<Button variant="ghost" size="sm" href="/admin/analytics">
 					<BarChart3 class="size-4" />
 					Analytique
+				</Button>
+			{/if}
+			{#if auth.user?.role === 'ADMIN'}
+				<Button variant="ghost" size="sm" href="/admin/audit">
+					<ScrollText class="size-4" />
+					Audit
 				</Button>
 			{/if}
 			<Separator orientation="vertical" class="h-6" />

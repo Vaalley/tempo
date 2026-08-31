@@ -123,8 +123,7 @@ export const bookingService = {
 		});
 	},
 
-	async delete(id: string, userId: string): Promise<Booking> {
-		// Check that the booking belongs to the user
+	async delete(id: string, userId: string, role: 'ADMIN' | 'USER' = 'USER'): Promise<Booking> {
 		const booking = await db.query.bookings.findFirst({
 			where: eq(bookings.id, id),
 		});
@@ -133,8 +132,7 @@ export const bookingService = {
 			throw new Error('BOOKING_NOT_FOUND');
 		}
 
-		// Note: Ideally, we should also allow ADMINs to delete any booking.
-		if (booking.userId !== userId) {
+		if (role !== 'ADMIN' && booking.userId !== userId) {
 			throw new Error('UNAUTHORIZED');
 		}
 

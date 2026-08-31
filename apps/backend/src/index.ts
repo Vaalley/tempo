@@ -6,6 +6,7 @@ import authRoute from './modules/auth/auth.route';
 import workspacesRoute from './modules/workspaces/workspaces.route';
 import bookingsRoute from './modules/bookings/bookings.route';
 import analyticsRoute from './modules/analytics/analytics.route';
+import auditRoute from './modules/audit/audit.route';
 import { connectMongo } from './db/mongo';
 
 // Initialize MongoDB connection
@@ -23,7 +24,8 @@ const routes = app
 	.route('/users', usersRoute)
 	.route('/workspaces', workspacesRoute)
 	.route('/bookings', bookingsRoute)
-	.route('/analytics', analyticsRoute);
+	.route('/analytics', analyticsRoute)
+	.route('/audit', auditRoute);
 
 // Health check
 routes.get('/health', (c) => c.text('OK'));

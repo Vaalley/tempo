@@ -8,6 +8,8 @@ const mockReturning = mock(() => Promise.resolve([]));
 const mockValues = mock(() => ({ returning: mockReturning }));
 const mockInsert = mock(() => ({ values: mockValues }));
 const mockWhere = mock(() => ({ returning: mockReturning }));
+const mockSet = mock(() => ({ where: mockWhere }));
+const mockUpdate = mock(() => ({ set: mockSet }));
 const mockDelete = mock(() => ({ where: mockWhere }));
 
 mock.module('../../db', () => ({
@@ -19,6 +21,7 @@ mock.module('../../db', () => ({
 			},
 		},
 		insert: mockInsert,
+		update: mockUpdate,
 		delete: mockDelete,
 	},
 }));
@@ -31,12 +34,16 @@ describe('WorkspaceService', () => {
 		mockValues.mockReset();
 		mockInsert.mockReset();
 		mockWhere.mockReset();
+		mockSet.mockReset();
+		mockUpdate.mockReset();
 		mockDelete.mockReset();
 
 		// Reconfigure les retours par défaut
 		mockValues.mockReturnValue({ returning: mockReturning });
 		mockInsert.mockReturnValue({ values: mockValues });
 		mockWhere.mockReturnValue({ returning: mockReturning });
+		mockSet.mockReturnValue({ where: mockWhere });
+		mockUpdate.mockReturnValue({ set: mockSet });
 		mockDelete.mockReturnValue({ where: mockWhere });
 	});
 
@@ -129,6 +136,39 @@ describe('WorkspaceService', () => {
 			mockFindFirst.mockResolvedValue(undefined);
 
 			const result = await workspaceService.getById(999);
+
+			expect(result).toBeUndefined();
+		});
+	});
+
+	describe('update', () => {
+		it('should update and return a workspace', async () => {
+			const mockWorkspace = {
+				id: 1,
+				name: 'Salle rénovée',
+				type: 'MEETING_ROOM',
+				capacity: 12,
+				createdAt: new Date(),
+			};
+			mockReturning.mockResolvedValue([mockWorkspace]);
+
+			const result = await workspaceService.update(1, {
+				name: 'Salle rénovée',
+				capacity: 12,
+			});
+
+			expect(result).toEqual(mockWorkspace);
+			expect(mockUpdate).toHaveBeenCalled();
+			expect(mockSet).toHaveBeenCalledWith({
+				name: 'Salle rénovée',
+				capacity: 12,
+			});
+		});
+
+		it('should return undefined when workspace to update does not exist', async () => {
+			mockReturning.mockResolvedValue([]);
+
+			const result = await workspaceService.update(999, { name: 'Introuvable' });
 
 			expect(result).toBeUndefined();
 		});
