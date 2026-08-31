@@ -192,6 +192,44 @@ describe('BookingService', () => {
 			expect(result).toEqual(mockBooking);
 			expect(mockInsert).toHaveBeenCalled();
 		});
+
+		it('should map the PostgreSQL exclusion constraint to BOOKING_OVERLAP', async () => {
+			mockFindFirst
+				.mockResolvedValueOnce({ id: 1, name: 'Workspace 1' })
+				.mockResolvedValueOnce(undefined);
+			mockReturning.mockRejectedValue(
+				Object.assign(new Error('conflicting key value violates exclusion constraint'), {
+					code: '23P01',
+					constraint: 'bookings_workspace_time_exclusion',
+				}),
+			);
+
+			await expect(
+				bookingService.create('user-1', {
+					workspaceId: 1,
+					startAt: '2024-01-01T10:00:00Z',
+					endAt: '2024-01-01T11:00:00Z',
+				}),
+			).rejects.toThrow('BOOKING_OVERLAP');
+		});
+
+		it('should preserve unexpected database errors', async () => {
+			const databaseError = Object.assign(new Error('database unavailable'), {
+				code: '08006',
+			});
+			mockFindFirst
+				.mockResolvedValueOnce({ id: 1, name: 'Workspace 1' })
+				.mockResolvedValueOnce(undefined);
+			mockReturning.mockRejectedValue(databaseError);
+
+			await expect(
+				bookingService.create('user-1', {
+					workspaceId: 1,
+					startAt: '2024-01-01T10:00:00Z',
+					endAt: '2024-01-01T11:00:00Z',
+				}),
+			).rejects.toBe(databaseError);
+		});
 	});
 
 	describe('getByUser', () => {

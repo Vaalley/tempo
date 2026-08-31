@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 58 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER` et à l'autorisation d'un `ADMIN`. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 60 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN` et à la traduction d'un conflit concurrent PostgreSQL. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 58 tests unitaires backend au total ;
+- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 60 tests unitaires backend au total ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -763,15 +763,28 @@ CREATE TABLE "bookings" (
 
 ### 5.5.2. Argumentation
 
-Le choix d'un ORM typé (Drizzle) plutôt que du SQL brut permet de garder le schéma de base de données comme source de vérité unique, partagée entre le typage TypeScript de l'application et les migrations SQL générées automatiquement. Les clés étrangères avec `ON DELETE CASCADE` garantissent l'intégrité référentielle (suppression en cascade des réservations lorsqu'un utilisateur ou un espace est supprimé), tout en étant tracées dans les logs d'audit (MongoDB) avant suppression.
+Le choix d'un ORM typé (Drizzle) permet de partager les tables et leurs types entre le code TypeScript et les migrations SQL. Les contraintes PostgreSQL avancées qui ne sont pas exprimées par le schéma Drizzle sont conservées dans des migrations SQL personnalisées versionnées. Les clés étrangères avec `ON DELETE CASCADE` garantissent l'intégrité référentielle (suppression en cascade des réservations lorsqu'un utilisateur ou un espace est supprimé), tout en étant tracées dans les logs d'audit (MongoDB) avant suppression.
 
 ### 5.5.3. Script de modification
 
-_(Insérer ici un exemple de migration d'évolution, par exemple l'ajout futur du statut de réservation ou de la table `companies`, générée via `bunx drizzle-kit generate`.)_
+```sql
+CREATE EXTENSION IF NOT EXISTS "btree_gist";
+
+ALTER TABLE "bookings"
+ADD CONSTRAINT "bookings_valid_time_range"
+CHECK ("end_at" > "start_at");
+
+ALTER TABLE "bookings"
+ADD CONSTRAINT "bookings_workspace_time_exclusion"
+EXCLUDE USING gist (
+    "workspace_id" WITH =,
+    tsrange("start_at", "end_at", '[)') WITH &&
+);
+```
 
 ### 5.5.4. Argumentation
 
-_(Expliquer pourquoi cette évolution est nécessaire, ex : passage d'un modèle mono-entreprise à un modèle multi-entreprises, ajout du statut de réservation `CHECKED_IN`/`CANCELLED`.)_
+La vérification applicative seule suivait deux étapes séparées — lecture des réservations existantes puis insertion — et laissait donc une fenêtre de concurrence. Cette migration `0002_booking_overlap_constraint.sql` confie la décision finale à PostgreSQL : la contrainte d'exclusion GiST interdit atomiquement deux intervalles qui se chevauchent pour un même espace. La borne de fin est exclue (`[)`), ce qui autorise deux réservations consécutives. La contrainte `CHECK` empêche en outre les intervalles vides ou inversés.
 
 ## 5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
 
@@ -847,8 +860,8 @@ _Diagramme de séquence_
 
 _Données/Actions_
 
-| En entrée                  | Traitement                                                                                                        | En sortie                    | Contrôles                                      |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
+| En entrée                  | Traitement                                                                                              | En sortie               | Contrôles                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------- |
 | `name`, `type`, `capacity` | Validation des données (Zod), création ou suppression en base, journalisation de la suppression (audit) | Espace créé ou supprimé | Rôle `ADMIN` requis, capacité entière positive |
 
 _Ecran/Affichage_
@@ -996,7 +1009,7 @@ async checkOverlap(
 
 ### 7.1.3. Argumentation
 
-Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé systématiquement avant toute création de réservation (`bookingService.create`) et empêche les conflits dans le flux applicatif courant. La protection contre deux requêtes strictement concurrentes reste à renforcer au niveau transactionnel ou par une contrainte en base de données. La fonction est entièrement couverte par 6 tests unitaires (cas limites inclus : réservations consécutives sans chevauchement, chevauchement partiel en début/fin, inclusion totale).
+Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé avant toute création de réservation (`bookingService.create`) afin de fournir une erreur rapide. La migration `0002_booking_overlap_constraint.sql` ajoute en complément une contrainte d'exclusion PostgreSQL GiST sur l'espace et l'intervalle semi-ouvert `[startAt, endAt[`. PostgreSQL garantit ainsi atomiquement que deux requêtes concurrentes ne peuvent pas réserver le même espace sur des créneaux qui se chevauchent ; le conflit SQL est traduit en erreur métier `BOOKING_OVERLAP` (HTTP 409). Les réservations consécutives restent autorisées. La logique et la traduction de la contrainte sont couvertes par des tests unitaires.
 
 ## 7.2. Middleware d'authentification et de contrôle des rôles (Composants Métier)
 
@@ -1151,13 +1164,14 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | Module       | Fichier de test              | Ce qui est testé                                                                |
 | ------------ | ---------------------------- | ------------------------------------------------------------------------------- |
 | `auth`       | `auth.service.spec.ts`       | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
-| `bookings`   | `bookings.service.spec.ts`   | Détection de chevauchement, création, consultation, suppression, autorisations  |
+| `bookings`   | `bookings.service.spec.ts`   | Chevauchement, conflit PostgreSQL, création, consultation et suppression        |
 | `workspaces` | `workspaces.service.spec.ts` | Création, consultation et suppression des espaces                               |
 | `users`      | `users.service.spec.ts`      | Gestion des comptes utilisateurs                                                |
 | `audit`      | `audit.service.spec.ts`      | Écriture et lecture des logs d'audit MongoDB                                    |
+| `analytics`  | `analytics.service.spec.ts`  | Indicateurs globaux et agrégation par espace                                    |
 | `authGuard`  | `auth.guard.spec.ts`         | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
 
-Au total, **58 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **60 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

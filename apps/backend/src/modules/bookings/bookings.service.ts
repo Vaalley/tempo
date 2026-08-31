@@ -5,6 +5,20 @@ import type { CreateBookingDto } from './bookings.dto';
 
 type Booking = typeof bookings.$inferSelect;
 
+const BOOKING_OVERLAP_SQL_STATE = '23P01';
+const BOOKING_OVERLAP_CONSTRAINT = 'bookings_workspace_time_exclusion';
+
+function isBookingOverlapConstraintError(error: unknown): boolean {
+	return (
+		typeof error === 'object' &&
+		error !== null &&
+		'code' in error &&
+		error.code === BOOKING_OVERLAP_SQL_STATE &&
+		'constraint' in error &&
+		error.constraint === BOOKING_OVERLAP_CONSTRAINT
+	);
+}
+
 export const bookingService = {
 	/**
 	 * Checks if a booking overlaps with existing bookings
@@ -60,17 +74,27 @@ export const bookingService = {
 			throw new Error('BOOKING_OVERLAP');
 		}
 
-		const [booking] = await db
-			.insert(bookings)
-			.values({
-				userId,
-				workspaceId: data.workspaceId,
-				startAt,
-				endAt,
-			})
-			.returning();
+		try {
+			const [booking] = await db
+				.insert(bookings)
+				.values({
+					userId,
+					workspaceId: data.workspaceId,
+					startAt,
+					endAt,
+				})
+				.returning();
 
-		return booking;
+			return booking;
+		} catch (error) {
+			// PostgreSQL remains the source of truth if two requests pass the
+			// application-level overlap check at the same time.
+			if (isBookingOverlapConstraintError(error)) {
+				throw new Error('BOOKING_OVERLAP', { cause: error });
+			}
+
+			throw error;
+		}
 	},
 
 	async getByUser(userId: string): Promise<Booking[]> {
