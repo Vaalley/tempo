@@ -75,12 +75,17 @@ un stockage partagé.
 
 ## Scripts
 
-| Commande             | Description                                    |
-| -------------------- | ---------------------------------------------- |
-| `bun run dev`        | Lance le serveur avec hot reload               |
-| `bun run start`      | Lance le serveur en mode normal                |
-| `bun run typecheck`  | Vérifie les sources TypeScript                 |
-| `bun run db:migrate` | Applique les migrations PostgreSQL             |
-| `bun run db:seed`    | Charge les comptes et espaces de démonstration |
-| `bun run test`       | Lance les tests unitaires                      |
-| `bun run test:watch` | Tests en mode watch                            |
+| Commande                            | Description                                              |
+| ----------------------------------- | -------------------------------------------------------- |
+| `bun run dev`                       | Lance le serveur avec hot reload                         |
+| `bun run start`                     | Lance le serveur en mode normal                          |
+| `bun run typecheck`                 | Vérifie les sources TypeScript                           |
+| `bun run db:migrate`                | Applique les migrations PostgreSQL                       |
+| `bun run db:seed`                   | Charge les comptes et espaces de démonstration           |
+| `bun run test`                      | Lance les tests unitaires et HTTP                        |
+| `bun run test:integration:postgres` | Teste les migrations et réservations sur PostgreSQL réel |
+| `bun run test:watch`                | Tests en mode watch                                      |
+
+Le test d'intégration nécessite `DATABASE_URL`. Il crée des données portant des
+identifiants uniques et les supprime après chaque scénario. Il est exécuté dans
+le job Docker de la CI, une fois PostgreSQL sain et les migrations appliquées.

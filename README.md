@@ -121,7 +121,7 @@ bun --filter frontend dev         # http://localhost:5173
 | `bun run dev`       | Lance tous les workspaces en mode dev |
 | `bun run build`     | Build tous les workspaces             |
 | `bun run typecheck` | Vérifie TypeScript et Svelte          |
-| `bun run test`      | Lance tous les tests                  |
+| `bun run test`      | Lance les tests unitaires et HTTP     |
 | `bun run lint`      | Lint avec Oxlint                      |
 | `bun run format`    | Formate le code                       |
 | `bun run precommit` | Format + Lint + Types + Tests         |
@@ -162,6 +162,15 @@ espaces portant les noms de démonstration.
 docker compose ps
 curl --fail http://localhost:3000/health
 curl --fail http://localhost:5173/
+```
+
+La suite d'intégration PostgreSQL applique les migrations, crée une réservation
+complète, puis lance deux créations concurrentes sur le même créneau. Elle
+vérifie qu'une seule insertion subsiste et que l'autre requête reçoit un conflit
+HTTP 409. Les données créées par la suite sont supprimées automatiquement :
+
+```bash
+docker compose exec --no-TTY backend bun run test:integration:postgres
 ```
 
 ### Sauvegarde et restauration

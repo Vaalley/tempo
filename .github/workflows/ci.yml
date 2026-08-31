@@ -61,6 +61,9 @@ jobs:
             - name: Load Reproducible Demo Data
               run: docker compose --profile demo run --build --rm seed
 
+            - name: Run PostgreSQL Integration Tests
+              run: docker compose exec --no-TTY backend bun run test:integration:postgres
+
             - name: Verify Public Endpoints
               run: |
                   curl --fail --silent http://localhost:3000/health

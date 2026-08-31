@@ -9,14 +9,29 @@ const BOOKING_OVERLAP_SQL_STATE = '23P01';
 const BOOKING_OVERLAP_CONSTRAINT = 'bookings_workspace_time_exclusion';
 
 function isBookingOverlapConstraintError(error: unknown): boolean {
-	return (
-		typeof error === 'object' &&
-		error !== null &&
-		'code' in error &&
-		error.code === BOOKING_OVERLAP_SQL_STATE &&
-		'constraint' in error &&
-		error.constraint === BOOKING_OVERLAP_CONSTRAINT
-	);
+	let currentError = error;
+	const visitedErrors = new Set<object>();
+
+	while (
+		typeof currentError === 'object' &&
+		currentError !== null &&
+		!visitedErrors.has(currentError)
+	) {
+		visitedErrors.add(currentError);
+
+		if (
+			'code' in currentError &&
+			currentError.code === BOOKING_OVERLAP_SQL_STATE &&
+			'constraint' in currentError &&
+			currentError.constraint === BOOKING_OVERLAP_CONSTRAINT
+		) {
+			return true;
+		}
+
+		currentError = 'cause' in currentError ? currentError.cause : undefined;
+	}
+
+	return false;
 }
 
 export const bookingService = {

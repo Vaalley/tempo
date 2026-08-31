@@ -198,9 +198,14 @@ describe('BookingService', () => {
 				.mockResolvedValueOnce({ id: 1, name: 'Workspace 1' })
 				.mockResolvedValueOnce(undefined);
 			mockReturning.mockRejectedValue(
-				Object.assign(new Error('conflicting key value violates exclusion constraint'), {
-					code: '23P01',
-					constraint: 'bookings_workspace_time_exclusion',
+				new Error('Failed query', {
+					cause: Object.assign(
+						new Error('conflicting key value violates exclusion constraint'),
+						{
+							code: '23P01',
+							constraint: 'bookings_workspace_time_exclusion',
+						},
+					),
 				}),
 			);
 

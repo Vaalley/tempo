@@ -6,7 +6,8 @@
 		"typecheck": "bun run --bun tsc --noEmit",
 		"db:migrate": "bun run src/db/migrate.ts",
 		"db:seed": "bun run src/db/seed.ts",
-		"test": "bun test",
+		"test": "bun test --path-ignore-patterns='**/integration/**'",
+		"test:integration:postgres": "RUN_POSTGRES_INTEGRATION=true bun test src/integration/postgres-bookings.integration.spec.ts",
 		"test:watch": "bun test --watch"
 	},
 	"dependencies": {
