@@ -13,11 +13,7 @@ function getJwtSecret(): string {
 	return secret;
 }
 
-type UserPayload = {
-	id: string;
-	email: string;
-	role: string | null;
-};
+type UserPayload = Pick<typeof users.$inferSelect, 'id' | 'email' | 'role'>;
 
 export const authService = {
 	async register(email: string, password: string): Promise<UserPayload> {

@@ -20,6 +20,15 @@ export type WorkspaceStat = {
 
 export type WorkspaceStats = WorkspaceStat[];
 
+type BookingTimeRange = {
+	startAt: Date;
+	endAt: Date;
+};
+
+function isActiveBooking(booking: BookingTimeRange, now: Date): boolean {
+	return booking.startAt <= now && booking.endAt > now;
+}
+
 export const analyticsService = {
 	async getOverview(): Promise<Overview> {
 		const [users, workspaces, bookings] = await Promise.all([
@@ -29,10 +38,16 @@ export const analyticsService = {
 		]);
 
 		const now = new Date();
-		const activeBookings = bookings.filter((b) => b.endAt > now).length;
+		const activeBookingRows = bookings.filter((booking) => isActiveBooking(booking, now));
+		const activeBookings = activeBookingRows.length;
+		const occupiedWorkspaceCount = new Set(
+			activeBookingRows.map((booking) => booking.workspaceId),
+		).size;
 		const totalWorkspaces = workspaces.length;
 		const occupancyRate =
-			totalWorkspaces === 0 ? 0 : Math.round((activeBookings / totalWorkspaces) * 100);
+			totalWorkspaces === 0
+				? 0
+				: Math.min(100, Math.round((occupiedWorkspaceCount / totalWorkspaces) * 100));
 
 		return {
 			totalUsers: users.length,
@@ -55,11 +70,10 @@ export const analyticsService = {
 
 		return workspaces.map((w) => {
 			const wsBookings = bookings.filter((b) => b.workspaceId === w.id);
-			const activeBookings = wsBookings.filter((b) => b.endAt > now).length;
-			const utilizationRate =
-				w.capacity === 0
-					? 0
-					: Math.min(100, Math.round((activeBookings / w.capacity) * 100));
+			const activeBookings = wsBookings.filter((booking) =>
+				isActiveBooking(booking, now),
+			).length;
+			const utilizationRate = activeBookings > 0 ? 100 : 0;
 
 			return {
 				id: w.id,

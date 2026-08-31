@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 60 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN` et à la traduction d'un conflit concurrent PostgreSQL. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 61 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL et aux bornes temporelles des statistiques. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 60 tests unitaires backend au total ;
+- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations et statistiques) — 61 tests unitaires backend au total ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -780,11 +780,24 @@ EXCLUDE USING gist (
     "workspace_id" WITH =,
     tsrange("start_at", "end_at", '[)') WITH &&
 );
+
+UPDATE "users" SET "role" = 'USER' WHERE "role" IS NULL;
+UPDATE "workspaces" SET "capacity" = 1 WHERE "capacity" < 1;
+
+ALTER TABLE "users" ALTER COLUMN "role" SET NOT NULL;
+ALTER TABLE "workspaces"
+ADD CONSTRAINT "workspaces_capacity_check" CHECK ("capacity" >= 1);
+
+CREATE INDEX "bookings_user_id_idx" ON "bookings" ("user_id");
+CREATE INDEX "bookings_workspace_time_idx"
+ON "bookings" ("workspace_id", "start_at", "end_at");
 ```
 
 ### 5.5.4. Argumentation
 
-La vérification applicative seule suivait deux étapes séparées — lecture des réservations existantes puis insertion — et laissait donc une fenêtre de concurrence. Cette migration `0002_booking_overlap_constraint.sql` confie la décision finale à PostgreSQL : la contrainte d'exclusion GiST interdit atomiquement deux intervalles qui se chevauchent pour un même espace. La borne de fin est exclue (`[)`), ce qui autorise deux réservations consécutives. La contrainte `CHECK` empêche en outre les intervalles vides ou inversés.
+La vérification applicative seule suivait deux étapes séparées — lecture des réservations existantes puis insertion — et laissait donc une fenêtre de concurrence. La migration `0002_booking_overlap_constraint.sql` confie la décision finale à PostgreSQL : la contrainte d'exclusion GiST interdit atomiquement deux intervalles qui se chevauchent pour un même espace. La borne de fin est exclue (`[)`), ce qui autorise deux réservations consécutives. La contrainte `CHECK` empêche en outre les intervalles vides ou inversés.
+
+La migration `0003_data_integrity_indexes.sql` rend le rôle obligatoire, garantit une capacité minimale de 1 et ajoute les index correspondant aux consultations par utilisateur et par espace/créneau. Avant d'activer les contraintes, elle remet les éventuelles anciennes valeurs nulles ou inférieures à 1 à leurs valeurs sûres par défaut.
 
 ## 5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
 
@@ -911,6 +924,24 @@ _Données/Actions_
 _Ecran/Affichage_
 
 Formulaire unique de connexion/inscription (`/login`), redirection vers `/bookings` après authentification réussie.
+
+### 5.7.6. Fonctionnalité 6 — Statistiques d'occupation (Admin)
+
+_Description_
+
+L'administrateur consulte le nombre d'utilisateurs, d'espaces et de réservations, ainsi que l'occupation actuelle globale et par espace. Une réservation est active lorsque `startAt <= maintenant < endAt` : une réservation future n'est donc pas comptée comme active.
+
+_Données/Actions_
+
+| En entrée                                             | Traitement                                                                  | En sortie                                                      | Contrôles           |
+| ----------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------- |
+| Utilisateurs, espaces, réservations et heure courante | Filtrage des réservations actives et décompte des espaces distincts occupés | Totaux, réservations actives et taux d'occupation de 0 à 100 % | Rôle `ADMIN` requis |
+
+Le taux global est calculé ainsi : `nombre d'espaces distincts actuellement occupés / nombre total d'espaces × 100`. Il vaut 0 % lorsqu'aucun espace n'existe et est plafonné à 100 % par sécurité. Comme une réservation bloque l'espace entier et que le modèle ne stocke pas le nombre de participants, l'utilisation actuelle d'un espace vaut 100 % s'il possède une réservation active, sinon 0 % ; la capacité affichée est informative et ne sert pas de dénominateur.
+
+_Ecran/Affichage_
+
+La page `/admin/analytics`, réservée aux administrateurs, présente des cartes de synthèse et un tableau détaillé par espace.
 
 # 6\. SPECIFICATIONS TECHNIQUES
 
@@ -1171,7 +1202,7 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | `analytics`  | `analytics.service.spec.ts`  | Indicateurs globaux et agrégation par espace                                    |
 | `authGuard`  | `auth.guard.spec.ts`         | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
 
-Au total, **60 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **61 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

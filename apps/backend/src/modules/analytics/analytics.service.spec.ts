@@ -1,9 +1,11 @@
 import { describe, it, expect, mock, beforeEach } from 'bun:test';
 import { analyticsService } from './analytics.service';
 
-const mockUsersFindMany = mock(() => Promise.resolve([]));
-const mockWorkspacesFindMany = mock(() => Promise.resolve([]));
-const mockBookingsFindMany = mock(() => Promise.resolve([]));
+type MockRow = Record<string, unknown>;
+
+const mockUsersFindMany = mock((): Promise<MockRow[]> => Promise.resolve([]));
+const mockWorkspacesFindMany = mock((): Promise<MockRow[]> => Promise.resolve([]));
+const mockBookingsFindMany = mock((): Promise<MockRow[]> => Promise.resolve([]));
 
 mock.module('../../db', () => ({
 	db: {
@@ -40,12 +42,15 @@ describe('AnalyticsService', () => {
 		});
 
 		it('should count totals across users, workspaces and bookings', async () => {
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
+			const later = new Date(Date.now() + 120_000);
 			mockUsersFindMany.mockResolvedValue([{ id: 'u1' }, { id: 'u2' }]);
 			mockWorkspacesFindMany.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }]);
 			mockBookingsFindMany.mockResolvedValue([
-				{ id: 'b1', endAt: new Date('2099-01-01') },
-				{ id: 'b2', endAt: new Date('2099-01-01') },
-				{ id: 'b3', endAt: new Date('2000-01-01') },
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
+				{ id: 'b2', workspaceId: 2, startAt: future, endAt: later },
+				{ id: 'b3', workspaceId: 3, startAt: past, endAt: past },
 			]);
 
 			const result = await analyticsService.getOverview();
@@ -53,42 +58,66 @@ describe('AnalyticsService', () => {
 			expect(result.totalUsers).toBe(2);
 			expect(result.totalWorkspaces).toBe(3);
 			expect(result.totalBookings).toBe(3);
-			expect(result.activeBookings).toBe(2);
+			expect(result.activeBookings).toBe(1);
 		});
 
-		it('should compute occupancy rate as activeBookings / totalWorkspaces', async () => {
+		it('should compute occupancy from distinct occupied workspaces', async () => {
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
 			mockUsersFindMany.mockResolvedValue([]);
 			mockWorkspacesFindMany.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
 			mockBookingsFindMany.mockResolvedValue([
-				{ id: 'b1', endAt: new Date('2099-01-01') },
-				{ id: 'b2', endAt: new Date('2099-01-01') },
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
+				{ id: 'b2', workspaceId: 2, startAt: past, endAt: future },
+				{ id: 'b3', workspaceId: 2, startAt: past, endAt: future },
 			]);
 
 			const result = await analyticsService.getOverview();
 
-			// 2 active / 4 workspaces = 50%
+			// 2 distinct occupied workspaces / 4 workspaces = 50%.
+			expect(result.activeBookings).toBe(3);
 			expect(result.occupancyRate).toBe(50);
 		});
 
+		it('should cap occupancy rate at 100 when data is inconsistent', async () => {
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
+			mockUsersFindMany.mockResolvedValue([]);
+			mockWorkspacesFindMany.mockResolvedValue([{ id: 1 }]);
+			mockBookingsFindMany.mockResolvedValue([
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
+				{ id: 'b2', workspaceId: 2, startAt: past, endAt: future },
+			]);
+
+			const result = await analyticsService.getOverview();
+
+			expect(result.occupancyRate).toBe(100);
+		});
+
 		it('should return 0 occupancy rate when no workspaces exist', async () => {
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
 			mockUsersFindMany.mockResolvedValue([{ id: 'u1' }]);
 			mockWorkspacesFindMany.mockResolvedValue([]);
-			mockBookingsFindMany.mockResolvedValue([{ id: 'b1', endAt: new Date('2099-01-01') }]);
+			mockBookingsFindMany.mockResolvedValue([
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
+			]);
 
 			const result = await analyticsService.getOverview();
 
 			expect(result.occupancyRate).toBe(0);
 		});
 
-		it('should only count bookings with endAt in the future as active', async () => {
-			const past = new Date('2000-01-01');
-			const future = new Date('2099-01-01');
+		it('should only count bookings whose time range currently contains now', async () => {
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
+			const later = new Date(Date.now() + 120_000);
 			mockUsersFindMany.mockResolvedValue([]);
 			mockWorkspacesFindMany.mockResolvedValue([{ id: 1 }]);
 			mockBookingsFindMany.mockResolvedValue([
-				{ id: 'b1', endAt: future },
-				{ id: 'b2', endAt: past },
-				{ id: 'b3', endAt: past },
+				{ id: 'active', workspaceId: 1, startAt: past, endAt: future },
+				{ id: 'scheduled', workspaceId: 1, startAt: future, endAt: later },
+				{ id: 'ended', workspaceId: 1, startAt: past, endAt: past },
 			]);
 
 			const result = await analyticsService.getOverview();
@@ -113,12 +142,13 @@ describe('AnalyticsService', () => {
 				{ id: 1, name: 'Desk A', type: 'DESK', capacity: 1 },
 				{ id: 2, name: 'Room B', type: 'MEETING_ROOM', capacity: 8 },
 			]);
-			const future = new Date('2099-01-01');
-			const past = new Date('2000-01-01');
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
+			const later = new Date(Date.now() + 120_000);
 			mockBookingsFindMany.mockResolvedValue([
-				{ id: 'b1', workspaceId: 1, endAt: future },
-				{ id: 'b2', workspaceId: 1, endAt: past },
-				{ id: 'b3', workspaceId: 2, endAt: future },
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
+				{ id: 'b2', workspaceId: 1, startAt: past, endAt: past },
+				{ id: 'b3', workspaceId: 2, startAt: future, endAt: later },
 			]);
 
 			const result = await analyticsService.getWorkspaceStats();
@@ -129,35 +159,38 @@ describe('AnalyticsService', () => {
 			expect(deskA?.activeBookings).toBe(1);
 			const roomB = result.find((w) => w.id === 2);
 			expect(roomB?.bookingCount).toBe(1);
-			expect(roomB?.activeBookings).toBe(1);
+			expect(roomB?.activeBookings).toBe(0);
 		});
 
-		it('should compute utilization rate capped at 100', async () => {
+		it('should report an occupied workspace as fully utilized regardless of capacity', async () => {
 			mockWorkspacesFindMany.mockResolvedValue([
-				{ id: 1, name: 'Small Desk', type: 'DESK', capacity: 1 },
+				{ id: 1, name: 'Meeting Room', type: 'MEETING_ROOM', capacity: 8 },
 			]);
-			const future = new Date('2099-01-01');
+			const past = new Date(Date.now() - 60_000);
+			const future = new Date(Date.now() + 60_000);
 			mockBookingsFindMany.mockResolvedValue([
-				{ id: 'b1', workspaceId: 1, endAt: future },
-				{ id: 'b2', workspaceId: 1, endAt: future },
-				{ id: 'b3', workspaceId: 1, endAt: future },
+				{ id: 'b1', workspaceId: 1, startAt: past, endAt: future },
 			]);
 
 			const result = await analyticsService.getWorkspaceStats();
 
-			// 3 active / capacity 1 = 300% -> capped at 100
-			expect(result[0].activeBookings).toBe(3);
+			expect(result[0].activeBookings).toBe(1);
 			expect(result[0].utilizationRate).toBe(100);
 		});
 
-		it('should return 0 utilization when capacity is 0', async () => {
+		it('should report a scheduled workspace as not currently utilized', async () => {
 			mockWorkspacesFindMany.mockResolvedValue([
-				{ id: 1, name: 'Broken', type: 'DESK', capacity: 0 },
+				{ id: 1, name: 'Desk', type: 'DESK', capacity: 1 },
 			]);
-			mockBookingsFindMany.mockResolvedValue([]);
+			const future = new Date(Date.now() + 60_000);
+			const later = new Date(Date.now() + 120_000);
+			mockBookingsFindMany.mockResolvedValue([
+				{ id: 'b1', workspaceId: 1, startAt: future, endAt: later },
+			]);
 
 			const result = await analyticsService.getWorkspaceStats();
 
+			expect(result[0].activeBookings).toBe(0);
 			expect(result[0].utilizationRate).toBe(0);
 		});
 	});

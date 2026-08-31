@@ -70,10 +70,8 @@
 		}
 	}
 
-	function utilizationVariant(rate: number): 'default' | 'secondary' | 'destructive' {
-		if (rate >= 80) return 'destructive';
-		if (rate >= 50) return 'default';
-		return 'secondary';
+	function utilizationVariant(rate: number): 'default' | 'secondary' {
+		return rate > 0 ? 'default' : 'secondary';
 	}
 </script>
 
@@ -85,7 +83,9 @@
 	<div class="flex justify-between items-center mb-6">
 		<div>
 			<h1 class="text-3xl font-bold">Analytique</h1>
-			<p class="text-muted-foreground text-sm mt-1">Taux d'occupation et utilisation des espaces</p>
+			<p class="text-muted-foreground text-sm mt-1">
+				Part des espaces occupés par une réservation en cours
+			</p>
 		</div>
 		<div class="flex items-center gap-2">
 			<Button variant="ghost" size="sm" href="/">
@@ -171,7 +171,10 @@
 		<!-- Détail par espace -->
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Utilisation par espace</Card.Title>
+				<Card.Title>Utilisation actuelle par espace</Card.Title>
+				<Card.Description>
+					Un espace réservé en ce moment est utilisé à 100 %, quelle que soit sa capacité.
+				</Card.Description>
 			</Card.Header>
 			<Card.Content class="p-0">
 				{#if workspaceStats.length === 0}
