@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 86 tests backend avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la traduction d'un conflit concurrent PostgreSQL, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la traduction d'un conflit concurrent PostgreSQL, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -423,7 +423,7 @@ Il écrit et documente les scripts et la procédure de déploiement d’une appl
 
 _Ma contribution sur le projet Tempo_
 
-J'ai écrit et documenté les scripts de déploiement de l'application : deux `Dockerfile` multi-stage (un par workspace) et un fichier `docker-compose.yml` orchestrant PostgreSQL, MongoDB, le backend et le frontend. Les versions de Bun et des bases sont épinglées. Compose attend les health checks des bases, le backend applique automatiquement les migrations Drizzle avant de démarrer, puis le frontend attend que l'API soit saine. Un profil optionnel charge un jeu de démonstration idempotent. La procédure locale, les sauvegardes, la restauration et la stratégie de rollback sont documentées dans le `README.md`. L'exécution complète reste à vérifier sur une machine disposant de Docker.
+J'ai écrit et documenté les scripts de déploiement de l'application : deux `Dockerfile` multi-stage (un par workspace) et un fichier `docker-compose.yml` orchestrant PostgreSQL, MongoDB, le backend et le frontend. Les versions de Bun et des bases sont épinglées. Compose attend les health checks des bases, le backend applique automatiquement les migrations Drizzle avant de démarrer, puis le frontend attend que l'API soit saine. Un profil optionnel charge un jeu de démonstration idempotent. La procédure locale, les sauvegardes, la restauration et la stratégie de rollback sont documentées dans le `README.md`. L'exécution complète a été validée sur un runner GitHub disposant de Docker par le pipeline d'intégration continue.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -444,7 +444,7 @@ Selon les projets, la communication écrite et orale peut s’effectuer en angla
 
 _Ma contribution sur le projet Tempo_
 
-Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration et vérifie les endpoints publics ainsi que la connexion administrateur. Le workflow est configuré ; une exécution réussie sur GitHub et sa capture restent nécessaires comme preuves distantes.
+Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration et vérifie les endpoints publics ainsi que la connexion administrateur. L'[exécution réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) apporte la preuve distante du fonctionnement du pipeline ; sa capture reste à insérer dans le dossier final.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,11 +632,11 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 86 tests backend et 15 tests frontend ;
+- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 94 tests backend et 15 tests frontend ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, regroupés dans un script `precommit` manuel et exécutés en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
-- **Non-régression** : intégration continue (GitHub Actions) détectant les échecs de format, lint, types, tests ou déploiement Docker ; le blocage effectif des fusions nécessite encore de configurer la protection de la branche `main` sur GitHub.
+- **Non-régression** : intégration continue (GitHub Actions) détectant les échecs de format, lint, types, tests ou déploiement Docker. La protection de `main` reste volontairement désactivée pendant le développement : la CI informe donc le développeur sans bloquer techniquement ses envois directs.
 
 # 5\. SPECIFICATIONS FONCTIONNELLES
 
@@ -973,7 +973,7 @@ Le choix de Bun et Hono répond à un objectif de performance et de modernité t
 
 ## 6.3. Navigation et accessibilité
 
-L'application est actuellement prévue pour une exécution locale via Docker Compose (`docker compose up --build --detach --wait`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place. La configuration Compose est prête, mais son exécution locale reste à vérifier sur une machine disposant de Docker.
+L'application est actuellement prévue pour une exécution locale via Docker Compose (`docker compose up --build --detach --wait`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place. La configuration Compose et son exécution complète sont vérifiées automatiquement sur un runner GitHub ; l'environnement Windows local utilisé pour le développement ne dispose pas de Docker.
 
 Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`, `/admin/audit`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
 
@@ -997,7 +997,7 @@ Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux
 
 **Sauvegarde/Stockage :** volumes Docker persistants (`postgres_data`, `mongo_data`) pour la durabilité des données en environnement conteneurisé. Le `README.md` documente les commandes `pg_dump`/`pg_restore` et `mongodump`/`mongorestore`, ainsi que la stratégie de rollback associée.
 
-**Versioning :** Git/GitHub, avec un workflow d'intégration continue détectant le code non testé, mal formaté, non typé ou non déployable. La protection de branche nécessaire pour empêcher effectivement une fusion reste à configurer et à prouver sur GitHub.
+**Versioning :** Git/GitHub, avec un workflow d'intégration continue détectant le code non testé, mal formaté, non typé ou non déployable. La branche `main` n'est volontairement pas protégée pendant la phase de développement ; aucune affirmation de blocage automatique des envois ou des fusions n'est donc faite.
 
 # 7\. REALISATIONS
 
@@ -1190,7 +1190,7 @@ Plusieurs mesures de sécurité ont été mises en place à chaque couche de l'a
 - **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
 - **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
 - **Sécurité HTTP** : CORS limité à l'origine frontend configurée, en-têtes défensifs et limitation des requêtes de connexion/inscription avec réponse HTTP 429 ;
-- **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage et tests unitaires avant toute fusion de code ;
+- **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage, types, tests, build et recette Docker à chaque envoi ou proposition de fusion ;
 - **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via des variables d'environnement. Seuls des modèles `.env.example` avec valeurs factices sont versionnés ; les fichiers `.env` réels sont ignorés par Git.
 
 Dans le MVP, le jeton est stocké dans `localStorage`. Ce choix simplifie le client RPC mais rend le jeton accessible à tout script exécuté dans la page en cas de faille XSS. La CSP ajoutée aux réponses de l'API ne protège pas à elle seule le document frontend : ce risque demeure. Avant une exposition publique, l'amélioration recommandée est une session portée par un cookie `HttpOnly`, `Secure` et `SameSite`, accompagnée d'une protection CSRF adaptée. Le limiteur actuel est local à chaque processus ; plusieurs instances backend nécessiteraient un stockage partagé, par exemple Redis.
@@ -1211,11 +1211,12 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | `analytics`   | `analytics.service.spec.ts`                                                              | Indicateurs globaux et agrégation par espace                                         |
 | `authGuard`   | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
 | Routes admin  | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
+| Routes HTTP   | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
 | Sécurité HTTP | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
 | Seed démo     | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
 | Frontend      | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **86 tests backend et 15 tests frontend** sont exécutés par `bun run test`, en complément du lint, du formatage, du type-check et du build. Le workflow GitHub Actions doit encore être exécuté avec succès sur le dépôt distant afin d'apporter la preuve CI correspondante. Son job Docker construit et démarre la stack, charge le seed de démonstration et vérifie les endpoints publics.
+Au total, **94 tests backend et 15 tests frontend** sont exécutés par `bun run test`, en complément du lint, du formatage, du type-check et du build. L'[exécution GitHub Actions réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) constitue la preuve CI distante. Son job Docker construit et démarre la stack, charge le seed de démonstration et vérifie les endpoints publics.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
