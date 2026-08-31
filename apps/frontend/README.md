@@ -18,6 +18,8 @@ src/
 ├── app.html              # Template HTML
 ├── lib/
 │   ├── client.ts         # Client API (Hono RPC)
+│   ├── authorized-api.ts # Requêtes protégées et gestion 401/403
+│   ├── route-guard.ts    # Gardes de navigation USER/ADMIN
 │   └── auth.svelte.ts    # Store d'authentification (Runes)
 └── routes/
     ├── +layout.svelte    # Layout principal
@@ -40,6 +42,11 @@ bun run dev
 ```
 
 Le frontend est disponible sur **http://localhost:5173**
+
+La variable `PUBLIC_API_URL` est obligatoire et désigne l'URL publique du
+backend, par exemple `http://localhost:3000`. Elle peut être définie dans le
+fichier `.env` racine utilisé par Docker Compose ou dans l'environnement du
+processus frontend.
 
 ## Scripts
 

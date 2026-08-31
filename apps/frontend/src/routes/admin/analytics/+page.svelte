@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { getAuthClient } from '$lib/client';
+	import type { AnalyticsOverview, WorkspaceStat } from '$lib/api-types';
+	import { authorizedApi } from '$lib/authorized-api';
+	import { getErrorMessage } from '$lib/api-response';
 	import { auth } from '$lib/auth.svelte';
-	import { goto } from '$app/navigation';
+	import { enforceRouteAccess, logoutAndRedirect } from '$lib/route-guard';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -17,57 +19,33 @@
 	import Activity from '@lucide/svelte/icons/activity';
 	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
-	type Overview = {
-		totalUsers: number;
-		totalWorkspaces: number;
-		totalBookings: number;
-		activeBookings: number;
-		occupancyRate: number;
-	};
-
-	type WorkspaceStat = {
-		id: number;
-		name: string;
-		type: 'DESK' | 'MEETING_ROOM';
-		capacity: number;
-		bookingCount: number;
-		activeBookings: number;
-		utilizationRate: number;
-	};
-
-	let overview = $state<Overview | null>(null);
+	let overview = $state<AnalyticsOverview | null>(null);
 	let workspaceStats = $state<WorkspaceStat[]>([]);
 	let loading = $state(true);
 	let error = $state('');
 
 	onMount(async () => {
-		if (!auth.isLoggedIn) {
-			goto('/login');
-			return;
-		}
-		if (auth.user?.role !== 'ADMIN') {
-			goto('/');
-			return;
-		}
+		if (!(await enforceRouteAccess('ADMIN'))) return;
 		await Promise.all([fetchOverview(), fetchWorkspaceStats()]);
 		loading = false;
 	});
 
-	async function fetchOverview() {
-		const client = getAuthClient();
-		const res = await (client as any).analytics.overview.$get();
-		if (res.ok) {
-			overview = await res.json();
-		} else {
-			error = 'Erreur lors du chargement des statistiques';
+	async function fetchOverview(): Promise<void> {
+		try {
+			overview = await authorizedApi.analytics.overview();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors du chargement des statistiques');
 		}
 	}
 
-	async function fetchWorkspaceStats() {
-		const client = getAuthClient();
-		const res = await (client as any).analytics.workspaces.$get();
-		if (res.ok) {
-			workspaceStats = await res.json();
+	async function fetchWorkspaceStats(): Promise<void> {
+		try {
+			workspaceStats = await authorizedApi.analytics.workspaces();
+		} catch (caughtError) {
+			error = getErrorMessage(
+				caughtError,
+				'Erreur lors du chargement des statistiques par espace',
+			);
 		}
 	}
 
@@ -106,7 +84,7 @@
 			<Button
 				variant="ghost"
 				size="sm"
-				onclick={() => { auth.logout(); goto('/login'); }}
+				onclick={logoutAndRedirect}
 			>
 				<LogOut class="size-4" />
 			</Button>

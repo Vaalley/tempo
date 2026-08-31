@@ -1,18 +1,48 @@
+import { env } from '$env/dynamic/public';
 import { hc } from 'hono/client';
-// Import du type directement depuis le code source du backend
 import type { AppType } from '@tempo/backend/src/index';
 
-const API_URL = 'http://localhost:3000/';
+export interface ApiClientOptions {
+	token?: string | null;
+	fetch?: typeof globalThis.fetch;
+}
 
-// Client sans authentification (pour login/register)
-const client = hc<AppType>(API_URL);
+export function normalizeApiUrl(value: string | undefined): string {
+	const apiUrl = value?.trim();
 
-// Client avec token JWT (pour les routes protégées)
-export function getAuthClient() {
-	const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-	return hc<AppType>(API_URL, {
-		headers: token ? { Authorization: `Bearer ${token}` } : {},
+	if (!apiUrl) {
+		throw new Error('PUBLIC_API_URL est obligatoire');
+	}
+
+	let parsedUrl: URL;
+
+	try {
+		parsedUrl = new URL(apiUrl);
+	} catch {
+		throw new Error('PUBLIC_API_URL doit être une URL HTTP(S) valide');
+	}
+
+	if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+		throw new Error('PUBLIC_API_URL doit être une URL HTTP(S) valide');
+	}
+
+	return `${parsedUrl.origin}${parsedUrl.pathname.replace(/\/$/, '')}/`;
+}
+
+export function createApiClient(apiUrl: string | undefined, options: ApiClientOptions = {}) {
+	return hc<AppType>(normalizeApiUrl(apiUrl), {
+		headers: options.token ? { Authorization: `Bearer ${options.token}` } : {},
+		fetch: options.fetch,
 	});
 }
 
-export default client;
+export type ApiClient = ReturnType<typeof createApiClient>;
+
+export function getPublicClient(): ApiClient {
+	return createApiClient(env.PUBLIC_API_URL);
+}
+
+export function getAuthClient(): ApiClient {
+	const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+	return createApiClient(env.PUBLIC_API_URL, { token });
+}

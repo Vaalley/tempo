@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import type { AuditLog } from '$lib/api-types';
+	import { getErrorMessage } from '$lib/api-response';
 	import { auth } from '$lib/auth.svelte';
-	import { getAuthClient } from '$lib/client';
+	import { authorizedApi } from '$lib/authorized-api';
+	import { enforceRouteAccess, logoutAndRedirect } from '$lib/route-guard';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -14,49 +16,25 @@
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import LogOut from '@lucide/svelte/icons/log-out';
 
-	type AuditAction = 'DELETE_WORKSPACE' | 'DELETE_BOOKING' | 'DELETE_USER';
-
-	type AuditLog = {
-		action: AuditAction;
-		entityType: 'workspace' | 'booking' | 'user';
-		entityId: string | number;
-		entityData: Record<string, unknown>;
-		performedBy: {
-			userId: string;
-			email: string;
-			role: 'ADMIN' | 'USER';
-		};
-		timestamp: string;
-	};
+	type AuditAction = AuditLog['action'];
 
 	let logs = $state<AuditLog[]>([]);
 	let loading = $state(true);
 	let error = $state('');
 
 	onMount(async () => {
-		if (!auth.isLoggedIn) {
-			goto('/login');
-			return;
-		}
-		if (auth.user?.role !== 'ADMIN') {
-			goto('/');
-			return;
-		}
+		if (!(await enforceRouteAccess('ADMIN'))) return;
 
 		await fetchLogs();
 		loading = false;
 	});
 
-	async function fetchLogs() {
-		const client = getAuthClient();
-		const res = await (client as any).audit.$get({ query: { limit: '100' } });
-
-		if (res.ok) {
-			logs = await res.json();
-			return;
+	async function fetchLogs(): Promise<void> {
+		try {
+			logs = await authorizedApi.audit.list();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, "Erreur lors du chargement des journaux d'audit");
 		}
-
-		error = "Erreur lors du chargement des journaux d'audit";
 	}
 
 	function actionLabel(action: AuditAction): string {
@@ -120,7 +98,7 @@
 			<Button
 				variant="ghost"
 				size="sm"
-				onclick={() => { auth.logout(); goto('/login'); }}
+				onclick={logoutAndRedirect}
 			>
 				<LogOut class="size-4" />
 			</Button>

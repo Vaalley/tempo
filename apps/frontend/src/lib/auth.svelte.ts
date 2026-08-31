@@ -1,66 +1,78 @@
-import client from './client';
+import type { AuthUser, LoginResponse, RegisteredUser } from './api-types';
+import { readApiJson } from './api-response';
+import { getPublicClient } from './client';
 
-// Store réactif pour l'état d'authentification (Svelte 5 Runes)
-let token = $state<string | null>(null);
-let user = $state<{ id: string; email: string; role: string } | null>(null);
+interface AuthStoreOptions {
+	getClient?: typeof getPublicClient;
+	getStorage?: () => Storage | null;
+}
 
-// Initialiser depuis localStorage au chargement
-if (typeof window !== 'undefined') {
-	token = localStorage.getItem('token');
-	const savedUser = localStorage.getItem('user');
-	if (savedUser) {
-		user = JSON.parse(savedUser);
+function browserStorage(): Storage | null {
+	return typeof window === 'undefined' ? null : localStorage;
+}
+
+function storedUser(storage: Storage | null): AuthUser | null {
+	const value = storage?.getItem('user');
+
+	if (!value) return null;
+
+	try {
+		return JSON.parse(value) as AuthUser;
+	} catch {
+		storage?.removeItem('user');
+		storage?.removeItem('token');
+		return null;
 	}
 }
 
-export const auth = {
-	get token() {
-		return token;
-	},
-	get user() {
-		return user;
-	},
-	get isLoggedIn() {
-		return !!token;
-	},
+export function createAuthStore(options: AuthStoreOptions = {}) {
+	const getClient = options.getClient ?? getPublicClient;
+	const storage = (options.getStorage ?? browserStorage)();
 
-	async login(email: string, password: string) {
-		const res = await (client as any).auth.login.$post({
-			json: { email, password },
-		});
+	let token = $state<string | null>(storage?.getItem('token') ?? null);
+	let user = $state<AuthUser | null>(storedUser(storage));
 
-		if (!res.ok) {
-			const error = await res.json();
-			throw new Error((error as { error: string }).error || 'Erreur de connexion');
-		}
+	return {
+		get token() {
+			return token;
+		},
+		get user() {
+			return user;
+		},
+		get isLoggedIn() {
+			return Boolean(token && user);
+		},
 
-		const data = await res.json();
-		token = data.token;
-		user = data.user;
+		async login(email: string, password: string): Promise<LoginResponse> {
+			const response = await getClient().auth.login.$post({
+				json: { email, password },
+			});
+			const data = await readApiJson<LoginResponse>(response, 'Erreur de connexion');
 
-		localStorage.setItem('token', data.token);
-		localStorage.setItem('user', JSON.stringify(data.user));
+			token = data.token;
+			user = data.user;
+			storage?.setItem('token', data.token);
+			storage?.setItem('user', JSON.stringify(data.user));
 
-		return data;
-	},
+			return data;
+		},
 
-	async register(email: string, password: string) {
-		const res = await (client as any).auth.register.$post({
-			json: { email, password },
-		});
+		async register(email: string, password: string): Promise<RegisteredUser> {
+			const response = await getClient().auth.register.$post({
+				json: { email, password },
+			});
 
-		if (!res.ok) {
-			const error = await res.json();
-			throw new Error((error as { error: string }).error || "Erreur d'inscription");
-		}
+			return await readApiJson<RegisteredUser>(response, "Erreur d'inscription");
+		},
 
-		return await res.json();
-	},
+		logout(): void {
+			token = null;
+			user = null;
+			storage?.removeItem('token');
+			storage?.removeItem('user');
+		},
+	};
+}
 
-	logout() {
-		token = null;
-		user = null;
-		localStorage.removeItem('token');
-		localStorage.removeItem('user');
-	},
-};
+export type AuthStore = ReturnType<typeof createAuthStore>;
+export const auth = createAuthStore();

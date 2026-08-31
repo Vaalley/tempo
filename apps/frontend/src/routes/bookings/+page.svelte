@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { getAuthClient } from '$lib/client';
+	import type { Booking, Workspace } from '$lib/api-types';
+	import { authorizedApi } from '$lib/authorized-api';
+	import { getErrorMessage } from '$lib/api-response';
 	import { auth } from '$lib/auth.svelte';
-	import { goto } from '$app/navigation';
+	import { enforceRouteAccess, logoutAndRedirect } from '$lib/route-guard';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -19,27 +21,6 @@
 	import X from '@lucide/svelte/icons/x';
 	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
-	type Workspace = {
-		id: number;
-		name: string;
-		type: 'DESK' | 'MEETING_ROOM';
-		capacity: number;
-	};
-
-	type Booking = {
-		id: string;
-		workspaceId: number;
-		startAt: string;
-		endAt: string;
-		createdAt: string;
-		workspace: Workspace;
-		user?: {
-			id: string;
-			email: string;
-			role: 'ADMIN' | 'USER';
-		};
-	};
-
 	let bookings = $state<Booking[]>([]);
 	let workspaces = $state<Workspace[]>([]);
 	let selectedWorkspaceId = $state<string>('');
@@ -52,30 +33,27 @@
 	let error = $state('');
 
 	onMount(async () => {
-		if (!auth.isLoggedIn) {
-			goto('/login');
-			return;
-		}
+		if (!(await enforceRouteAccess('AUTHENTICATED'))) return;
 		await Promise.all([fetchBookings(), fetchWorkspaces()]);
 	});
 
-	async function fetchBookings() {
-		const client = getAuthClient();
-		const res = await (client as any).bookings.$get();
-		if (res.ok) {
-			bookings = await res.json();
+	async function fetchBookings(): Promise<void> {
+		try {
+			bookings = await authorizedApi.bookings.list();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors du chargement des réservations');
 		}
 	}
 
-	async function fetchWorkspaces() {
-		const client = getAuthClient();
-		const res = await (client as any).workspaces.$get();
-		if (res.ok) {
-			workspaces = await res.json();
+	async function fetchWorkspaces(): Promise<void> {
+		try {
+			workspaces = await authorizedApi.workspaces.list();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors du chargement des espaces');
 		}
 	}
 
-	async function createBooking() {
+	async function createBooking(): Promise<void> {
 		if (!selectedWorkspaceId || !startDate || !endDate) {
 			error = 'Veuillez remplir tous les champs';
 			return;
@@ -94,58 +72,42 @@
 				endAt,
 			};
 
-			console.log('Sending booking payload:', payload);
-
-			const client = getAuthClient();
-			const res = await (client as any).bookings.$post({
-				json: payload,
-			});
-
-			if (res.ok) {
-				await fetchBookings();
-				selectedWorkspaceId = '';
-				startDate = '';
-				endDate = '';
-				startTime = '09:00';
-				endTime = '10:00';
-			} else {
-				const data = await res.json();
-				console.error('Booking creation error:', data);
-				error = data.error || 'Erreur lors de la création';
-			}
+			await authorizedApi.bookings.create(payload);
+			await fetchBookings();
+			selectedWorkspaceId = '';
+			startDate = '';
+			endDate = '';
+			startTime = '09:00';
+			endTime = '10:00';
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors de la création');
 		} finally {
 			loading = false;
 		}
 	}
 
-	async function deleteBooking(id: string) {
+	async function deleteBooking(id: string): Promise<void> {
 		if (!confirm('Supprimer cette réservation ?')) return;
 		deleting = id;
 
 		try {
-			const client = getAuthClient();
-			const res = await (client as any).bookings[':id'].$delete({
-				param: { id },
-			});
-
-			if (res.ok) {
-				await fetchBookings();
-			} else {
-				alert('Erreur lors de la suppression');
-			}
+			await authorizedApi.bookings.delete(id);
+			await fetchBookings();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, "Erreur lors de l'annulation");
 		} finally {
 			deleting = null;
 		}
 	}
 
-	function formatDate(dateStr: string) {
+	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleString('fr-FR', {
 			dateStyle: 'short',
 			timeStyle: 'short',
 		});
 	}
 
-	function isPast(dateStr: string) {
+	function isPast(dateStr: string): boolean {
 		return new Date(dateStr) < new Date();
 	}
 
@@ -193,7 +155,7 @@
 			<Button
 				variant="ghost"
 				size="sm"
-				onclick={() => { auth.logout(); goto('/login'); }}
+				onclick={logoutAndRedirect}
 			>
 				<LogOut class="size-4" />
 			</Button>

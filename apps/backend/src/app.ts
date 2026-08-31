@@ -75,15 +75,12 @@ export function createApp(options: AppOptions) {
 		}),
 	);
 
-	const routes = app
+	return app
 		.route('/auth', authRoute)
 		.route('/users', usersRoute)
 		.route('/workspaces', workspacesRoute)
 		.route('/bookings', bookingsRoute)
 		.route('/analytics', analyticsRoute)
-		.route('/audit', auditRoute);
-
-	routes.get('/health', (context) => context.text('OK'));
-
-	return routes;
+		.route('/audit', auditRoute)
+		.get('/health', (context) => context.text('OK'));
 }

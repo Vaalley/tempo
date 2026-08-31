@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { getAuthClient } from '$lib/client';
+	import type { Workspace } from '$lib/api-types';
+	import { authorizedApi } from '$lib/authorized-api';
+	import { getErrorMessage } from '$lib/api-response';
 	import { auth } from '$lib/auth.svelte';
-	import { goto } from '$app/navigation';
+	import { enforceRouteAccess, logoutAndRedirect } from '$lib/route-guard';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -19,14 +21,6 @@
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
-	type Workspace = {
-		id: number;
-		name: string;
-		type: 'DESK' | 'MEETING_ROOM';
-		capacity: number;
-		createdAt: string;
-	};
-
 	let workspaces = $state<Workspace[]>([]);
 	let name = $state('');
 	let type = $state<'DESK' | 'MEETING_ROOM'>('DESK');
@@ -34,24 +28,18 @@
 	let editingId = $state<number | null>(null);
 	let loading = $state(false);
 	let deleting = $state<number | null>(null);
+	let error = $state('');
 
 	onMount(async () => {
-		if (!auth.isLoggedIn) {
-			goto('/login');
-			return;
-		}
-		if (auth.user?.role !== 'ADMIN') {
-			goto('/');
-			return;
-		}
+		if (!(await enforceRouteAccess('ADMIN'))) return;
 		await fetchWorkspaces();
 	});
 
-	async function fetchWorkspaces() {
-		const client = getAuthClient();
-		const res = await (client as any).workspaces.$get();
-		if (res.ok) {
-			workspaces = await res.json();
+	async function fetchWorkspaces(): Promise<void> {
+		try {
+			workspaces = await authorizedApi.workspaces.list();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors du chargement des espaces');
 		}
 	}
 
@@ -69,48 +57,36 @@
 		editingId = workspace.id;
 	}
 
-	async function saveWorkspace() {
+	async function saveWorkspace(): Promise<void> {
 		if (!name) return;
+		error = '';
 		loading = true;
 
 		try {
-			const client = getAuthClient();
-			const res = editingId === null
-				? await (client as any).workspaces.$post({
-					json: { name, type, capacity },
-				})
-				: await (client as any).workspaces[':id'].$patch({
-					param: { id: String(editingId) },
-					json: { name, type, capacity },
-				});
-
-			if (res.ok) {
-				await fetchWorkspaces();
-				resetForm();
+			if (editingId === null) {
+				await authorizedApi.workspaces.create({ name, type, capacity });
 			} else {
-				alert(editingId === null ? 'Erreur lors de la création' : 'Erreur lors de la modification');
+				await authorizedApi.workspaces.update(editingId, { name, type, capacity });
 			}
+			await fetchWorkspaces();
+			resetForm();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, "Erreur lors de l'enregistrement de l'espace");
 		} finally {
 			loading = false;
 		}
 	}
 
-	async function deleteWorkspace(id: number) {
+	async function deleteWorkspace(id: number): Promise<void> {
 		if (!confirm('Supprimer cet espace ?')) return;
 		deleting = id;
 
 		try {
-			const client = getAuthClient();
-			const res = await (client as any).workspaces[':id'].$delete({
-				param: { id: String(id) }
-			});
-
-			if (res.ok) {
-				await fetchWorkspaces();
-				if (editingId === id) resetForm();
-			} else {
-				alert('Erreur lors de la suppression');
-			}
+			await authorizedApi.workspaces.delete(id);
+			await fetchWorkspaces();
+			if (editingId === id) resetForm();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, "Erreur lors de la suppression de l'espace");
 		} finally {
 			deleting = null;
 		}
@@ -145,12 +121,16 @@
 			<Button
 				variant="ghost"
 				size="sm"
-				onclick={() => { auth.logout(); goto('/login'); }}
+				onclick={logoutAndRedirect}
 			>
 				<LogOut class="size-4" />
 			</Button>
 		</div>
 	</div>
+
+	{#if error}
+		<div class="mb-6 rounded-md bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
+	{/if}
 
 	<!-- Formulaire de création ou de modification -->
 	<Card.Root class="mb-8">
@@ -237,7 +217,9 @@
 								</Table.Cell>
 								<Table.Cell>{workspace.capacity} pers.</Table.Cell>
 								<Table.Cell class="text-muted-foreground text-sm">
-									{new Date(workspace.createdAt).toLocaleDateString()}
+									{workspace.createdAt
+										? new Date(workspace.createdAt).toLocaleDateString()
+										: '—'}
 								</Table.Cell>
 								<Table.Cell class="text-right">
 									<Button

@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { getAuthClient } from '$lib/client';
+	import type { User } from '$lib/api-types';
+	import { authorizedApi } from '$lib/authorized-api';
+	import { getErrorMessage } from '$lib/api-response';
 	import { auth } from '$lib/auth.svelte';
-	import { goto } from '$app/navigation';
+	import { enforceRouteAccess, logoutAndRedirect } from '$lib/route-guard';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -15,46 +17,39 @@
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 	import ScrollText from '@lucide/svelte/icons/scroll-text';
 
-	let users = $state<any[]>([]);
+	let users = $state<User[]>([]);
 	let email = $state('');
 	let password = $state('');
 	let loading = $state(false);
+	let error = $state('');
 
 	onMount(async () => {
-		if (!auth.isLoggedIn) {
-			goto('/login');
-			return;
-		}
+		if (!(await enforceRouteAccess('AUTHENTICATED'))) return;
 		if (auth.user?.role === 'ADMIN') {
 			await fetchUsers();
 		}
 	});
 
-	async function fetchUsers() {
-		const client = getAuthClient();
-		const res = await (client as any).users.$get();
-		if (res.ok) {
-			users = await res.json();
+	async function fetchUsers(): Promise<void> {
+		try {
+			users = await authorizedApi.users.list();
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, 'Erreur lors du chargement des utilisateurs');
 		}
 	}
 
-	async function createUser() {
-		if (!email || !password) return;            
+	async function createUser(): Promise<void> {
+		if (!email || !password) return;
+		error = '';
 		loading = true;
 
 		try {
-			const client = getAuthClient();
-			const res = await (client as any).users.$post({
-				json: { email, password }
-			});
-
-			if (res.ok) {
-				await fetchUsers();
-				email = '';
-				password = '';
-			} else {
-				alert('Erreur création utilisateur');
-			}
+			await authorizedApi.users.create({ email, password });
+			await fetchUsers();
+			email = '';
+			password = '';
+		} catch (caughtError) {
+			error = getErrorMessage(caughtError, "Erreur lors de la création de l'utilisateur");
 		} finally {
 			loading = false;
 		}
@@ -96,7 +91,7 @@
 			<Button
 				variant="ghost"
 				size="sm"
-				onclick={() => { auth.logout(); goto('/login'); }}
+				onclick={logoutAndRedirect}
 			>
 				<LogOut class="size-4" />
 			</Button>
@@ -112,6 +107,11 @@
 				</Card.Title>
 			</Card.Header>
 			<Card.Content>
+				{#if error}
+					<div class="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+						{error}
+					</div>
+				{/if}
 				<div class="flex gap-3">
 					<Input
 						type="email"
@@ -147,7 +147,7 @@
 									<span class="text-xs text-muted-foreground">ID: {user.id}</span>
 								</div>
 								<Badge variant="secondary">
-									{new Date(user.createdAt).toLocaleDateString()}
+									{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
 								</Badge>
 							</li>
 						{/each}

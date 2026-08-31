@@ -97,17 +97,24 @@ export const bookingService = {
 		}
 	},
 
-	async getByUser(userId: string): Promise<Booking[]> {
+	async getByUser(userId: string) {
 		return await db.query.bookings.findMany({
 			where: eq(bookings.userId, userId),
 			with: {
 				workspace: true,
+				user: {
+					columns: {
+						id: true,
+						email: true,
+						role: true,
+					},
+				},
 			},
 			orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
 		});
 	},
 
-	async getAll(): Promise<any[]> {
+	async getAll() {
 		return await db.query.bookings.findMany({
 			with: {
 				workspace: true,

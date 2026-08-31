@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 83 tests backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL, aux bornes temporelles des statistiques, à la modification des espaces, aux routes administrateur et aux protections HTTP. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 83 tests backend avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la traduction d'un conflit concurrent PostgreSQL, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests backend des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 83 tests au total ;
+- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 83 tests backend et 15 tests frontend ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -1159,16 +1159,19 @@ _(Insérer une capture d'écran de l'auto-complétion TypeScript dans l'éditeur
 
 ```typescript
 // apps/frontend/src/lib/client.ts
+import { env } from '$env/dynamic/public';
 import { hc } from 'hono/client';
 import type { AppType } from '@tempo/backend/src/index';
 
-const API_URL = 'http://localhost:3000/';
+export function createApiClient(apiUrl: string | undefined, options: ApiClientOptions = {}) {
+    return hc<AppType>(normalizeApiUrl(apiUrl), {
+        headers: options.token ? { Authorization: `Bearer ${options.token}` } : {},
+    });
+}
 
 export function getAuthClient() {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    return hc<AppType>(API_URL, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    return createApiClient(env.PUBLIC_API_URL, { token });
 }
 ```
 
@@ -1198,19 +1201,20 @@ Axes d'amélioration identifiés : migration du JWT vers un cookie sécurisé, l
 
 Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
 
-| Module        | Fichier de test                                                         | Ce qui est testé                                                                  |
-| ------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `auth`        | `auth.service.spec.ts`                                                  | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT   |
-| `bookings`    | `bookings.service.spec.ts`                                              | Chevauchement, conflit PostgreSQL, création, consultation et suppression          |
-| `workspaces`  | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                | Création, consultation, modification, suppression et validation PATCH             |
-| `users`       | `users.service.spec.ts`                                                 | Gestion des comptes utilisateurs                                                  |
-| `audit`       | `audit.service.spec.ts`                                                 | Écriture et lecture des logs d'audit MongoDB                                      |
-| `analytics`   | `analytics.service.spec.ts`                                             | Indicateurs globaux et agrégation par espace                                      |
-| `authGuard`   | `auth.guard.spec.ts`                                                    | Refus du rôle `USER` et autorisation du rôle `ADMIN`                              |
-| Routes admin  | `admin.routes.spec.ts`                                                  | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces          |
-| Sécurité HTTP | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts` | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres |
+| Module        | Fichier de test                                                                          | Ce qui est testé                                                                     |
+| ------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `auth`        | `auth.service.spec.ts`                                                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT      |
+| `bookings`    | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression             |
+| `workspaces`  | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                                 | Création, consultation, modification, suppression et validation PATCH                |
+| `users`       | `users.service.spec.ts`                                                                  | Gestion des comptes utilisateurs                                                     |
+| `audit`       | `audit.service.spec.ts`                                                                  | Écriture et lecture des logs d'audit MongoDB                                         |
+| `analytics`   | `analytics.service.spec.ts`                                                              | Indicateurs globaux et agrégation par espace                                         |
+| `authGuard`   | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
+| Routes admin  | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
+| Sécurité HTTP | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
+| Frontend      | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **83 tests backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **83 tests backend et 15 tests frontend** sont exécutés par `bun run test`, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Le workflow GitHub Actions doit encore être exécuté avec succès sur le dépôt distant afin d'apporter la preuve CI correspondante. Un job supplémentaire valide la construction des images Docker (`docker-build`).
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
