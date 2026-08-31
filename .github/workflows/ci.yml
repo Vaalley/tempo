@@ -64,6 +64,9 @@ jobs:
             - name: Run PostgreSQL Integration Tests
               run: docker compose exec --no-TTY backend bun run test:integration:postgres
 
+            - name: Run MongoDB Integration Tests
+              run: docker compose exec --no-TTY backend bun run test:integration:mongo
+
             - name: Verify Public Endpoints
               run: |
                   curl --fail --silent http://localhost:3000/health

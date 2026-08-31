@@ -83,9 +83,11 @@ un stockage partagé.
 | `bun run db:migrate`                | Applique les migrations PostgreSQL                       |
 | `bun run db:seed`                   | Charge les comptes et espaces de démonstration           |
 | `bun run test`                      | Lance les tests unitaires et HTTP                        |
+| `bun run test:integration:mongo`    | Teste les écritures et lectures sur MongoDB réel         |
 | `bun run test:integration:postgres` | Teste les migrations et réservations sur PostgreSQL réel |
 | `bun run test:watch`                | Tests en mode watch                                      |
 
-Le test d'intégration nécessite `DATABASE_URL`. Il crée des données portant des
-identifiants uniques et les supprime après chaque scénario. Il est exécuté dans
-le job Docker de la CI, une fois PostgreSQL sain et les migrations appliquées.
+Les tests d'intégration nécessitent `DATABASE_URL` ou `MONGO_URL`. Ils utilisent
+des données portant des identifiants uniques et les suppriment après chaque
+scénario. Ils sont exécutés dans le job Docker de la CI, une fois PostgreSQL et
+MongoDB sains et les migrations appliquées.

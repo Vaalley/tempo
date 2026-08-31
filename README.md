@@ -167,10 +167,12 @@ curl --fail http://localhost:5173/
 La suite d'intégration PostgreSQL applique les migrations, crée une réservation
 complète, puis lance deux créations concurrentes sur le même créneau. Elle
 vérifie qu'une seule insertion subsiste et que l'autre requête reçoit un conflit
-HTTP 409. Les données créées par la suite sont supprimées automatiquement :
+HTTP 409. La suite MongoDB vérifie l'écriture, l'auteur, l'horodatage, l'ordre et
+le filtrage des logs d'audit. Les données créées sont supprimées automatiquement :
 
 ```bash
 docker compose exec --no-TTY backend bun run test:integration:postgres
+docker compose exec --no-TTY backend bun run test:integration:mongo
 ```
 
 ### Sauvegarde et restauration

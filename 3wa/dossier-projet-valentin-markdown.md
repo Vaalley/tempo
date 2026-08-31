@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, une réservation persistée de bout en bout et le rejet atomique d'une double réservation concurrente, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, une réservation persistée de bout en bout et le rejet atomique d'une double réservation concurrente, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Ils couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -444,7 +444,7 @@ Selon les projets, la communication écrite et orale peut s’effectuer en angla
 
 _Ma contribution sur le projet Tempo_
 
-Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration, exécute les tests d'intégration PostgreSQL et vérifie les endpoints publics ainsi que la connexion administrateur. L'[exécution réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) apporte la preuve distante du socle du pipeline ; une nouvelle exécution et sa capture devront prouver l'ajout du test PostgreSQL concurrent.
+Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration, exécute les tests d'intégration PostgreSQL et MongoDB, puis vérifie les endpoints publics ainsi que la connexion administrateur. L'[exécution réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) apporte la preuve distante du socle du pipeline ; une nouvelle exécution et sa capture devront prouver l'ajout des tests d'intégration aux bases réelles.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL et 15 tests frontend ;
+- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB et 15 tests frontend ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, regroupés dans un script `precommit` manuel et exécutés en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -1201,23 +1201,24 @@ Axes d'amélioration identifiés : migration du JWT vers un cookie sécurisé, l
 
 Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
 
-| Module         | Fichier de test                                                                          | Ce qui est testé                                                                     |
-| -------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `auth`         | `auth.service.spec.ts`                                                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT      |
-| `bookings`     | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression             |
-| `workspaces`   | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                                 | Création, consultation, modification, suppression et validation PATCH                |
-| `users`        | `users.service.spec.ts`                                                                  | Gestion des comptes utilisateurs                                                     |
-| `audit`        | `audit.service.spec.ts`                                                                  | Écriture et lecture des logs d'audit MongoDB                                         |
-| `analytics`    | `analytics.service.spec.ts`                                                              | Indicateurs globaux et agrégation par espace                                         |
-| `authGuard`    | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
-| Routes admin   | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
-| Routes HTTP    | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
-| Intégration PG | `postgres-bookings.integration.spec.ts`                                                  | Migrations, persistance réelle et rejet atomique de deux réservations concurrentes   |
-| Sécurité HTTP  | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
-| Seed démo      | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
-| Frontend       | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
+| Module            | Fichier de test                                                                          | Ce qui est testé                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `auth`            | `auth.service.spec.ts`                                                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT      |
+| `bookings`        | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression             |
+| `workspaces`      | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                                 | Création, consultation, modification, suppression et validation PATCH                |
+| `users`           | `users.service.spec.ts`                                                                  | Gestion des comptes utilisateurs                                                     |
+| `audit`           | `audit.service.spec.ts`                                                                  | Écriture et lecture des logs d'audit MongoDB                                         |
+| `analytics`       | `analytics.service.spec.ts`                                                              | Indicateurs globaux et agrégation par espace                                         |
+| `authGuard`       | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
+| Routes admin      | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
+| Routes HTTP       | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
+| Intégration PG    | `postgres-bookings.integration.spec.ts`                                                  | Migrations, persistance réelle et rejet atomique de deux réservations concurrentes   |
+| Intégration Mongo | `mongo-audit.integration.spec.ts`                                                        | Écriture, auteur, horodatage, ordre et filtrage des logs d'audit réels               |
+| Sécurité HTTP     | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
+| Seed démo         | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
+| Frontend          | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **94 tests backend unitaires/HTTP et 15 tests frontend** sont exécutés par `bun run test`. Deux tests d'intégration PostgreSQL supplémentaires sont exécutés par `bun run test:integration:postgres` dans le job Docker : une réservation complète et deux créations concurrentes dont une seule doit réussir. L'[exécution GitHub Actions réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) constitue la preuve CI distante du pipeline précédent ; le prochain run doit confirmer l'ajout de cette intégration PostgreSQL.
+Au total, **94 tests backend unitaires/HTTP et 15 tests frontend** sont exécutés par `bun run test`. Deux tests d'intégration PostgreSQL et deux tests d'intégration MongoDB supplémentaires sont exécutés dans le job Docker. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, ainsi que l'écriture et la lecture ordonnée et filtrée des audits. L'[exécution GitHub Actions réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) constitue la preuve CI distante du pipeline précédent ; le prochain run doit confirmer l'ajout de ces quatre tests d'intégration.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
