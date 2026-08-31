@@ -16,7 +16,7 @@ Application SaaS de gestion d'espaces de travail (Flex-office) permettant aux co
 | **Base NoSQL** | MongoDB            |
 | **Style**      | Tailwind CSS       |
 | **Tests**      | Bun Test / Vitest  |
-| **CI/CD**      | GitHub Actions     |
+| **CI**         | GitHub Actions     |
 | **Conteneurs** | Docker             |
 
 ## Structure du Monorepo
@@ -34,8 +34,8 @@ tempo/
 
 ## Prérequis
 
-- [Bun](https://bun.sh) >= 1.0
-- [Docker](https://docker.com) (pour les bases de données)
+- [Bun](https://bun.sh) 1.3.14
+- [Docker](https://docker.com) avec Docker Compose
 
 ## Installation
 
@@ -47,14 +47,13 @@ cd tempo
 # Installer les dépendances (tous les workspaces)
 bun install
 
-# Configurer l'environnement local du backend
+# Configurer l'environnement local du backend (exécution hors Docker)
 cp apps/backend/.env.example apps/backend/.env
-
-# Appliquer le schéma PostgreSQL
-cd apps/backend
-bun run --bun drizzle-kit migrate
-cd ../..
 ```
+
+Les migrations PostgreSQL sont appliquées automatiquement avant le démarrage
+du backend. La commande `bun --filter @tempo/backend db:migrate` permet aussi de
+les exécuter séparément.
 
 ### Configuration de l'environnement
 
@@ -121,16 +120,17 @@ bun --filter frontend dev         # http://localhost:5173
 | ------------------- | ------------------------------------- |
 | `bun run dev`       | Lance tous les workspaces en mode dev |
 | `bun run build`     | Build tous les workspaces             |
+| `bun run typecheck` | Vérifie TypeScript et Svelte          |
 | `bun run test`      | Lance tous les tests                  |
 | `bun run lint`      | Lint avec Oxlint                      |
 | `bun run format`    | Formate le code                       |
-| `bun run precommit` | Format + Lint + Test                  |
+| `bun run precommit` | Format + Lint + Types + Tests         |
 
 ## Production (Docker)
 
 ```bash
-# Build et lancer tous les services
-docker compose up --build
+# Construire, démarrer et attendre les health checks
+docker compose up --build --detach --wait
 
 # Services disponibles :
 # - Backend:   http://localhost:3000
@@ -138,6 +138,57 @@ docker compose up --build
 # - Postgres:  localhost:5432
 # - MongoDB:   localhost:27017
 ```
+
+Le backend attend PostgreSQL et MongoDB, applique automatiquement toutes les
+migrations Drizzle versionnées, puis devient sain sur `/health`. Le frontend
+n'est démarré qu'une fois l'API saine.
+
+### Données de démonstration
+
+Renseignez les quatre variables `DEMO_*` du fichier `.env`, puis lancez le seed
+idempotent :
+
+```bash
+docker compose --profile demo run --build --rm seed
+```
+
+Cette commande crée ou remet à jour un compte administrateur, un compte
+collaborateur et quatre espaces. Elle peut être rejouée sans dupliquer les
+espaces portant les noms de démonstration.
+
+### Vérification
+
+```bash
+docker compose ps
+curl --fail http://localhost:3000/health
+curl --fail http://localhost:5173/
+```
+
+### Sauvegarde et restauration
+
+Créez le dossier `backups` avant d'exécuter les commandes suivantes :
+
+```bash
+# Sauvegarde PostgreSQL
+docker compose exec -T postgres sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > backups/tempo-postgres.dump
+
+# Sauvegarde MongoDB
+docker compose exec -T mongo sh -c 'mongodump --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --archive' > backups/tempo-mongo.archive
+
+# Restauration PostgreSQL dans une base vide ou compatible
+docker compose exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' < backups/tempo-postgres.dump
+
+# Restauration MongoDB
+docker compose exec -T mongo sh -c 'mongorestore --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --archive' < backups/tempo-mongo.archive
+```
+
+### Rollback
+
+Les migrations actuelles sont uniquement ascendantes. Avant toute mise à jour,
+effectuez les deux sauvegardes ci-dessus. Pour revenir en arrière, redéployez la
+dernière version applicative connue comme stable. Si cette version n'est pas
+compatible avec le schéma migré, restaurez également les sauvegardes des deux
+bases ; ne tentez pas de modifier manuellement la table de suivi Drizzle.
 
 ## Documentation
 

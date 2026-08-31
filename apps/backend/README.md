@@ -45,21 +45,27 @@ cp apps/backend/.env.example apps/backend/.env
 # Lancer PostgreSQL
 docker compose up -d postgres
 
-# Appliquer le schéma PostgreSQL
-cd apps/backend
-bun run --bun drizzle-kit migrate
-
 # Lancer le serveur (hot reload)
-bun run dev
+bun --filter @tempo/backend dev
 ```
 
 Le serveur écoute sur **http://localhost:3000**
+
+Le point d'entrée applique les migrations Drizzle automatiquement avant
+d'ouvrir le serveur. Pour les exécuter sans démarrer l'API :
+
+```bash
+bun --filter @tempo/backend db:migrate
+```
 
 `apps/backend/.env.example` documente les connexions, `JWT_SECRET`, l'origine
 frontend autorisée et le rate limiting. Copiez-le vers `.env`, puis remplacez
 les valeurs d'exemple avant de démarrer le serveur. Le backend échoue
 explicitement au démarrage si `JWT_SECRET` ou `FRONTEND_ORIGIN` est absent ou
 invalide.
+
+Les variables `DEMO_*` ne sont lues que par `db:seed`. Elles doivent être
+renseignées explicitement avant de charger les données de démonstration.
 
 Les routes `/auth/login` et `/auth/register` partagent par défaut une limite de
 10 requêtes par adresse sur 15 minutes. `TRUST_PROXY` doit rester à `false`, sauf
@@ -69,8 +75,12 @@ un stockage partagé.
 
 ## Scripts
 
-| Commande             | Description                      |
-| -------------------- | -------------------------------- |
-| `bun run dev`        | Lance le serveur avec hot reload |
-| `bun run test`       | Lance les tests unitaires        |
-| `bun run test:watch` | Tests en mode watch              |
+| Commande             | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| `bun run dev`        | Lance le serveur avec hot reload               |
+| `bun run start`      | Lance le serveur en mode normal                |
+| `bun run typecheck`  | Vérifie les sources TypeScript                 |
+| `bun run db:migrate` | Applique les migrations PostgreSQL             |
+| `bun run db:seed`    | Charge les comptes et espaces de démonstration |
+| `bun run test`       | Lance les tests unitaires                      |
+| `bun run test:watch` | Tests en mode watch                            |

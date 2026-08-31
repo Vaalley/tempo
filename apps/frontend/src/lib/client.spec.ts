@@ -17,7 +17,7 @@ describe('API client', () => {
 		let authorizationHeader: string | null = null;
 		const client = createApiClient('http://tempo.test', {
 			token: 'test-token',
-			fetch: async (input, init) => {
+			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
 				authorizationHeader = request.headers.get('authorization');
 				return Response.json([]);

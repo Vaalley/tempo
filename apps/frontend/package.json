@@ -9,6 +9,7 @@
 		"preview": "bun run --bun vite preview",
 		"prepare": "bun run --bun svelte-kit sync || echo ''",
 		"check": "bun run --bun svelte-kit sync && bun run --bun svelte-check --tsconfig ./tsconfig.json",
+		"typecheck": "bun run check",
 		"check:watch": "bun run --bun svelte-kit sync && bun run --bun svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "bun run --bun vitest",
 		"test": "bun run --bun vitest --run"

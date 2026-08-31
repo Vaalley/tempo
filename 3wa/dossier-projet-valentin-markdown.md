@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 83 tests backend avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la traduction d'un conflit concurrent PostgreSQL, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 86 tests backend avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la traduction d'un conflit concurrent PostgreSQL, les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -423,7 +423,7 @@ Il écrit et documente les scripts et la procédure de déploiement d’une appl
 
 _Ma contribution sur le projet Tempo_
 
-J'ai écrit et documenté les scripts de déploiement de l'application : deux `Dockerfile` multi-stage optimisés (un par workspace) et un fichier `docker-compose.yml` orchestrant les quatre services (PostgreSQL, MongoDB, backend, frontend). La procédure de déploiement local est documentée dans le `README.md` (`docker compose up --build`), et les environnements de test sont isolés du reste via l'exécution automatisée des tests par CI avant tout déploiement.
+J'ai écrit et documenté les scripts de déploiement de l'application : deux `Dockerfile` multi-stage (un par workspace) et un fichier `docker-compose.yml` orchestrant PostgreSQL, MongoDB, le backend et le frontend. Les versions de Bun et des bases sont épinglées. Compose attend les health checks des bases, le backend applique automatiquement les migrations Drizzle avant de démarrer, puis le frontend attend que l'API soit saine. Un profil optionnel charge un jeu de démonstration idempotent. La procédure locale, les sauvegardes, la restauration et la stratégie de rollback sont documentées dans le `README.md`. L'exécution complète reste à vérifier sur une machine disposant de Docker.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -444,7 +444,7 @@ Selon les projets, la communication écrite et orale peut s’effectuer en angla
 
 _Ma contribution sur le projet Tempo_
 
-Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : le contrôle de formatage (Oxfmt), le linting (Oxlint), les tests unitaires (Bun Test), puis la construction des images Docker du backend et du frontend pour valider qu'elles restent déployables. J'interprète les rapports d'exécution de la CI directement dans l'interface GitHub Actions pour identifier rapidement toute régression avant fusion sur la branche principale.
+Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration et vérifie les endpoints publics ainsi que la connexion administrateur. Le workflow est configuré ; une exécution réussie sur GitHub et sa capture restent nécessaires comme preuves distantes.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -562,7 +562,7 @@ S'agissant d'un projet personnel réalisé en parallèle de mon alternance, aucu
 | Conception (MERISE, UML, maquettage)         | quelques jours     |
 | Développement backend (API, base de données) | plusieurs semaines |
 | Développement frontend (interfaces Svelte)   | plusieurs semaines |
-| Tests, CI/CD, containerisation               | quelques jours     |
+| Tests, CI et containerisation                | quelques jours     |
 | Rédaction de la documentation / dossier      | quelques jours     |
 
 _(à ajuster avec mes propres estimations de temps réel passé)_
@@ -605,7 +605,7 @@ Le projet a été mené en solo. J'ai assuré l'ensemble des rôles :
 - **Maîtrise d'ouvrage (MOA)** : expression du besoin, rédaction du cahier des charges (`SPECS.md`) ;
 - **Maîtrise d'œuvre (MOE)** : conception (MERISE, UML, architecture logicielle) et développement (backend, frontend, base de données) ;
 - **Recette** : rédaction et exécution des tests unitaires (Bun Test / Vitest) ;
-- **Exploitation** : mise en place de la conteneurisation Docker et du pipeline CI/CD (GitHub Actions).
+- **Exploitation** : mise en place de la conteneurisation Docker et du pipeline CI (GitHub Actions).
 
 Aucun autre intervenant (webdesigner, chef de projet, client) n'est intervenu sur ce projet personnel.
 
@@ -632,11 +632,11 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 83 tests backend et 15 tests frontend ;
-- **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
+- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 86 tests backend et 15 tests frontend ;
+- **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, regroupés dans un script `precommit` manuel et exécutés en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
-- **Non-régression** : intégration continue (GitHub Actions) bloquant la fusion du code si le format, le lint, les tests ou le build Docker échouent.
+- **Non-régression** : intégration continue (GitHub Actions) détectant les échecs de format, lint, types, tests ou déploiement Docker ; le blocage effectif des fusions nécessite encore de configurer la protection de la branche `main` sur GitHub.
 
 # 5\. SPECIFICATIONS FONCTIONNELLES
 
@@ -954,30 +954,30 @@ Sans objet : Tempo est une application interne, protégée par authentification,
 
 | Domaine          | Technologie                            | Justification                                                                                 |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Runtime          | Bun 1.x                                | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
+| Runtime          | Bun 1.3.14                             | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
 | Monorepo         | Bun Workspaces                         | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées        |
 | Backend          | Hono 4.x                               | Framework web ultra-léger, performant, compatible Edge                                        |
 | Validation       | Zod 4.x                                | Validation stricte et typée des entrées (sécurité by design)                                  |
 | Frontend         | Svelte 5.x (Runes) + SvelteKit         | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
 | Style            | Tailwind CSS 4.x + shadcn-svelte       | Développement rapide, cohérent et responsive des interfaces                                   |
-| Base SQL         | PostgreSQL 18                          | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
+| Base SQL         | PostgreSQL 18.6 (Alpine 3.24)          | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
 | ORM SQL          | Drizzle ORM                            | Typesafe, léger, génération automatique de migrations SQL                                     |
-| Base NoSQL       | MongoDB 8                              | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
+| Base NoSQL       | MongoDB 8.0.29 (Noble)                 | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
 | Authentification | `hono/jwt` + `Bun.password`            | Jetons JWT signés HS256, hachage natif des mots de passe                                      |
 | Qualité de code  | Oxlint / Oxfmt                         | Linting et formatage haute performance (Rust), homogénéité du code                            |
 | Tests            | Bun Test (backend) / Vitest (frontend) | Tests unitaires natifs, rapides, intégrés à l'écosystème Bun/Vite                             |
-| CI/CD            | GitHub Actions                         | Automatisation du contrôle qualité et de la construction des images Docker                    |
+| CI               | GitHub Actions                         | Contrôle qualité, tests, build et recette locale de la stack Docker Compose                   |
 | Conteneurs       | Docker / Docker Compose                | Isolation des services, environnement reproductible identique dev/prod                        |
 
 Le choix de Bun et Hono répond à un objectif de performance et de modernité technique ; le choix conjoint PostgreSQL + MongoDB répond au besoin de démontrer une persistance hybride (données structurées vs. données de log) ; aucune contrainte technique n'a été imposée par un tiers, tous les choix ont été faits librement dans une logique d'apprentissage et de démonstration de compétences.
 
 ## 6.3. Navigation et accessibilité
 
-L'application est actuellement accessible uniquement en local, via Docker Compose (`docker compose up --build`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place (axe d'évolution identifié).
+L'application est actuellement prévue pour une exécution locale via Docker Compose (`docker compose up --build --detach --wait`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place. La configuration Compose est prête, mais son exécution locale reste à vérifier sur une machine disposant de Docker.
 
 Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`, `/admin/audit`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
 
-La conception est responsive (Tailwind CSS) et compatible avec les navigateurs modernes (Chrome, Firefox, Edge, Safari).
+La conception utilise les classes responsives de Tailwind CSS. Une matrice de vérification Chrome, Firefox, Edge et Safari reste à exécuter avant d'affirmer une compatibilité complète.
 
 ## 6.4. Services tiers
 
@@ -995,9 +995,9 @@ Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux
 
 **Validation des entrées :** tous les corps de requête sont validés par des schémas Zod (`@hono/zod-validator`) avant tout traitement métier.
 
-**Sauvegarde/Stockage :** volumes Docker persistants (`postgres_data`, `mongo_data`) pour la durabilité des données en environnement conteneurisé.
+**Sauvegarde/Stockage :** volumes Docker persistants (`postgres_data`, `mongo_data`) pour la durabilité des données en environnement conteneurisé. Le `README.md` documente les commandes `pg_dump`/`pg_restore` et `mongodump`/`mongorestore`, ainsi que la stratégie de rollback associée.
 
-**Versioning :** Git/GitHub, avec intégration continue (GitHub Actions) empêchant la fusion de code non testé ou mal formaté sur la branche principale.
+**Versioning :** Git/GitHub, avec un workflow d'intégration continue détectant le code non testé, mal formaté, non typé ou non déployable. La protection de branche nécessaire pour empêcher effectivement une fusion reste à configurer et à prouver sur GitHub.
 
 # 7\. REALISATIONS
 
@@ -1212,9 +1212,10 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | `authGuard`   | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
 | Routes admin  | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
 | Sécurité HTTP | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
+| Seed démo     | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
 | Frontend      | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **83 tests backend et 15 tests frontend** sont exécutés par `bun run test`, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Le workflow GitHub Actions doit encore être exécuté avec succès sur le dépôt distant afin d'apporter la preuve CI correspondante. Un job supplémentaire valide la construction des images Docker (`docker-build`).
+Au total, **86 tests backend et 15 tests frontend** sont exécutés par `bun run test`, en complément du lint, du formatage, du type-check et du build. Le workflow GitHub Actions doit encore être exécuté avec succès sur le dépôt distant afin d'apporter la preuve CI correspondante. Son job Docker construit et démarre la stack, charge le seed de démonstration et vérifie les endpoints publics.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

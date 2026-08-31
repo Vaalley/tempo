@@ -13,6 +13,7 @@ import type {
 	WorkspaceStat,
 } from './api-types';
 import { readAuthorizedApiJson } from './api-response';
+import type { ApiResponse } from './api-response';
 import { auth } from './auth.svelte';
 import { getAuthClient } from './client';
 
@@ -38,7 +39,7 @@ export function createAuthorizedApi(options: AuthorizedApiOptions = {}) {
 			}),
 	};
 
-	async function read<T>(response: Promise<Response>, fallbackMessage: string): Promise<T> {
+	async function read<T>(response: Promise<ApiResponse>, fallbackMessage: string): Promise<T> {
 		return await readAuthorizedApiJson<T>(await response, fallbackMessage, handlers);
 	}
 

@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ApiError } from './api-response';
 import { createAuthorizedApi } from './authorized-api';
 import { createApiClient } from './client';
 
@@ -10,7 +9,7 @@ describe('authorized API', () => {
 		let requestBody: unknown;
 		const client = createApiClient('http://tempo.test', {
 			token: 'signed-token',
-			fetch: async (input, init) => {
+			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
 				method = request.method;
 				pathname = new URL(request.url).pathname;
@@ -55,9 +54,7 @@ describe('authorized API', () => {
 			onForbidden,
 		});
 
-		await expect(api.bookings.list()).rejects.toEqual(
-			expect.objectContaining<ApiError>({ status: 401 }),
-		);
+		await expect(api.bookings.list()).rejects.toEqual(expect.objectContaining({ status: 401 }));
 		expect(onUnauthorized).toHaveBeenCalledOnce();
 		expect(onForbidden).not.toHaveBeenCalled();
 	});
@@ -74,9 +71,7 @@ describe('authorized API', () => {
 			onForbidden,
 		});
 
-		await expect(api.users.list()).rejects.toEqual(
-			expect.objectContaining<ApiError>({ status: 403 }),
-		);
+		await expect(api.users.list()).rejects.toEqual(expect.objectContaining({ status: 403 }));
 		expect(onForbidden).toHaveBeenCalledOnce();
 		expect(onUnauthorized).not.toHaveBeenCalled();
 	});

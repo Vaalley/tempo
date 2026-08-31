@@ -1,10 +1,11 @@
 import { env } from '$env/dynamic/public';
 import { hc } from 'hono/client';
+import type { ClientRequestOptions } from 'hono/client';
 import type { AppType } from '@tempo/backend/src/index';
 
 export interface ApiClientOptions {
 	token?: string | null;
-	fetch?: typeof globalThis.fetch;
+	fetch?: ClientRequestOptions['fetch'];
 }
 
 export function normalizeApiUrl(value: string | undefined): string {

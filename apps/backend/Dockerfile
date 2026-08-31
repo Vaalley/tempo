@@ -1,23 +1,28 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:1.3.14-alpine AS dependencies
+
 WORKDIR /app
 
-# Copie les fichiers de gestion de dépendances du Monorepo
-# C'est important de copier la racine aussi pour que les workspaces fonctionnent
 COPY package.json bun.lock ./
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/frontend/package.json ./apps/frontend/
 
-# Installe les dépendances
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --production
 
-# Copie le code source du backend
-COPY apps/backend ./apps/backend
+FROM oven/bun:1.3.14-alpine AS runtime
 
-# Se place dans le dossier backend
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/backend/node_modules ./apps/backend/node_modules
+COPY package.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY apps/backend/src ./apps/backend/src
+COPY apps/backend/drizzle ./apps/backend/drizzle
+
 WORKDIR /app/apps/backend
+USER bun
 
-# Expose le port Hono
 EXPOSE 3000
 
-# Lance le serveur
 CMD ["bun", "run", "src/index.ts"]

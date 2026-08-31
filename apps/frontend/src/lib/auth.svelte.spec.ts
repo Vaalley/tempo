@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { ApiError } from './api-response';
 import { createAuthStore } from './auth.svelte';
 import { createApiClient } from './client';
 
@@ -36,7 +35,7 @@ describe('authentication store', () => {
 		const storage = new MemoryStorage();
 		let requestBody: unknown;
 		const client = createApiClient('http://tempo.test', {
-			fetch: async (input, init) => {
+			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
 				requestBody = await request.json();
 				return Response.json({
@@ -70,7 +69,7 @@ describe('authentication store', () => {
 		});
 
 		await expect(store.login('user@tempo.test', 'wrong-password')).rejects.toEqual(
-			expect.objectContaining<ApiError>({
+			expect.objectContaining({
 				message: 'Email ou mot de passe incorrect',
 				status: 401,
 			}),

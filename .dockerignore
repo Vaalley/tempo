@@ -1,0 +1,12 @@
+.git
+.github
+.agents
+.codex
+.env
+**/.env
+**/node_modules
+**/.svelte-kit
+**/build
+**/coverage
+3wa
+docs
