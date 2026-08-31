@@ -6,11 +6,11 @@
 		"packages/*"
 	],
 	"scripts": {
-		"dev": "bun --filter '*' dev",
+		"dev": "bun run --filter '*' --parallel dev",
 		"build": "bun --filter '*' build",
-		"lint": "oxlint . --ignore-path .gitignore",
-		"format": "oxfmt .",
-		"format:check": "oxfmt . --check",
+		"lint": "bun run --bun oxlint . --ignore-path .gitignore",
+		"format": "bun run --bun oxfmt .",
+		"format:check": "bun run --bun oxfmt . --check",
 		"test": "bun --filter '*' test",
 		"precommit": "bun run format && bun run lint && bun run test",
 		"diagrams:png": "bun run scripts/export-diagrams.ts"

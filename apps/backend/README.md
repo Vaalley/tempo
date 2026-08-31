@@ -39,8 +39,15 @@ src/
 # Depuis la racine du monorepo
 bun install
 
+# Configurer l'environnement backend
+cp apps/backend/.env.example apps/backend/.env
+
 # Lancer PostgreSQL
 docker compose up -d postgres
+
+# Appliquer le schéma PostgreSQL
+cd apps/backend
+bun run --bun drizzle-kit migrate
 
 # Lancer le serveur (hot reload)
 bun run dev

@@ -46,6 +46,14 @@ cd tempo
 
 # Installer les dépendances (tous les workspaces)
 bun install
+
+# Configurer l'environnement backend
+cp apps/backend/.env.example apps/backend/.env
+
+# Appliquer le schéma PostgreSQL
+cd apps/backend
+bun run --bun drizzle-kit migrate
+cd ../..
 ```
 
 ## Développement

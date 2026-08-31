@@ -4,14 +4,14 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run"
+		"dev": "bun run --bun vite dev",
+		"build": "bun run --bun vite build",
+		"preview": "bun run --bun vite preview",
+		"prepare": "bun run --bun svelte-kit sync || echo ''",
+		"check": "bun run --bun svelte-kit sync && bun run --bun svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "bun run --bun svelte-kit sync && bun run --bun svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:unit": "bun run --bun vitest",
+		"test": "bun run --bun vitest --run"
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",
