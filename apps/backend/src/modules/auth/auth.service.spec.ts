@@ -1,5 +1,7 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { afterAll, beforeEach, describe, expect, it, mock } from 'bun:test';
 import { authService } from './auth.service';
+
+const originalJwtSecret = process.env.JWT_SECRET;
 
 // Mock de la base de données
 const mockFindFirst = mock(() => Promise.resolve(undefined));
@@ -20,6 +22,7 @@ mock.module('../../db', () => ({
 
 describe('AuthService', () => {
 	beforeEach(() => {
+		process.env.JWT_SECRET = 'test-jwt-secret';
 		mockFindFirst.mockReset();
 		mockReturning.mockReset();
 		mockValues.mockReset();
@@ -28,6 +31,14 @@ describe('AuthService', () => {
 		// Reconfigure les retours par défaut
 		mockValues.mockReturnValue({ returning: mockReturning });
 		mockInsert.mockReturnValue({ values: mockValues });
+	});
+
+	afterAll(() => {
+		if (originalJwtSecret === undefined) {
+			delete process.env.JWT_SECRET;
+		} else {
+			process.env.JWT_SECRET = originalJwtSecret;
+		}
 	});
 
 	describe('register', () => {
@@ -117,6 +128,16 @@ describe('AuthService', () => {
 			const secret = authService.getSecret();
 			expect(typeof secret).toBe('string');
 			expect(secret.length).toBeGreaterThan(0);
+		});
+
+		it('should fail clearly when JWT_SECRET is missing', () => {
+			delete process.env.JWT_SECRET;
+
+			expect(() => authService.getSecret()).toThrow(
+				'JWT_SECRET is required but is not configured',
+			);
+
+			process.env.JWT_SECRET = 'test-jwt-secret';
 		});
 	});
 });

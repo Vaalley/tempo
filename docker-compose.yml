@@ -5,9 +5,9 @@ services:
         container_name: tempo_postgres
         restart: always
         environment:
-            POSTGRES_USER: admin
-            POSTGRES_PASSWORD: password123
-            POSTGRES_DB: tempo_db
+            POSTGRES_USER: '${POSTGRES_USER:?POSTGRES_USER is required}'
+            POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}'
+            POSTGRES_DB: '${POSTGRES_DB:?POSTGRES_DB is required}'
         ports:
             - '5432:5432'
         volumes:
@@ -18,8 +18,8 @@ services:
         container_name: tempo_mongo
         restart: always
         environment:
-            MONGO_INITDB_ROOT_USERNAME: admin
-            MONGO_INITDB_ROOT_PASSWORD: password123
+            MONGO_INITDB_ROOT_USERNAME: '${MONGO_INITDB_ROOT_USERNAME:?MONGO_INITDB_ROOT_USERNAME is required}'
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_INITDB_ROOT_PASSWORD:?MONGO_INITDB_ROOT_PASSWORD is required}'
         ports:
             - '27017:27017'
         volumes:
@@ -35,9 +35,10 @@ services:
         ports:
             - '3000:3000'
         environment:
-            DATABASE_URL: 'postgres://admin:password123@postgres:5432/tempo_db'
-            MONGO_URL: 'mongodb://admin:password123@mongo:27017'
-            MONGO_DB_NAME: 'tempo_audit'
+            DATABASE_URL: '${DATABASE_URL:?DATABASE_URL is required}'
+            MONGO_URL: '${MONGO_URL:?MONGO_URL is required}'
+            MONGO_DB_NAME: '${MONGO_DB_NAME:?MONGO_DB_NAME is required}'
+            JWT_SECRET: '${JWT_SECRET:?JWT_SECRET is required}'
         depends_on:
             - postgres
             - mongo
@@ -52,7 +53,7 @@ services:
         ports:
             - '5173:3000'
         environment:
-            PUBLIC_API_URL: 'http://localhost:3000'
+            PUBLIC_API_URL: '${PUBLIC_API_URL:?PUBLIC_API_URL is required}'
         depends_on:
             - backend
 

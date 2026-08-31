@@ -47,7 +47,7 @@ cd tempo
 # Installer les dépendances (tous les workspaces)
 bun install
 
-# Configurer l'environnement backend
+# Configurer l'environnement local du backend
 cp apps/backend/.env.example apps/backend/.env
 
 # Appliquer le schéma PostgreSQL
@@ -55,6 +55,35 @@ cd apps/backend
 bun run --bun drizzle-kit migrate
 cd ../..
 ```
+
+### Configuration de l'environnement
+
+Les fichiers `.env` contiennent des secrets locaux et ne doivent jamais être
+commités. Les fichiers `.env.example` sont uniquement des modèles : remplacez
+leurs valeurs `change-me` ou `replace-with-...` avant de lancer l'application.
+
+Pour le backend lancé directement avec Bun, copiez
+`apps/backend/.env.example` vers `apps/backend/.env`. Il contient les
+connexions locales à PostgreSQL/MongoDB et le secret JWT requis :
+
+| Variable        | Utilisation                            |
+| --------------- | -------------------------------------- |
+| `DATABASE_URL`  | Connexion PostgreSQL                   |
+| `MONGO_URL`     | Connexion MongoDB                      |
+| `MONGO_DB_NAME` | Base MongoDB des audits                |
+| `JWT_SECRET`    | Signature des tokens JWT ; obligatoire |
+
+Pour lancer la stack complète avec Docker Compose, copiez le modèle racine :
+
+```bash
+cp .env.example .env
+```
+
+Configurez ensuite les identifiants `POSTGRES_*` et `MONGO_INITDB_*`, un
+`JWT_SECRET` aléatoire, ainsi que les URLs listées dans `.env.example`.
+Compose transmettra ces valeurs aux conteneurs ; aucun identifiant n'est
+stocké dans `docker-compose.yml`. Si `JWT_SECRET` manque, le backend refuse
+de démarrer.
 
 ## Développement
 

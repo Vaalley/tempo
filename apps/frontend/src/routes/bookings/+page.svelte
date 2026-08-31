@@ -166,10 +166,12 @@
 				<ArrowLeft class="size-4" />
 				Accueil
 			</Button>
-			<Button variant="ghost" size="sm" href="/admin/workspaces">
-				<LayoutGrid class="size-4" />
-				Espaces
-			</Button>
+			{#if auth.user?.role === 'ADMIN'}
+				<Button variant="ghost" size="sm" href="/admin/workspaces">
+					<LayoutGrid class="size-4" />
+					Espaces
+				</Button>
+			{/if}
 			<Separator orientation="vertical" class="h-6" />
 			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
 			<Button

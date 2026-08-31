@@ -8,7 +8,6 @@ const mockReturning = mock(() => {
 	const result = {
 		id: 'generated-id',
 		email: capturedInsertValues.email,
-		password: capturedInsertValues.password,
 		role: 'USER' as const,
 		createdAt: new Date(),
 	};
@@ -66,8 +65,8 @@ describe('UserService', () => {
 			expect(typeof capturedInsertValues.password).toBe('string');
 			expect(capturedInsertValues.password).not.toBe(password);
 			expect(result.email).toBe(email);
-			expect(result.password).toBeDefined();
 			expect(result.role).toBe('USER');
+			expect(result).not.toHaveProperty('password');
 		});
 
 		it('should hash different passwords differently', async () => {
@@ -109,7 +108,7 @@ describe('UserService', () => {
 			expect(capturedInsertValues.password).toBeDefined();
 			expect(capturedInsertValues.password).not.toBe(password);
 			expect(result.email).toBe(email);
-			expect(result.password).toBeDefined();
+			expect(result).not.toHaveProperty('password');
 		});
 
 		it('should handle long passwords', async () => {
@@ -120,7 +119,7 @@ describe('UserService', () => {
 
 			expect(capturedInsertValues.password).toBeDefined();
 			expect(result.email).toBe(email);
-			expect(result.password).toBeDefined();
+			expect(result).not.toHaveProperty('password');
 		});
 	});
 

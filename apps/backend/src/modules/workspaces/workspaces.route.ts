@@ -2,11 +2,11 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { workspaceService } from './workspaces.service';
-import { authGuard } from '../../middlewares/auth.guard';
+import { adminGuard, authGuard, type AuthEnv } from '../../middlewares/auth.guard';
 import { createWorkspaceSchema } from './workspaces.dto';
 import { auditService } from '../audit/audit.service';
 
-const app = new Hono();
+const app = new Hono<AuthEnv>();
 
 // Protect all /workspaces routes with JWT
 app.use('*', authGuard);
@@ -35,14 +35,14 @@ app.get('/:id', zValidator('param', paramIdSchema), async (c) => {
 });
 
 // POST /workspaces - Create a workspace
-app.post('/', zValidator('json', createWorkspaceSchema), async (c) => {
+app.post('/', adminGuard, zValidator('json', createWorkspaceSchema), async (c) => {
 	const data = c.req.valid('json');
 	const workspace = await workspaceService.create(data);
 	return c.json(workspace, 201);
 });
 
 // DELETE /workspaces/:id - Delete a workspace
-app.delete('/:id', zValidator('param', paramIdSchema), async (c) => {
+app.delete('/:id', adminGuard, zValidator('param', paramIdSchema), async (c) => {
 	const { id } = c.req.valid('param');
 	const payload = c.get('jwtPayload');
 

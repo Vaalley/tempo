@@ -3,7 +3,15 @@ import { eq } from 'drizzle-orm';
 import { db } from '../../db';
 import { users } from '../../db/schema';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+function getJwtSecret(): string {
+	const secret = process.env.JWT_SECRET?.trim();
+
+	if (!secret) {
+		throw new Error('JWT_SECRET is required but is not configured');
+	}
+
+	return secret;
+}
 
 type UserPayload = {
 	id: string;
@@ -66,7 +74,7 @@ export const authService = {
 				role: user.role,
 				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24h
 			},
-			JWT_SECRET,
+			getJwtSecret(),
 		);
 
 		return {
@@ -80,6 +88,6 @@ export const authService = {
 	},
 
 	getSecret(): string {
-		return JWT_SECRET;
+		return getJwtSecret();
 	},
 };

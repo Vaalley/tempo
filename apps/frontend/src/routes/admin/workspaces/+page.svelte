@@ -35,6 +35,10 @@
 			goto('/login');
 			return;
 		}
+		if (auth.user?.role !== 'ADMIN') {
+			goto('/');
+			return;
+		}
 		await fetchWorkspaces();
 	});
 

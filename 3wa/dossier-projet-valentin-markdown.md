@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 47 tests unitaires automatiquement à chaque modification, et je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 58 tests unitaires backend, dont des tests dédiés au refus d'un utilisateur `USER` et à l'autorisation d'un `ADMIN`. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -516,7 +516,7 @@ Aucune exigence de design particulière (flat design, parallaxe, …) n’a ét�
 Deux profils d’utilisateurs sont identifiés (voir diagramme de cas d’utilisation `use case diagram.png`) :
 
 - **Collaborateur (`USER`)** : s’inscrit, se connecte, consulte les espaces disponibles, crée/consulte/annule ses réservations, confirme sa présence (check-in) ;
-- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, et gère en plus les espaces de travail (création, modification, suppression), consulte l’ensemble des réservations et les logs d’audit.
+- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, consulte, crée et supprime les espaces de travail, gère les comptes utilisateurs et accède aux statistiques d'occupation. La modification des espaces et la consultation des logs d'audit sont prévues pour une itération ultérieure.
 
 Le processus métier impacté est la **gestion des ressources immobilières / facilities management** (occupation des locaux), en lien avec les fonctions RH et Office Management de l’entreprise.
 
@@ -539,7 +539,7 @@ Ces données étant à caractère personnel (compte utilisateur, historique de p
 | Authentification | Collaborateur  | Se déconnecter                             | Quitter l'application en sécurité                                        |
 | Espaces          | Collaborateur  | Consulter les espaces disponibles          | Trouver un bureau ou une salle libre                                     |
 | Espaces          | Collaborateur  | Filtrer les espaces par type/capacité      | Trouver rapidement l'espace adapté au besoin                             |
-| Espaces          | Administrateur | Créer / modifier / supprimer un espace     | Tenir à jour l'inventaire des espaces disponibles                        |
+| Espaces          | Administrateur | Consulter / créer / supprimer un espace    | Tenir à jour l'inventaire des espaces disponibles                        |
 | Réservations     | Collaborateur  | Créer une réservation (publique ou privée) | Réserver un espace pour un créneau donné                                 |
 | Réservations     | Collaborateur  | Consulter ses réservations                 | Suivre ses réservations passées et à venir                               |
 | Réservations     | Collaborateur  | Annuler sa réservation                     | Libérer un espace qui ne sera plus utilisé                               |
@@ -580,7 +580,7 @@ Le projet est pensé comme un produit SaaS destiné à être commercialisé aupr
 Le projet répond à un besoin métier réel et répandu : la gestion des espaces en flex-office. Les objectifs poursuivis sont :
 
 - Permettre à un collaborateur de consulter en temps réel les espaces disponibles (bureaux, salles de réunion) et de réserver un créneau sans conflit ;
-- Permettre à un administrateur de gérer le parc d'espaces (création, modification, suppression) et de superviser le taux d'occupation ;
+- Permettre à un administrateur de gérer le parc d'espaces (consultation, création et suppression dans le MVP ; modification prévue ultérieurement) et de superviser le taux d'occupation ;
 - Fiabiliser la présence réelle grâce à un mécanisme de check-in par QR code ;
 - Assurer la traçabilité des actions sensibles (audit) dans une logique de conformité RGPD.
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 47 tests unitaires backend au total ;
+- **Fiabilité fonctionnelle** : couverture par tests unitaires des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations) — 58 tests unitaires backend au total ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -691,7 +691,8 @@ Cartographie des écrans de l'application (routing SvelteKit) :
 /                      Page d'accueil
 /login                 Connexion / inscription
 /bookings              Mes réservations (créer, consulter, annuler, check-in)
-/admin/workspaces      Administration des espaces (CRUD, réservé au rôle ADMIN)
+/admin/workspaces      Administration des espaces (lecture, création, suppression ; rôle ADMIN)
+/admin/analytics       Statistiques d'occupation (réservé au rôle ADMIN)
 ```
 
 Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après connexion, le collaborateur accède à `/bookings` pour gérer ses réservations. Un administrateur dispose en plus d'un accès à `/admin/workspaces` pour gérer le parc d'espaces. L'application est responsive (Tailwind CSS) et s'adapte aux versions desktop, tablette et mobile.
@@ -834,7 +835,7 @@ Bouton « Annuler » sur chaque réservation de la liste, avec confirmation avan
 
 _Description_
 
-Un administrateur crée, modifie ou supprime un espace de travail (bureau ou salle de réunion) en définissant son nom, son type et sa capacité.
+Un administrateur consulte, crée ou supprime un espace de travail (bureau ou salle de réunion) en définissant son nom, son type et sa capacité. La modification d'un espace n'est pas incluse dans le MVP actuel.
 
 _Diagramme d’activité_
 
@@ -848,11 +849,11 @@ _Données/Actions_
 
 | En entrée                  | Traitement                                                                                                        | En sortie                    | Contrôles                                      |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
-| `name`, `type`, `capacity` | Validation des données (Zod), création/modification/suppression en base, journalisation de la suppression (audit) | Espace créé/modifié/supprimé | Rôle `ADMIN` requis, capacité entière positive |
+| `name`, `type`, `capacity` | Validation des données (Zod), création ou suppression en base, journalisation de la suppression (audit) | Espace créé ou supprimé | Rôle `ADMIN` requis, capacité entière positive |
 
 _Ecran/Affichage_
 
-Tableau d'administration des espaces avec actions de création, modification et suppression, accessible uniquement aux comptes administrateurs.
+Tableau d'administration des espaces avec actions de création et de suppression, accessible uniquement aux comptes administrateurs. La modification est identifiée comme une évolution du MVP.
 
 ### 5.7.4. Fonctionnalité 4 — Check-in par QR Code
 
@@ -929,7 +930,7 @@ Le choix de Bun et Hono répond à un objectif de performance et de modernité t
 
 L'application est actuellement accessible uniquement en local, via Docker Compose (`docker compose up --build`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place (axe d'évolution identifié).
 
-Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`). L'accès aux routes `/bookings` et `/admin/*` est conditionné à la présence d'un jeton JWT valide (et, pour `/admin/*`, à un rôle `ADMIN`).
+Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
 
 La conception est responsive (Tailwind CSS) et compatible avec les navigateurs modernes (Chrome, Firefox, Edge, Safari).
 
@@ -941,7 +942,7 @@ Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux
 
 **Rôles et droits :** deux rôles (`ADMIN`, `USER`) portés par un enum PostgreSQL et embarqués dans le payload du JWT ; chaque route sensible vérifie le rôle avant d'autoriser l'action (ex : suppression d'un espace réservée à `ADMIN`).
 
-**Authentification :** jetons JWT signés en HS256 (`hono/jwt`), durée de vie de 24h, secret d'application chargé depuis une variable d'environnement (`JWT_SECRET`).
+**Authentification :** jetons JWT signés en HS256 (`hono/jwt`), durée de vie de 24h, secret d'application obligatoirement chargé depuis la variable d'environnement `JWT_SECRET`. Le backend refuse de démarrer si cette variable est absente ou vide.
 
 **Mots de passe :** hachage natif avec `Bun.password.hash`/`verify` (Argon2id), aucun mot de passe n'est stocké en clair.
 
@@ -995,7 +996,7 @@ async checkOverlap(
 
 ### 7.1.3. Argumentation
 
-Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé systématiquement avant toute création de réservation (`bookingService.create`), garantissant qu'un espace ne peut jamais être doublement réservé sur un même créneau. La fonction est entièrement couverte par 6 tests unitaires (cas limites inclus : réservations consécutives sans chevauchement, chevauchement partiel en début/fin, inclusion totale).
+Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé systématiquement avant toute création de réservation (`bookingService.create`) et empêche les conflits dans le flux applicatif courant. La protection contre deux requêtes strictement concurrentes reste à renforcer au niveau transactionnel ou par une contrainte en base de données. La fonction est entièrement couverte par 6 tests unitaires (cas limites inclus : réservations consécutives sans chevauchement, chevauchement partiel en début/fin, inclusion totale).
 
 ## 7.2. Middleware d'authentification et de contrôle des rôles (Composants Métier)
 
@@ -1139,7 +1140,7 @@ Plusieurs mesures de sécurité ont été mises en place à chaque couche de l'a
 - **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
 - **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
 - **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage et tests unitaires avant toute fusion de code ;
-- **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via variables d'environnement, jamais commités dans le dépôt Git.
+- **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via des variables d'environnement. Seuls des modèles `.env.example` avec valeurs factices sont versionnés ; les fichiers `.env` réels sont ignorés par Git.
 
 Axes d'amélioration identifiés : mise en place d'un rate-limiting sur les routes d'authentification, rotation du secret JWT, et chiffrement TLS lors d'un déploiement en production.
 
@@ -1151,11 +1152,12 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | ------------ | ---------------------------- | ------------------------------------------------------------------------------- |
 | `auth`       | `auth.service.spec.ts`       | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
 | `bookings`   | `bookings.service.spec.ts`   | Détection de chevauchement, création, consultation, suppression, autorisations  |
-| `workspaces` | `workspaces.service.spec.ts` | CRUD des espaces                                                                |
+| `workspaces` | `workspaces.service.spec.ts` | Création, consultation et suppression des espaces                               |
 | `users`      | `users.service.spec.ts`      | Gestion des comptes utilisateurs                                                |
 | `audit`      | `audit.service.spec.ts`      | Écriture et lecture des logs d'audit MongoDB                                    |
+| `authGuard`  | `auth.guard.spec.ts`         | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
 
-Au total, **47 tests unitaires** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **58 tests unitaires backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

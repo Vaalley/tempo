@@ -24,7 +24,9 @@
 			goto('/login');
 			return;
 		}
-		await fetchUsers();
+		if (auth.user?.role === 'ADMIN') {
+			await fetchUsers();
+		}
 	});
 
 	async function fetchUsers() {
@@ -70,10 +72,12 @@
 				<CalendarDays class="size-4" />
 				Mes réservations
 			</Button>
-			<Button variant="ghost" size="sm" href="/admin/workspaces">
-				<LayoutGrid class="size-4" />
-				Gérer les espaces
-			</Button>
+			{#if auth.user?.role === 'ADMIN'}
+				<Button variant="ghost" size="sm" href="/admin/workspaces">
+					<LayoutGrid class="size-4" />
+					Gérer les espaces
+				</Button>
+			{/if}
 			{#if auth.user?.role === 'ADMIN'}
 				<Button variant="ghost" size="sm" href="/admin/analytics">
 					<BarChart3 class="size-4" />
@@ -92,53 +96,72 @@
 		</div>
 	</div>
 
-	<Card.Root class="mb-8">
-		<Card.Header>
-			<Card.Title>
-				<UserPlus class="size-5 inline-block mr-1" />
-				Nouvel Utilisateur
-			</Card.Title>
-		</Card.Header>
-		<Card.Content>
-			<div class="flex gap-3">
-				<Input
-					type="email"
-					bind:value={email}
-					placeholder="Email pro"
-					class="flex-1"
-				/>
-				<Input
-					type="password"
-					bind:value={password}
-					placeholder="Mot de passe"
-					class="flex-1"
-				/>
-				<Button onclick={createUser} disabled={loading}>
-					{loading ? '...' : 'Ajouter'}
-				</Button>
-			</div>
-		</Card.Content>
-	</Card.Root>
+	{#if auth.user?.role === 'ADMIN'}
+		<Card.Root class="mb-8">
+			<Card.Header>
+				<Card.Title>
+					<UserPlus class="size-5 inline-block mr-1" />
+					Nouvel Utilisateur
+				</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<div class="flex gap-3">
+					<Input
+						type="email"
+						bind:value={email}
+						placeholder="Email pro"
+						class="flex-1"
+					/>
+					<Input
+						type="password"
+						bind:value={password}
+						placeholder="Mot de passe"
+						class="flex-1"
+					/>
+					<Button onclick={createUser} disabled={loading}>
+						{loading ? '...' : 'Ajouter'}
+					</Button>
+				</div>
+			</Card.Content>
+		</Card.Root>
 
-	<Card.Root>
-		<Card.Content class="p-0">
-			{#if users.length === 0}
-				<div class="p-8 text-center text-muted-foreground">Aucun utilisateur trouvé.</div>
-			{:else}
-				<ul class="divide-y divide-border">
-					{#each users as user}
-						<li class="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-							<div class="flex flex-col">
-								<span class="font-medium">{user.email}</span>
-								<span class="text-xs text-muted-foreground">ID: {user.id}</span>
-							</div>
-							<Badge variant="secondary">
-								{new Date(user.createdAt).toLocaleDateString()}
-							</Badge>
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		</Card.Content>
-	</Card.Root>
+		<Card.Root>
+			<Card.Content class="p-0">
+				{#if users.length === 0}
+					<div class="p-8 text-center text-muted-foreground">Aucun utilisateur trouvé.</div>
+				{:else}
+					<ul class="divide-y divide-border">
+						{#each users as user}
+							<li
+								class="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+							>
+								<div class="flex flex-col">
+									<span class="font-medium">{user.email}</span>
+									<span class="text-xs text-muted-foreground">ID: {user.id}</span>
+								</div>
+								<Badge variant="secondary">
+									{new Date(user.createdAt).toLocaleDateString()}
+								</Badge>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</Card.Content>
+		</Card.Root>
+	{:else}
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Bienvenue sur Tempo</Card.Title>
+				<Card.Description>
+					Consultez vos réservations ou réservez un nouvel espace de travail.
+				</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				<Button href="/bookings">
+					<CalendarDays class="size-4" />
+					Accéder à mes réservations
+				</Button>
+			</Card.Content>
+		</Card.Root>
+	{/if}
 </div>

@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { bookingService } from './bookings.service';
-import { authGuard } from '../../middlewares/auth.guard';
+import { authGuard, type AuthEnv } from '../../middlewares/auth.guard';
 import { createBookingSchema } from './bookings.dto';
 import { auditService } from '../audit/audit.service';
 
-const app = new Hono();
+const app = new Hono<AuthEnv>();
 
 // Protect all /bookings routes with JWT
 app.use('*', authGuard);

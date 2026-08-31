@@ -1,21 +1,13 @@
 import { Hono } from 'hono';
 import { analyticsService } from './analytics.service';
-import { authGuard } from '../../middlewares/auth.guard';
-import type { JWTPayload } from '../../middlewares/auth.guard';
+import { adminGuard, authGuard, type AuthEnv } from '../../middlewares/auth.guard';
 
-const app = new Hono();
+const app = new Hono<AuthEnv>();
 
 // Protect all /analytics routes with JWT
 app.use('*', authGuard);
 
-// Admin-only guard
-app.use('*', async (c, next) => {
-	const payload = c.get('jwtPayload') as JWTPayload;
-	if (payload.role !== 'ADMIN') {
-		return c.json({ error: 'Admin access required' }, 403);
-	}
-	await next();
-});
+app.use('*', adminGuard);
 
 // GET /analytics/overview - Global occupancy stats
 app.get('/overview', async (c) => {

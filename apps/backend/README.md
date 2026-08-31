@@ -55,6 +55,11 @@ bun run dev
 
 Le serveur écoute sur **http://localhost:3000**
 
+`apps/backend/.env.example` documente les variables obligatoires
+`DATABASE_URL`, `MONGO_URL`, `MONGO_DB_NAME` et `JWT_SECRET`. Copiez-le vers
+`.env`, puis remplacez les valeurs d'exemple avant de démarrer le serveur.
+Le backend échoue explicitement au démarrage si `JWT_SECRET` est absent.
+
 ## Scripts
 
 | Commande             | Description                      |
