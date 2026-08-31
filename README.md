@@ -66,12 +66,16 @@ Pour le backend lancé directement avec Bun, copiez
 `apps/backend/.env.example` vers `apps/backend/.env`. Il contient les
 connexions locales à PostgreSQL/MongoDB et le secret JWT requis :
 
-| Variable        | Utilisation                            |
-| --------------- | -------------------------------------- |
-| `DATABASE_URL`  | Connexion PostgreSQL                   |
-| `MONGO_URL`     | Connexion MongoDB                      |
-| `MONGO_DB_NAME` | Base MongoDB des audits                |
-| `JWT_SECRET`    | Signature des tokens JWT ; obligatoire |
+| Variable                    | Utilisation                                                   |
+| --------------------------- | ------------------------------------------------------------- |
+| `DATABASE_URL`              | Connexion PostgreSQL                                          |
+| `MONGO_URL`                 | Connexion MongoDB                                             |
+| `MONGO_DB_NAME`             | Base MongoDB des audits                                       |
+| `JWT_SECRET`                | Signature des tokens JWT ; obligatoire                        |
+| `FRONTEND_ORIGIN`           | Origine HTTP(S) frontend autorisée par CORS ; obligatoire     |
+| `AUTH_RATE_LIMIT_MAX`       | Requêtes d'authentification autorisées par fenêtre            |
+| `AUTH_RATE_LIMIT_WINDOW_MS` | Durée de la fenêtre du limiteur en millisecondes              |
+| `TRUST_PROXY`               | Prise en compte de `X-Forwarded-For` derrière un proxy fiable |
 
 Pour lancer la stack complète avec Docker Compose, copiez le modèle racine :
 
@@ -80,10 +84,17 @@ cp .env.example .env
 ```
 
 Configurez ensuite les identifiants `POSTGRES_*` et `MONGO_INITDB_*`, un
-`JWT_SECRET` aléatoire, ainsi que les URLs listées dans `.env.example`.
+`JWT_SECRET` aléatoire, `FRONTEND_ORIGIN`, ainsi que les URLs listées dans
+`.env.example`.
 Compose transmettra ces valeurs aux conteneurs ; aucun identifiant n'est
 stocké dans `docker-compose.yml`. Si `JWT_SECRET` manque, le backend refuse
-de démarrer.
+de démarrer. Il refuse également une origine frontend absente ou invalide.
+
+`TRUST_PROXY` doit rester à `false` lorsque le backend est exposé directement.
+Activez-le uniquement derrière un reverse proxy de confiance qui remplace
+`X-Forwarded-For`, sans quoi un client pourrait falsifier son adresse et
+contourner le limiteur. Le limiteur actuel est stocké en mémoire : pour
+plusieurs instances backend, remplacez-le par un stockage partagé tel que Redis.
 
 ## Développement
 

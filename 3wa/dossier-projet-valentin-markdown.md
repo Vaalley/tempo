@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 71 tests backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL, aux bornes temporelles des statistiques, à la modification des espaces et aux routes administrateur. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé (mocks des accès base de données avec Bun Test) permettant d'exécuter les 83 tests backend, dont des tests dédiés au refus d'un utilisateur `USER`, à l'autorisation d'un `ADMIN`, à la traduction d'un conflit concurrent PostgreSQL, aux bornes temporelles des statistiques, à la modification des espaces, aux routes administrateur et aux protections HTTP. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -632,7 +632,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture par tests backend des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations, espaces, routes administrateur et statistiques) — 71 tests au total ;
+- **Fiabilité fonctionnelle** : couverture par tests backend des règles métier critiques (détection de chevauchement de réservations, authentification, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 83 tests au total ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, exécutés en pré-commit et en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -989,6 +989,8 @@ Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux
 
 **Authentification :** jetons JWT signés en HS256 (`hono/jwt`), durée de vie de 24h, secret d'application obligatoirement chargé depuis la variable d'environnement `JWT_SECRET`. Le backend refuse de démarrer si cette variable est absente ou vide.
 
+**Sécurité HTTP :** le backend n'autorise via CORS que l'origine définie par `FRONTEND_ORIGIN` et refuse de démarrer si cette valeur est absente ou n'est pas une origine HTTP(S) valide. Le middleware `secureHeaders` ajoute notamment une politique CSP restrictive, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et une `Permissions-Policy`. Les routes `/auth/login` et `/auth/register` partagent une limite configurable de 10 requêtes par adresse sur 15 minutes et retournent HTTP 429 avec `Retry-After` lorsque la limite est atteinte.
+
 **Mots de passe :** hachage natif avec `Bun.password.hash`/`verify` (Argon2id), aucun mot de passe n'est stocké en clair.
 
 **Validation des entrées :** tous les corps de requête sont validés par des schémas Zod (`@hono/zod-validator`) avant tout traitement métier.
@@ -1184,27 +1186,31 @@ Plusieurs mesures de sécurité ont été mises en place à chaque couche de l'a
 - **Validation des entrées** : schémas Zod appliqués à chaque route (`@hono/zod-validator`), limitant les risques d'injection ou de données malformées ;
 - **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
 - **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
+- **Sécurité HTTP** : CORS limité à l'origine frontend configurée, en-têtes défensifs et limitation des requêtes de connexion/inscription avec réponse HTTP 429 ;
 - **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage et tests unitaires avant toute fusion de code ;
 - **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via des variables d'environnement. Seuls des modèles `.env.example` avec valeurs factices sont versionnés ; les fichiers `.env` réels sont ignorés par Git.
 
-Axes d'amélioration identifiés : mise en place d'un rate-limiting sur les routes d'authentification, rotation du secret JWT, et chiffrement TLS lors d'un déploiement en production.
+Dans le MVP, le jeton est stocké dans `localStorage`. Ce choix simplifie le client RPC mais rend le jeton accessible à tout script exécuté dans la page en cas de faille XSS. La CSP ajoutée aux réponses de l'API ne protège pas à elle seule le document frontend : ce risque demeure. Avant une exposition publique, l'amélioration recommandée est une session portée par un cookie `HttpOnly`, `Secure` et `SameSite`, accompagnée d'une protection CSRF adaptée. Le limiteur actuel est local à chaque processus ; plusieurs instances backend nécessiteraient un stockage partagé, par exemple Redis.
+
+Axes d'amélioration identifiés : migration du JWT vers un cookie sécurisé, limiteur distribué en cas de déploiement horizontal, rotation du secret JWT et chiffrement TLS lors d'un déploiement en production.
 
 # 9\. PLAN DE TESTS
 
 Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
 
-| Module       | Fichier de test                                          | Ce qui est testé                                                                |
-| ------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `auth`       | `auth.service.spec.ts`                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT |
-| `bookings`   | `bookings.service.spec.ts`                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression        |
-| `workspaces` | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts` | Création, consultation, modification, suppression et validation PATCH           |
-| `users`      | `users.service.spec.ts`                                  | Gestion des comptes utilisateurs                                                |
-| `audit`      | `audit.service.spec.ts`                                  | Écriture et lecture des logs d'audit MongoDB                                    |
-| `analytics`  | `analytics.service.spec.ts`                              | Indicateurs globaux et agrégation par espace                                    |
-| `authGuard`  | `auth.guard.spec.ts`                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                            |
-| Routes admin | `admin.routes.spec.ts`                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces        |
+| Module        | Fichier de test                                                         | Ce qui est testé                                                                  |
+| ------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `auth`        | `auth.service.spec.ts`                                                  | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT   |
+| `bookings`    | `bookings.service.spec.ts`                                              | Chevauchement, conflit PostgreSQL, création, consultation et suppression          |
+| `workspaces`  | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                | Création, consultation, modification, suppression et validation PATCH             |
+| `users`       | `users.service.spec.ts`                                                 | Gestion des comptes utilisateurs                                                  |
+| `audit`       | `audit.service.spec.ts`                                                 | Écriture et lecture des logs d'audit MongoDB                                      |
+| `analytics`   | `analytics.service.spec.ts`                                             | Indicateurs globaux et agrégation par espace                                      |
+| `authGuard`   | `auth.guard.spec.ts`                                                    | Refus du rôle `USER` et autorisation du rôle `ADMIN`                              |
+| Routes admin  | `admin.routes.spec.ts`                                                  | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces          |
+| Sécurité HTTP | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts` | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres |
 
-Au total, **71 tests backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
+Au total, **83 tests backend** sont exécutés automatiquement à chaque `push`/`pull request` via GitHub Actions, en complément du lint (Oxlint) et du contrôle de formatage (Oxfmt). Un job supplémentaire de la CI valide la construction des images Docker (`docker-build`), garantissant que l'application reste déployable après chaque évolution.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

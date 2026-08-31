@@ -1,34 +1,10 @@
-import { Hono } from 'hono';
-import { logger } from 'hono/logger';
-import { cors } from 'hono/cors';
-import usersRoute from './modules/users/users.route';
-import authRoute from './modules/auth/auth.route';
-import workspacesRoute from './modules/workspaces/workspaces.route';
-import bookingsRoute from './modules/bookings/bookings.route';
-import analyticsRoute from './modules/analytics/analytics.route';
-import auditRoute from './modules/audit/audit.route';
+import { createApp } from './app';
+import { getHttpSecurityConfig } from './config/security.config';
 import { connectMongo } from './db/mongo';
 
-// Initialize MongoDB connection
+const app = createApp(getHttpSecurityConfig());
+
 connectMongo().catch(console.error);
-
-const app = new Hono();
-
-// Middlewares
-app.use('*', logger());
-app.use('*', cors());
-
-// Routes
-const routes = app
-	.route('/auth', authRoute)
-	.route('/users', usersRoute)
-	.route('/workspaces', workspacesRoute)
-	.route('/bookings', bookingsRoute)
-	.route('/analytics', analyticsRoute)
-	.route('/audit', auditRoute);
-
-// Health check
-routes.get('/health', (c) => c.text('OK'));
 
 export default {
 	port: 3000,
@@ -36,4 +12,4 @@ export default {
 };
 
 // On exporte le type de l'API pour le frontend
-export type AppType = typeof routes;
+export type AppType = ReturnType<typeof createApp>;

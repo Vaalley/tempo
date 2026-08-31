@@ -39,6 +39,10 @@ services:
             MONGO_URL: '${MONGO_URL:?MONGO_URL is required}'
             MONGO_DB_NAME: '${MONGO_DB_NAME:?MONGO_DB_NAME is required}'
             JWT_SECRET: '${JWT_SECRET:?JWT_SECRET is required}'
+            FRONTEND_ORIGIN: '${FRONTEND_ORIGIN:?FRONTEND_ORIGIN is required}'
+            AUTH_RATE_LIMIT_MAX: '${AUTH_RATE_LIMIT_MAX:-10}'
+            AUTH_RATE_LIMIT_WINDOW_MS: '${AUTH_RATE_LIMIT_WINDOW_MS:-900000}'
+            TRUST_PROXY: '${TRUST_PROXY:-false}'
         depends_on:
             - postgres
             - mongo
