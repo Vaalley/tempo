@@ -58,6 +58,10 @@ processus frontend.
 | `bun run test`    | Lance les tests Vitest        |
 | `bun run check`   | Vérifie les types TypeScript  |
 
+Le parcours navigateur se lance depuis la racine avec `bun run test:e2e`. Il
+utilise Playwright et couvre la connexion, la réservation, sa consultation et
+son annulation sur la stack complète.
+
 ## Build de Production
 
 ```bash

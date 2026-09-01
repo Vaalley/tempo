@@ -14,7 +14,7 @@
 	let loading = $state(false);
 	let isRegister = $state(false);
 
-	async function handleSubmit() {
+	async function handleSubmit(): Promise<void> {
 		if (!email || !password) {
 			error = 'Email et mot de passe requis';
 			return;
@@ -63,7 +63,13 @@
 				</Alert.Root>
 			{/if}
 
-			<form onsubmit={handleSubmit} class="space-y-4">
+			<form
+				onsubmit={(event) => {
+					event.preventDefault();
+					void handleSubmit();
+				}}
+				class="space-y-4"
+			>
 				<div class="space-y-2">
 					<Label for="email">Email</Label>
 					<Input

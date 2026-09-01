@@ -116,15 +116,17 @@ bun --filter frontend dev         # http://localhost:5173
 
 ## Scripts disponibles
 
-| Commande            | Description                           |
-| ------------------- | ------------------------------------- |
-| `bun run dev`       | Lance tous les workspaces en mode dev |
-| `bun run build`     | Build tous les workspaces             |
-| `bun run typecheck` | Vérifie TypeScript et Svelte          |
-| `bun run test`      | Lance les tests unitaires et HTTP     |
-| `bun run lint`      | Lint avec Oxlint                      |
-| `bun run format`    | Formate le code                       |
-| `bun run precommit` | Format + Lint + Types + Tests         |
+| Commande                  | Description                                      |
+| ------------------------- | ------------------------------------------------ |
+| `bun run dev`             | Lance tous les workspaces en mode dev            |
+| `bun run build`           | Build tous les workspaces                        |
+| `bun run typecheck`       | Vérifie TypeScript et Svelte                     |
+| `bun run test`            | Lance les tests unitaires et HTTP                |
+| `bun run test:e2e`        | Lance le parcours Playwright dans Chromium       |
+| `bun run test:e2e:headed` | Lance le parcours E2E avec le navigateur visible |
+| `bun run lint`            | Lint avec Oxlint                                 |
+| `bun run format`          | Formate le code                                  |
+| `bun run precommit`       | Format + Lint + Types + Tests                    |
 
 ## Production (Docker)
 
@@ -174,6 +176,24 @@ le filtrage des logs d'audit. Les données créées sont supprimées automatique
 docker compose exec --no-TTY backend bun run test:integration:postgres
 docker compose exec --no-TTY backend bun run test:integration:mongo
 ```
+
+Le test E2E Playwright utilise le compte collaborateur et l'espace créés par le
+seed. Il vérifie dans Chromium la connexion, la création, l'affichage puis
+l'annulation d'une réservation. Installez le navigateur une première fois, puis
+exécutez le scénario pendant que la stack et les données de démonstration sont
+disponibles :
+
+```bash
+npx playwright install chromium
+bun run test:e2e
+```
+
+Les variables optionnelles `E2E_BASE_URL`, `E2E_API_URL`, `E2E_USER_EMAIL`,
+`E2E_USER_PASSWORD` et `E2E_WORKSPACE_NAME` permettent de cibler un autre
+environnement. En local, Playwright démarre automatiquement le backend et le
+frontend s'ils ne répondent pas déjà ; PostgreSQL, MongoDB et le seed restent des
+prérequis. La réservation créée est supprimée même si une assertion ultérieure
+échoue.
 
 ### Sauvegarde et restauration
 

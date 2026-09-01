@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test et 15 tests frontend avec Vitest. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, une réservation persistée de bout en bout et le rejet atomique d'une double réservation concurrente, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Ils couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration, la connexion côté client, la création d'une réservation et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test, 15 tests frontend avec Vitest et un parcours E2E avec Playwright. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, une réservation persistée de bout en bout et le rejet atomique d'une double réservation concurrente, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Le test navigateur pilote réellement l'interface pour se connecter, créer une réservation, la retrouver dans la liste puis l'annuler. Les suites couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -444,7 +444,7 @@ Selon les projets, la communication écrite et orale peut s’effectuer en angla
 
 _Ma contribution sur le projet Tempo_
 
-Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration, exécute les tests d'intégration PostgreSQL et MongoDB, puis vérifie les endpoints publics ainsi que la connexion administrateur. L'[exécution réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) apporte la preuve distante du socle du pipeline ; une nouvelle exécution et sa capture devront prouver l'ajout des tests d'intégration aux bases réelles.
+Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration, exécute les tests d'intégration PostgreSQL et MongoDB puis le parcours E2E Playwright dans Chromium, et vérifie les endpoints publics ainsi que la connexion administrateur. En cas d'échec du parcours navigateur, ses traces, captures et vidéos sont conservées sept jours comme artefact. L'[exécution réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) apporte la preuve distante du socle du pipeline ; une nouvelle exécution et sa capture devront prouver l'ajout des tests d'intégration aux bases réelles et du test E2E.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -952,22 +952,22 @@ Sans objet : Tempo est une application interne, protégée par authentification,
 
 ## 6.2. Environnement technique
 
-| Domaine          | Technologie                            | Justification                                                                                 |
-| ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Runtime          | Bun 1.3.14                             | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
-| Monorepo         | Bun Workspaces                         | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées        |
-| Backend          | Hono 4.x                               | Framework web ultra-léger, performant, compatible Edge                                        |
-| Validation       | Zod 4.x                                | Validation stricte et typée des entrées (sécurité by design)                                  |
-| Frontend         | Svelte 5.x (Runes) + SvelteKit         | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
-| Style            | Tailwind CSS 4.x + shadcn-svelte       | Développement rapide, cohérent et responsive des interfaces                                   |
-| Base SQL         | PostgreSQL 18.6 (Alpine 3.24)          | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
-| ORM SQL          | Drizzle ORM                            | Typesafe, léger, génération automatique de migrations SQL                                     |
-| Base NoSQL       | MongoDB 8.0.29 (Noble)                 | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
-| Authentification | `hono/jwt` + `Bun.password`            | Jetons JWT signés HS256, hachage natif des mots de passe                                      |
-| Qualité de code  | Oxlint / Oxfmt                         | Linting et formatage haute performance (Rust), homogénéité du code                            |
-| Tests            | Bun Test (backend) / Vitest (frontend) | Tests unitaires natifs, rapides, intégrés à l'écosystème Bun/Vite                             |
-| CI               | GitHub Actions                         | Contrôle qualité, tests, build et recette locale de la stack Docker Compose                   |
-| Conteneurs       | Docker / Docker Compose                | Isolation des services, environnement reproductible identique dev/prod                        |
+| Domaine          | Technologie                      | Justification                                                                                 |
+| ---------------- | -------------------------------- | --------------------------------------------------------------------------------------------- |
+| Runtime          | Bun 1.3.14                       | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
+| Monorepo         | Bun Workspaces                   | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées        |
+| Backend          | Hono 4.x                         | Framework web ultra-léger, performant, compatible Edge                                        |
+| Validation       | Zod 4.x                          | Validation stricte et typée des entrées (sécurité by design)                                  |
+| Frontend         | Svelte 5.x (Runes) + SvelteKit   | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
+| Style            | Tailwind CSS 4.x + shadcn-svelte | Développement rapide, cohérent et responsive des interfaces                                   |
+| Base SQL         | PostgreSQL 18.6 (Alpine 3.24)    | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
+| ORM SQL          | Drizzle ORM                      | Typesafe, léger, génération automatique de migrations SQL                                     |
+| Base NoSQL       | MongoDB 8.0.29 (Noble)           | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
+| Authentification | `hono/jwt` + `Bun.password`      | Jetons JWT signés HS256, hachage natif des mots de passe                                      |
+| Qualité de code  | Oxlint / Oxfmt                   | Linting et formatage haute performance (Rust), homogénéité du code                            |
+| Tests            | Bun Test / Vitest / Playwright   | Tests unitaires, HTTP, intégration aux bases et parcours E2E Chromium                         |
+| CI               | GitHub Actions                   | Contrôle qualité, tests, build et recette locale de la stack Docker Compose                   |
+| Conteneurs       | Docker / Docker Compose          | Isolation des services, environnement reproductible identique dev/prod                        |
 
 Le choix de Bun et Hono répond à un objectif de performance et de modernité technique ; le choix conjoint PostgreSQL + MongoDB répond au besoin de démontrer une persistance hybride (données structurées vs. données de log) ; aucune contrainte technique n'a été imposée par un tiers, tous les choix ont été faits librement dans une logique d'apprentissage et de démonstration de compétences.
 
@@ -1214,13 +1214,14 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | Routes HTTP       | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
 | Intégration PG    | `postgres-bookings.integration.spec.ts`                                                  | Migrations, persistance réelle et rejet atomique de deux réservations concurrentes   |
 | Intégration Mongo | `mongo-audit.integration.spec.ts`                                                        | Écriture, auteur, horodatage, ordre et filtrage des logs d'audit réels               |
+| E2E navigateur    | `booking-flow.spec.ts`                                                                   | Connexion, réservation, consultation puis annulation dans Chromium                   |
 | Sécurité HTTP     | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
 | Seed démo         | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
 | Frontend          | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **94 tests backend unitaires/HTTP et 15 tests frontend** sont exécutés par `bun run test`. Deux tests d'intégration PostgreSQL et deux tests d'intégration MongoDB supplémentaires sont exécutés dans le job Docker. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, ainsi que l'écriture et la lecture ordonnée et filtrée des audits. L'[exécution GitHub Actions réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) constitue la preuve CI distante du pipeline précédent ; le prochain run doit confirmer l'ajout de ces quatre tests d'intégration.
+Au total, **94 tests backend unitaires/HTTP et 15 tests frontend** sont exécutés par `bun run test`. Deux tests d'intégration PostgreSQL, deux tests d'intégration MongoDB et un parcours E2E Playwright supplémentaires sont exécutés dans le job Docker. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, l'écriture et la lecture ordonnée et filtrée des audits, puis la connexion, la création, la consultation et l'annulation d'une réservation dans Chromium. L'[exécution GitHub Actions réussie du 31 août 2026](https://github.com/Vaalley/tempo/actions/runs/33397608475) constitue la preuve CI distante du pipeline précédent ; le prochain run doit confirmer l'ajout de ces cinq tests d'intégration/E2E.
 
-Ce plan de tests sera enrichi au fil des évolutions technologiques (ajout de tests d'intégration bout-en-bout, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
+Ce plan de tests sera enrichi au fil des évolutions technologiques (autres parcours E2E, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 
 # 10\. JEU D’ESSAI DE LA FONCTIONNALITE LA PLUS REPRESENTATIVE
 

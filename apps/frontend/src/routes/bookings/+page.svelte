@@ -185,7 +185,7 @@
 					value={selectedWorkspaceId}
 					onValueChange={(v) => { if (v !== undefined) selectedWorkspaceId = v; }}
 				>
-					<Select.Trigger class="w-full">
+					<Select.Trigger class="w-full" aria-label="Espace">
 						{selectedWorkspaceLabel()}
 					</Select.Trigger>
 					<Select.Content>
@@ -199,18 +199,22 @@
 
 				<Input
 					type="date"
+					aria-label="Date de début"
 					bind:value={startDate}
 				/>
 				<Input
 					type="time"
+					aria-label="Heure de début"
 					bind:value={startTime}
 				/>
 				<Input
 					type="date"
+					aria-label="Date de fin"
 					bind:value={endDate}
 				/>
 				<Input
 					type="time"
+					aria-label="Heure de fin"
 					bind:value={endTime}
 				/>
 			</div>
@@ -251,7 +255,10 @@
 					</Table.Header>
 					<Table.Body>
 						{#each bookings as booking}
-							<Table.Row class={isPast(booking.endAt) ? 'opacity-50' : ''}>
+							<Table.Row
+								data-booking-id={booking.id}
+								class={isPast(booking.endAt) ? 'opacity-50' : ''}
+							>
 								<Table.Cell>
 									<div class="flex items-center gap-2">
 										<span class="text-xl">

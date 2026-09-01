@@ -13,10 +13,13 @@
 		"format": "bun run --bun oxfmt .",
 		"format:check": "bun run --bun oxfmt . --check",
 		"test": "bun --filter '*' test",
+		"test:e2e": "playwright test",
+		"test:e2e:headed": "playwright test --headed",
 		"precommit": "bun run format && bun run lint && bun run typecheck && bun run test",
 		"diagrams:png": "bun run scripts/export-diagrams.ts"
 	},
 	"devDependencies": {
+		"@playwright/test": "1.57.0",
 		"marked": "^18.0.5",
 		"oxfmt": "^0.21.0",
 		"oxlint": "^1.68.0",
