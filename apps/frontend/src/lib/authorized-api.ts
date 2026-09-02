@@ -3,11 +3,18 @@ import type {
 	AnalyticsOverview,
 	AuditLog,
 	Booking,
+	BookingParticipant,
+	BookingQrCode,
+	CheckInInput,
+	CheckInResult,
 	CreateBookingInput,
 	CreatedBooking,
 	CreateUserInput,
 	CreateWorkspaceInput,
+	InviteParticipantInput,
+	RespondInvitationInput,
 	UpdateWorkspaceInput,
+	UpdatedBookingParticipant,
 	User,
 	Workspace,
 	WorkspaceStat,
@@ -98,6 +105,43 @@ export function createAuthorizedApi(options: AuthorizedApiOptions = {}) {
 				return read(
 					getClient().bookings[':id'].$delete({ param: { id } }),
 					"Erreur lors de l'annulation de la réservation",
+				);
+			},
+			invite(id: string, input: InviteParticipantInput): Promise<BookingParticipant> {
+				return read(
+					getClient().bookings[':id'].invitations.$post({ param: { id }, json: input }),
+					"Erreur lors de l'envoi de l'invitation",
+				);
+			},
+			respondInvitation(
+				id: string,
+				participantId: string,
+				input: RespondInvitationInput,
+			): Promise<UpdatedBookingParticipant> {
+				return read(
+					getClient().bookings[':id'].invitations[':participantId'].$patch({
+						param: { id, participantId },
+						json: input,
+					}),
+					"Erreur lors de la réponse à l'invitation",
+				);
+			},
+			join(id: string): Promise<BookingParticipant> {
+				return read(
+					getClient().bookings[':id'].join.$post({ param: { id } }),
+					'Erreur lors de la participation à la réservation',
+				);
+			},
+			generateQr(id: string): Promise<BookingQrCode> {
+				return read(
+					getClient().bookings[':id'].qr.$post({ param: { id } }),
+					'Erreur lors de la génération du QR code',
+				);
+			},
+			checkIn(id: string, input: CheckInInput): Promise<CheckInResult> {
+				return read(
+					getClient().bookings[':id']['check-in'].$post({ param: { id }, json: input }),
+					'Erreur lors du check-in',
 				);
 			},
 		},

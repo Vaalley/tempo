@@ -9,6 +9,20 @@ export interface SessionSnapshot {
 	user: AuthUser | null;
 }
 
+export function safeReturnTo(value: string | null): string {
+	if (!value?.startsWith('/')) return '/';
+
+	try {
+		const applicationOrigin = 'http://tempo.local';
+		const destination = new URL(value, applicationOrigin);
+
+		if (destination.origin !== applicationOrigin) return '/';
+		return `${destination.pathname}${destination.search}${destination.hash}`;
+	} catch {
+		return '/';
+	}
+}
+
 export function accessRedirect(
 	session: SessionSnapshot,
 	requiredAccess: RouteAccess,

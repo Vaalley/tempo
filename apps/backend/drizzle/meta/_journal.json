@@ -29,6 +29,13 @@
 			"when": 1788165791392,
 			"tag": "0003_data_integrity_indexes",
 			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1788337429874,
+			"tag": "0004_booking-collaboration-checkin",
+			"breakpoints": true
 		}
 	]
 }

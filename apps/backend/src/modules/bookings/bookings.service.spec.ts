@@ -4,11 +4,16 @@ import { bookingService } from './bookings.service';
 // Mock de la base de données
 const mockFindFirst = mock(() => Promise.resolve(undefined));
 const mockFindMany = mock(() => Promise.resolve([]));
+const mockParticipantFindMany = mock(() => Promise.resolve([]));
 const mockReturning = mock(() => Promise.resolve([]));
 const mockValues = mock(() => ({ returning: mockReturning }));
 const mockInsert = mock(() => ({ values: mockValues }));
 const mockWhere = mock(() => ({ returning: mockReturning }));
 const mockDelete = mock(() => ({ where: mockWhere }));
+const mockTransaction = mock(
+	async (callback: (transaction: { insert: typeof mockInsert }) => Promise<unknown>) =>
+		await callback({ insert: mockInsert }),
+);
 
 mock.module('../../db', () => ({
 	db: {
@@ -20,9 +25,13 @@ mock.module('../../db', () => ({
 				findFirst: mockFindFirst,
 				findMany: mockFindMany,
 			},
+			bookingParticipants: {
+				findMany: mockParticipantFindMany,
+			},
 		},
 		insert: mockInsert,
 		delete: mockDelete,
+		transaction: mockTransaction,
 	},
 }));
 
@@ -30,16 +39,22 @@ describe('BookingService', () => {
 	beforeEach(() => {
 		mockFindFirst.mockReset();
 		mockFindMany.mockReset();
+		mockParticipantFindMany.mockReset();
 		mockReturning.mockReset();
 		mockValues.mockReset();
 		mockInsert.mockReset();
 		mockWhere.mockReset();
 		mockDelete.mockReset();
+		mockTransaction.mockReset();
 
 		mockValues.mockReturnValue({ returning: mockReturning });
 		mockInsert.mockReturnValue({ values: mockValues });
 		mockWhere.mockReturnValue({ returning: mockReturning });
 		mockDelete.mockReturnValue({ where: mockWhere });
+		mockParticipantFindMany.mockResolvedValue([]);
+		mockTransaction.mockImplementation(
+			async (callback) => await callback({ insert: mockInsert }),
+		);
 	});
 
 	describe('checkOverlap', () => {
@@ -145,6 +160,7 @@ describe('BookingService', () => {
 					workspaceId: 999,
 					startAt: '2024-01-01T10:00:00Z',
 					endAt: '2024-01-01T11:00:00Z',
+					visibility: 'PRIVATE',
 				}),
 			).rejects.toThrow('WORKSPACE_NOT_FOUND');
 		});
@@ -164,6 +180,7 @@ describe('BookingService', () => {
 					workspaceId: 1,
 					startAt: '2024-01-01T10:30:00Z',
 					endAt: '2024-01-01T11:30:00Z',
+					visibility: 'PRIVATE',
 				}),
 			).rejects.toThrow('BOOKING_OVERLAP');
 		});
@@ -187,10 +204,14 @@ describe('BookingService', () => {
 				workspaceId: 1,
 				startAt: '2024-01-01T10:00:00Z',
 				endAt: '2024-01-01T11:00:00Z',
+				visibility: 'PUBLIC',
 			});
 
 			expect(result).toEqual(mockBooking);
 			expect(mockInsert).toHaveBeenCalled();
+			expect(mockValues).toHaveBeenCalledWith(
+				expect.objectContaining({ visibility: 'PUBLIC' }),
+			);
 		});
 
 		it('should map the PostgreSQL exclusion constraint to BOOKING_OVERLAP', async () => {
@@ -214,6 +235,7 @@ describe('BookingService', () => {
 					workspaceId: 1,
 					startAt: '2024-01-01T10:00:00Z',
 					endAt: '2024-01-01T11:00:00Z',
+					visibility: 'PRIVATE',
 				}),
 			).rejects.toThrow('BOOKING_OVERLAP');
 		});
@@ -232,6 +254,7 @@ describe('BookingService', () => {
 					workspaceId: 1,
 					startAt: '2024-01-01T10:00:00Z',
 					endAt: '2024-01-01T11:00:00Z',
+					visibility: 'PRIVATE',
 				}),
 			).rejects.toBe(databaseError);
 		});

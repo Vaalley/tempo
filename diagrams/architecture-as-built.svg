@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="720" viewBox="0 0 1500 720" role="img" aria-labelledby="title description">
+	<title id="title">Architecture 3-tiers implémentée de Tempo</title>
+	<desc id="description">Le navigateur utilise le frontend SvelteKit, qui appelle l'API Hono sécurisée. Les services métier accèdent à PostgreSQL avec Drizzle et à MongoDB pour les logs d'audit.</desc>
+	<defs>
+		<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+			<path d="M0,0 L0,6 L9,3 z" fill="#475569" />
+		</marker>
+		<style>
+			.title { font: 700 30px Arial, sans-serif; fill: #0f172a; }
+			.tier-title { font: 700 22px Arial, sans-serif; fill: #0f172a; }
+			.label { font: 600 17px Arial, sans-serif; fill: #1e293b; }
+			.body { font: 15px Arial, sans-serif; fill: #334155; }
+			.small { font: 14px Arial, sans-serif; fill: #475569; }
+			.arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+		</style>
+	</defs>
+	<rect width="1500" height="720" fill="#ffffff" />
+	<text x="750" y="48" text-anchor="middle" class="title">Tempo, architecture 3-tiers implémentée (V1)</text>
+
+	<circle cx="74" cy="330" r="24" fill="#f8fafc" stroke="#475569" stroke-width="3" />
+	<path d="M74 354 L74 430 M32 390 L116 390 M74 430 L40 480 M74 430 L108 480" stroke="#475569" stroke-width="3" fill="none" />
+	<text x="74" y="520" text-anchor="middle" class="label">Utilisateur</text>
+	<text x="74" y="544" text-anchor="middle" class="small">USER ou ADMIN</text>
+
+	<rect x="180" y="105" width="370" height="500" rx="20" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" />
+	<text x="365" y="145" text-anchor="middle" class="tier-title">Couche présentation</text>
+	<text x="365" y="172" text-anchor="middle" class="body">SvelteKit 2.63.1 et Svelte 5.56.3</text>
+	<rect x="220" y="210" width="290" height="95" rx="12" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />
+	<text x="365" y="244" text-anchor="middle" class="label">Pages SvelteKit</text>
+	<text x="365" y="269" text-anchor="middle" class="body">/, /login, /bookings, /check-in,</text>
+	<text x="365" y="292" text-anchor="middle" class="body">/admin/*</text>
+	<rect x="220" y="340" width="290" height="105" rx="12" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />
+	<text x="365" y="375" text-anchor="middle" class="label">Navigation et appels API</text>
+	<text x="365" y="403" text-anchor="middle" class="body">gardes partagées et client Hono RPC typé</text>
+	<rect x="220" y="480" width="290" height="75" rx="12" fill="#ffffff" stroke="#38bdf8" stroke-width="2" />
+	<text x="365" y="512" text-anchor="middle" class="label">Authentification</text>
+	<text x="365" y="538" text-anchor="middle" class="body">JWT conservé dans localStorage</text>
+
+	<rect x="620" y="105" width="400" height="500" rx="20" fill="#ede9fe" stroke="#7c3aed" stroke-width="3" />
+	<text x="820" y="145" text-anchor="middle" class="tier-title">Couche métier et API</text>
+	<text x="820" y="172" text-anchor="middle" class="body">Bun 1.3.14 et Hono 4.12.24</text>
+	<rect x="660" y="205" width="320" height="105" rx="12" fill="#ffffff" stroke="#a78bfa" stroke-width="2" />
+	<text x="820" y="238" text-anchor="middle" class="label">Middlewares</text>
+	<text x="820" y="266" text-anchor="middle" class="body">CORS, en-têtes, rate limiting,</text>
+	<text x="820" y="289" text-anchor="middle" class="body">gardes JWT et ADMIN</text>
+	<rect x="660" y="345" width="320" height="95" rx="12" fill="#ffffff" stroke="#a78bfa" stroke-width="2" />
+	<text x="820" y="378" text-anchor="middle" class="label">Routes HTTP</text>
+	<text x="820" y="406" text-anchor="middle" class="body">auth, users, workspaces, bookings,</text>
+	<text x="820" y="429" text-anchor="middle" class="body">participants, check-in, analytics et audit</text>
+	<rect x="660" y="475" width="320" height="80" rx="12" fill="#ffffff" stroke="#a78bfa" stroke-width="2" />
+	<text x="820" y="509" text-anchor="middle" class="label">Services métier</text>
+	<text x="820" y="536" text-anchor="middle" class="body">logique applicative et accès aux données</text>
+
+	<rect x="1090" y="105" width="360" height="500" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3" />
+	<text x="1270" y="145" text-anchor="middle" class="tier-title">Couche persistance</text>
+	<rect x="1130" y="215" width="280" height="130" rx="12" fill="#ffffff" stroke="#4ade80" stroke-width="2" />
+	<ellipse cx="1270" cy="245" rx="105" ry="20" fill="#f0fdf4" stroke="#4ade80" stroke-width="2" />
+	<text x="1270" y="251" text-anchor="middle" class="label">PostgreSQL 18.6</text>
+	<text x="1270" y="291" text-anchor="middle" class="body">utilisateurs, espaces, réservations,</text>
+	<text x="1270" y="314" text-anchor="middle" class="body">participants et jetons QR hachés</text>
+	<text x="1270" y="337" text-anchor="middle" class="body">Drizzle, contraintes et index</text>
+	<rect x="1130" y="405" width="280" height="120" rx="12" fill="#ffffff" stroke="#4ade80" stroke-width="2" />
+	<ellipse cx="1270" cy="435" rx="105" ry="20" fill="#f0fdf4" stroke="#4ade80" stroke-width="2" />
+	<text x="1270" y="441" text-anchor="middle" class="label">MongoDB 8.0.29</text>
+	<text x="1270" y="484" text-anchor="middle" class="body">logs de suppression</text>
+	<text x="1270" y="509" text-anchor="middle" class="body">écriture best effort</text>
+
+	<path d="M120 390 L210 390" class="arrow" />
+	<text x="165" y="374" text-anchor="middle" class="small">navigateur</text>
+	<path d="M510 390 L650 390" class="arrow" />
+	<text x="580" y="355" text-anchor="middle" class="small">HTTP JSON</text>
+	<text x="580" y="376" text-anchor="middle" class="small">Bearer JWT</text>
+	<path d="M980 495 C1040 495 1050 280 1130 280" class="arrow" />
+	<text x="1058" y="323" text-anchor="middle" class="small">Drizzle / SQL</text>
+	<path d="M980 520 C1040 520 1050 465 1130 465" class="arrow" />
+	<text x="1054" y="495" text-anchor="middle" class="small">pilote MongoDB</text>
+
+	<rect x="455" y="642" width="590" height="48" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+	<text x="750" y="672" text-anchor="middle" class="body">Architecture V1 observée dans le code. Il n’existe pas de couche Repository distincte.</text>
+</svg>

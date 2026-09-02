@@ -326,7 +326,7 @@ Le concepteur développeur d’applications analyse le cahier des charges en ide
 
 _Ma contribution sur le projet Tempo_
 
-J'ai rédigé le cahier des charges technique du projet (`SPECS.md`), en identifiant les acteurs (Collaborateur, Administrateur, Système) et les besoins fonctionnels attendus. J'ai formalisé ces besoins sous forme de diagramme de cas d'utilisation UML (`use case diagram.png`) et de cartographie des écrans de l'application. Les maquettes n'ont pas été réalisées avec un outil dédié (Figma) mais directement itérées avec la librairie de composants shadcn-svelte, ce qui m'a permis d'aligner rapidement conception et implémentation.
+J'ai rédigé le cahier des charges technique du projet (`SPECS.md`) en identifiant les acteurs, les limites du système et les besoins fonctionnels. J'ai préparé une première maquette dans Figma, puis je l'ai fait évoluer pendant l'implémentation avec les composants shadcn-svelte. Le diagramme de cas d'utilisation, la cartographie des écrans et la maquette sont présentés en section 5.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -405,7 +405,7 @@ Le concepteur développeur d’applications prépare un plan de tests, crée ou 
 
 _Ma contribution sur le projet Tempo_
 
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test, 15 tests frontend avec Vitest et un parcours E2E avec Playwright. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, une réservation persistée de bout en bout et le rejet atomique d'une double réservation concurrente, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Le test navigateur pilote réellement l'interface pour se connecter, créer une réservation, la retrouver dans la liste puis l'annuler. Les suites couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
+J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, collaboration et journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 99 tests backend unitaires/HTTP, 3 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test, 18 tests frontend avec Vitest et 2 parcours E2E avec Playwright. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la persistance d'une réservation, le rejet atomique d'une double réservation concurrente, les invitations et le check-in par QR code, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Les tests navigateur pilotent réellement l'interface pour vérifier le parcours de réservation et d'annulation, puis le parcours d'invitation, d'acceptation et de check-in. Les suites couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
 
 Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
 
@@ -634,7 +634,7 @@ _(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historiqu
 
 Les objectifs de qualité fixés pour le projet sont :
 
-- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 94 tests backend unitaires/HTTP, 2 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB et 15 tests frontend ;
+- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, invitations, check-in, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 99 tests backend unitaires/HTTP, 3 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB et 18 tests frontend ;
 - **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, regroupés dans un script `precommit` manuel et exécutés en CI ;
 - **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
 - **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
@@ -650,7 +650,7 @@ Les SFD vont préciser le découpage en traitements, pour chacun d’entre eux l
 
 ### 5.1.1. Criticité de l’application
 
-L'application est un outil métier interne à usage professionnel (heures ouvrées). Sa criticité est modérée : une indisponibilité ponctuelle en dehors des heures de bureau n'a pas d'impact direct sur l'activité, mais une indisponibilité en journée bloquerait la réservation d'espaces et le check-in des collaborateurs déjà présents.
+L'application est un outil métier interne utilisé pendant les heures ouvrées. Sa criticité est modérée : une indisponibilité en journée empêcherait la consultation et la création des réservations, les réponses aux invitations et le check-in.
 
 Cible de disponibilité (KPI) : disponibilité aux heures ouvrées (8h-19h en semaine), support en 5/7. Nombre d'utilisateurs visé pour une PME type : quelques dizaines à quelques centaines de comptes actifs.
 
@@ -675,13 +675,17 @@ Aucun service tiers externe (Google Analytics, réseaux sociaux, emailing, CRM) 
 
 ## 5.2. Architecture logicielle du projet
 
-Tempo repose sur une architecture **3-tiers, en monorepo**, avec une séparation stricte entre le frontend et le backend :
+Tempo utilise une architecture 3-tiers dans un monorepo Bun :
 
-- **Couche présentation (frontend)** : application Svelte 5 (Vite, SvelteKit) consommant l'API via un client RPC typé (`hc<AppType>`) ;
-- **Couche métier/API (backend)** : API Hono organisée en modules métier (`auth`, `users`, `workspaces`, `bookings`, `audit`), chaque module suivant le découpage **Route (contrôleur) → Service (logique métier) → Accès aux données (Drizzle/Mongo)** ;
-- **Couche persistance** : PostgreSQL (via Drizzle ORM) pour les données relationnelles (utilisateurs, espaces, réservations), et MongoDB pour les logs d'audit (données semi-structurées, volumétrie variable).
+- la présentation est assurée par SvelteKit et Svelte 5. Les pages appellent l'API avec le client Hono RPC typé par `AppType` ;
+- le backend Hono regroupe les middlewares HTTP, les routes et les services des modules `auth`, `users`, `workspaces`, `bookings`, `analytics` et `audit` ;
+- PostgreSQL conserve les utilisateurs, les espaces, les réservations, les participants et les jetons QR hachés. MongoDB reçoit les journaux de suppression.
 
-Le frontend et le backend sont deux workspaces distincts au sein d'un monorepo Bun (`apps/frontend`, `apps/backend`), partageant un typage strict de bout en bout grâce à l'export du type `AppType` du backend, importé par le frontend (Hono RPC). Chaque couche est conteneurisée indépendamment (Dockerfiles multi-stage) et orchestrée via `docker-compose.yml`.
+Dans le backend, le chemin d'un traitement est `Route → Service → Drizzle/Mongo`. Il n'existe pas de couche Repository distincte. Le frontend et le backend occupent deux workspaces (`apps/frontend` et `apps/backend`) et disposent chacun de leur Dockerfile multi-stage. Docker Compose orchestre ces deux applications avec PostgreSQL et MongoDB.
+
+Le schéma suivant décrit l'architecture observée dans le code de la V1.
+
+![Architecture 3-tiers implémentée de Tempo](../diagrams/architecture-as-built.svg)
 
 ## 5.3. Maquettes et enchainement des maquettes
 
@@ -693,20 +697,21 @@ Cartographie des écrans de l'application (routing SvelteKit) :
 /                      Page d'accueil
 /login                 Connexion / inscription
 /bookings              Réservations personnelles ou vue globale pour un administrateur
+/check-in              Validation de présence depuis un QR code
 /admin/workspaces      Administration CRUD des espaces (rôle ADMIN)
 /admin/analytics       Statistiques d'occupation (réservé au rôle ADMIN)
 /admin/audit           Consultation des suppressions auditées (réservé au rôle ADMIN)
 ```
 
-Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après connexion, le collaborateur accède à `/bookings` pour gérer ses réservations. Un administrateur y voit toutes les réservations avec leur propriétaire et dispose en plus des écrans `/admin/workspaces`, `/admin/analytics` et `/admin/audit`. L'application est responsive (Tailwind CSS) et s'adapte aux versions desktop, tablette et mobile.
+Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après la connexion ou l'inscription suivie d'une connexion, l'application ouvre `/`. Cet accueil propose l'accès aux réservations pour un collaborateur. Pour un administrateur, il affiche aussi la gestion des utilisateurs et les liens vers `/admin/workspaces`, `/admin/analytics` et `/admin/audit`. La page `/bookings` montre les réservations de l'utilisateur standard ou l'ensemble des réservations avec leur propriétaire pour un administrateur.
 
 ### 5.3.2. Maquettes
 
-Aucun outil de maquettage dédié (Figma, Adobe XD, …) n'a été utilisé en amont : les écrans ont été conçus directement avec la librairie de composants shadcn-svelte, ce qui a permis d'itérer rapidement entre conception et implémentation.
+Une première maquette a été réalisée dans [Figma](https://www.figma.com/design/cvMJhj3qr2kSouD2GR3fE8/Tempo?node-id=0-1&t=08qaUd48S0dcjfgZ-1). Elle a servi à poser la navigation et les principaux écrans. L'interface a ensuite évolué pendant le développement avec les composants shadcn-svelte. La capture ci-dessous conserve l'état de cette maquette initiale ; les captures de l'application livrée servent de référence pour le MVP.
 
-_(Insérer ici 3 à 4 captures d'écran des pages principales : connexion, liste des réservations, formulaire de création de réservation, administration des espaces — en version desktop et mobile.)_
+![Maquette Figma de Tempo](figma-design.png)
 
-## 5.4. Diagramme du comportement des fonctionnalités de type cas d’utilisations
+## 5.4. Modélisation des données
 
 ### 5.4.1. MCD (MERISE)
 
@@ -724,13 +729,15 @@ _(Insérer ici 3 à 4 captures d'écran des pages principales : connexion, liste
 
 ![Diagramme de classes](../diagrams/class%20diagram.png)
 
-_Note : les diagrammes MERISE et le diagramme de classes présentent le modèle de données cible du projet (incluant sociétés multi-sites, invitations à une réservation et QR codes de check-in). L'implémentation actuelle de la base de données (`apps/backend/src/db/schema.ts`) couvre le socle fonctionnel prioritaire (utilisateurs, espaces, réservations) ; les entités avancées du modèle cible constituent les prochaines itérations du projet._
+Ces quatre diagrammes décrivent le modèle cible. Les invitations, les participants et les QR codes de check-in font maintenant partie de la V1. Les sociétés multi-sites, les notifications et le statut d'annulation logique restent prévus pour une version ultérieure.
+
+Le modèle implémenté dans `apps/backend/src/db/schema.ts` contient cinq tables PostgreSQL : `users`, `workspaces`, `bookings`, `booking_participants` et `booking_qr_tokens`. MongoDB conserve séparément les logs de suppression. Les migrations `0000` à `0004` constituent la preuve du modèle réellement déployé.
 
 ## 5.5. Script de création et/ou de modification de la base de données
 
 ### 5.5.1. Script de création
 
-La base de données est créée et versionnée via des migrations générées par **Drizzle Kit** à partir du schéma TypeScript déclaratif (`apps/backend/src/db/schema.ts`). Extrait du script de migration initial (`apps/backend/drizzle/0000_gorgeous_vapor.sql`) :
+Drizzle Kit génère les migrations SQL à partir de `apps/backend/src/db/schema.ts`. La migration `0000_gorgeous_vapor.sql` crée les enums, les utilisateurs et les espaces :
 
 ```sql
 CREATE TYPE "public"."role" AS ENUM('ADMIN', 'USER');
@@ -751,7 +758,11 @@ CREATE TABLE "workspaces" (
     "capacity" integer DEFAULT 1 NOT NULL,
     "created_at" timestamp DEFAULT now()
 );
+```
 
+La migration `0001_optimal_black_tarantula.sql` ajoute ensuite les réservations et leurs clés étrangères :
+
+```sql
 CREATE TABLE "bookings" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
     "user_id" uuid NOT NULL,
@@ -766,9 +777,13 @@ CREATE TABLE "bookings" (
 
 ### 5.5.2. Argumentation
 
-Le choix d'un ORM typé (Drizzle) permet de partager les tables et leurs types entre le code TypeScript et les migrations SQL. Les contraintes PostgreSQL avancées qui ne sont pas exprimées par le schéma Drizzle sont conservées dans des migrations SQL personnalisées versionnées. Les clés étrangères avec `ON DELETE CASCADE` garantissent l'intégrité référentielle (suppression en cascade des réservations lorsqu'un utilisateur ou un espace est supprimé), tout en étant tracées dans les logs d'audit (MongoDB) avant suppression.
+Drizzle fournit les types TypeScript utilisés par les services et génère la base des migrations SQL. Les contraintes PostgreSQL qui ne sont pas décrites par le schéma Drizzle restent dans des migrations SQL versionnées. Les clés étrangères avec `ON DELETE CASCADE` évitent les réservations orphelines après la suppression d'un utilisateur ou d'un espace.
+
+Lorsqu'une réservation ou un espace est supprimé par l'API, le service tente aussi d'écrire un log dans MongoDB. Cet audit fonctionne en mode best effort : une panne MongoDB est journalisée, mais elle n'annule pas la suppression déjà effectuée dans PostgreSQL.
 
 ### 5.5.3. Script de modification
+
+La migration `0001_optimal_black_tarantula.sql` est le premier script de modification de la base initiale. Elle crée la table `bookings`, comme présenté en 5.5.1. La migration personnalisée `0002_booking_overlap_constraint.sql` ajoute les règles temporelles :
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
@@ -783,7 +798,11 @@ EXCLUDE USING gist (
     "workspace_id" WITH =,
     tsrange("start_at", "end_at", '[)') WITH &&
 );
+```
 
+La migration `0003_data_integrity_indexes.sql` complète l'intégrité et les index :
+
+```sql
 UPDATE "users" SET "role" = 'USER' WHERE "role" IS NULL;
 UPDATE "workspaces" SET "capacity" = 1 WHERE "capacity" < 1;
 
@@ -798,9 +817,11 @@ ON "bookings" ("workspace_id", "start_at", "end_at");
 
 ### 5.5.4. Argumentation
 
-La vérification applicative seule suivait deux étapes séparées — lecture des réservations existantes puis insertion — et laissait donc une fenêtre de concurrence. La migration `0002_booking_overlap_constraint.sql` confie la décision finale à PostgreSQL : la contrainte d'exclusion GiST interdit atomiquement deux intervalles qui se chevauchent pour un même espace. La borne de fin est exclue (`[)`), ce qui autorise deux réservations consécutives. La contrainte `CHECK` empêche en outre les intervalles vides ou inversés.
+Une vérification applicative qui lit les réservations avant l'insertion laisse une fenêtre de concurrence entre deux requêtes. La migration `0002_booking_overlap_constraint.sql` confie donc la décision finale à PostgreSQL. La contrainte d'exclusion GiST interdit atomiquement deux créneaux qui se chevauchent pour le même espace. L'intervalle `[)` exclut l'heure de fin et autorise deux réservations consécutives. La contrainte `CHECK` rejette les créneaux vides ou inversés.
 
-La migration `0003_data_integrity_indexes.sql` rend le rôle obligatoire, garantit une capacité minimale de 1 et ajoute les index correspondant aux consultations par utilisateur et par espace/créneau. Avant d'activer les contraintes, elle remet les éventuelles anciennes valeurs nulles ou inférieures à 1 à leurs valeurs sûres par défaut.
+La migration `0003_data_integrity_indexes.sql` rend le rôle obligatoire, impose une capacité minimale de 1 et indexe les recherches par utilisateur et par espace/créneau. Elle corrige d'abord les anciennes valeurs incompatibles avec ces contraintes.
+
+La migration `0004_booking-collaboration-checkin.sql` ajoute la visibilité publique ou privée, les participants, les statuts d'invitation et les jetons QR. Elle rattache automatiquement le propriétaire de chaque réservation existante comme participant accepté. Les index empêchent qu'un même utilisateur soit ajouté deux fois à une réservation et accélèrent les recherches par utilisateur, réservation et statut.
 
 ## 5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
 
@@ -808,17 +829,29 @@ La migration `0003_data_integrity_indexes.sql` rend le rôle obligatoire, garant
 
 ![Diagramme de cas d'utilisation](../diagrams/use%20case%20diagram.png)
 
-Le diagramme identifie trois acteurs : le **Collaborateur**, l'**Administrateur** (qui hérite des droits du collaborateur) et le **Système** (déclencheur automatique de l'écriture des logs d'audit). Les cas d'utilisation « Créer une réservation » incluent systématiquement la vérification de disponibilité et la détection de chevauchement, tandis que la consultation des espaces peut être étendue par un filtrage par type.
+Ce diagramme correspond au périmètre cible. La V1 reprend l'inscription, la connexion, la consultation des espaces, la création et l'annulation d'une réservation, la visibilité publique ou privée, les invitations, les participants, le check-in par QR code, la gestion des espaces et utilisateurs, les statistiques et la consultation des audits. Le filtrage des espaces et les fonctions multi-sites restent prévus pour une version ultérieure.
+
+Dans le code actuel, le rôle `ADMIN` reprend les droits du collaborateur et dispose des routes de gestion et de supervision. L'écriture d'un log intervient après la suppression d'une réservation ou d'un espace. Elle n'est pas déclenchée par un service planifié.
 
 ## 5.7. Fonctionnalités détaillées les plus significatives
 
-### 5.7.1. Fonctionnalité 1 — Réservation d'un espace
+### 5.7.1. Fonctionnalité 1 - Réservation d'un espace
 
-_Description_
+Le collaborateur choisit un espace, saisit les dates de début et de fin et définit une visibilité publique ou privée. La V1 ne propose pas encore le filtrage des espaces par type et capacité.
 
-Un collaborateur consulte la liste des espaces disponibles (bureaux, salles de réunion), les filtre par type, puis sélectionne un créneau horaire libre pour créer une réservation publique ou privée. Le système vérifie automatiquement qu'aucun chevauchement n'existe avant de confirmer la réservation.
+| Élément               | Spécification                                                                                                                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans le MVP                                                                                                                                                                             |
+| Préconditions         | Utilisateur connecté ; espace existant                                                                                                                                                          |
+| Interface             | Formulaire de la page `/bookings`                                                                                                                                                               |
+| Endpoint et droits    | `POST /bookings`, rôles `USER` et `ADMIN`                                                                                                                                                       |
+| Données               | `workspaceId`, `startAt`, `endAt`, `visibility`                                                                                                                                                 |
+| Scénario nominal      | Validation Zod, contrôle de l'espace et du créneau, insertion PostgreSQL, retour HTTP 201                                                                                                       |
+| Erreurs               | HTTP 400 si les données sont invalides, 401 sans jeton, 404 si l'espace n'existe pas, 409 si le créneau chevauche une réservation                                                               |
+| Critère d'acceptation | Une réservation valide apparaît dans la liste de l'utilisateur. Deux requêtes concurrentes sur le même espace et le même créneau ne peuvent pas créer deux réservations.                        |
+| Preuves               | `bookings.service.spec.ts`, `http.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `e2e/booking-flow.spec.ts` et contrainte `bookings_workspace_time_exclusion` de la migration `0002` |
 
-_Diagramme d’activité_
+_Diagramme d'activité_
 
 ![Activité - Réservation](../diagrams/activity%20diagram%20-%20reservation.png)
 
@@ -826,21 +859,23 @@ _Diagramme de séquence_
 
 ![Séquence - Réservation](../diagrams/sequence%20diagram%20-%20reservation.png)
 
-_Données/Actions_
+Les deux diagrammes montrent le déroulement général. La visibilité et les participants sont implémentés. Le statut d'annulation logique reste limité au modèle cible, car une annulation supprime encore physiquement la réservation.
 
-| En entrée                         | Traitement                                                                                                                   | En sortie                              | Contrôles                                                                                                      |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `workspaceId`, `startAt`, `endAt` | Vérification de l'existence de l'espace, détection de chevauchement (`checkOverlap`), création de l'enregistrement `booking` | Objet `Booking` créé (statut confirmé) | Espace existant, `startAt < endAt`, absence de chevauchement avec une réservation existante sur le même espace |
+### 5.7.2. Fonctionnalité 2 - Annulation d'une réservation
 
-_Ecran/Affichage_
+Un utilisateur standard peut supprimer l'une de ses réservations. Un administrateur peut supprimer n'importe quelle réservation depuis la vue globale.
 
-Formulaire de réservation avec sélection de l'espace, du créneau (date/heure début et fin) et bouton de validation. Un message d'erreur est affiché si le créneau est déjà occupé (HTTP 409) ou si l'espace n'existe pas (HTTP 404).
-
-### 5.7.2. Fonctionnalité 2 — Annulation d'une réservation
-
-_Description_
-
-Un collaborateur consulte la liste de ses réservations et annule celle de son choix. Un utilisateur standard ne peut annuler que ses propres réservations ; un administrateur peut annuler la réservation de n'importe quel utilisateur depuis la vue globale.
+| Élément               | Spécification                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Statut                | Réalisé dans le MVP                                                                                                |
+| Préconditions         | Utilisateur connecté ; réservation existante                                                                       |
+| Interface             | Action "Annuler" dans `/bookings` ; le propriétaire est affiché dans la vue administrateur                         |
+| Endpoint et droits    | `DELETE /bookings/:id`, propriétaire ou rôle `ADMIN`                                                               |
+| Donnée                | `bookingId`                                                                                                        |
+| Scénario nominal      | Contrôle du propriétaire, suppression PostgreSQL, tentative d'écriture dans MongoDB, retour HTTP 200               |
+| Erreurs               | HTTP 401 sans jeton, 403 si un utilisateur vise la réservation d'un tiers, 404 si la réservation n'existe pas      |
+| Critère d'acceptation | La réservation disparaît de la liste. Une tentative d'audit contient l'entité supprimée et l'auteur de l'action.   |
+| Preuves               | `bookings.service.spec.ts`, `http.routes.spec.ts`, `mongo-audit.integration.spec.ts` et `e2e/booking-flow.spec.ts` |
 
 _Diagramme d’activité_
 
@@ -850,21 +885,21 @@ _Diagramme de séquence_
 
 ![Séquence - Annulation](../diagrams/sequence%20diagram%20-%20annulation%20reservation.png)
 
-_Données/Actions_
+### 5.7.3. Fonctionnalité 3 - Gestion des espaces
 
-| En entrée   | Traitement                                                                                                                      | En sortie                   | Contrôles                                                              |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------- |
-| `bookingId` | Vérification de la réservation, contrôle du propriétaire ou du rôle `ADMIN`, suppression et tentative d'écriture du log d'audit | Confirmation de suppression | Réservation existante, propriétaire ou administrateur (HTTP 403 sinon) |
+L'administrateur consulte, crée, modifie ou supprime un bureau ou une salle de réunion.
 
-_Ecran/Affichage_
-
-Bouton « Annuler » sur chaque réservation à venir, avec confirmation avant suppression. La vue administrateur est intitulée « Toutes les réservations » et affiche le propriétaire de chaque ligne.
-
-### 5.7.3. Fonctionnalité 3 — Gestion des espaces (Admin)
-
-_Description_
-
-Un administrateur consulte, crée, modifie ou supprime un espace de travail (bureau ou salle de réunion) en définissant son nom, son type et sa capacité.
+| Élément               | Spécification                                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans le MVP                                                                                                                     |
+| Précondition          | Compte `ADMIN` connecté                                                                                                                 |
+| Interface             | Tableau et formulaire partagé de `/admin/workspaces`                                                                                    |
+| Endpoints et droits   | `GET /workspaces` pour tout utilisateur connecté ; `POST /workspaces`, `PATCH /workspaces/:id` et `DELETE /workspaces/:id` pour `ADMIN` |
+| Données               | `name`, `type` parmi `DESK` et `MEETING_ROOM`, `capacity` entière supérieure ou égale à 1                                               |
+| Scénario nominal      | Validation Zod, écriture PostgreSQL, réponse HTTP 200 ou 201. Une suppression déclenche ensuite une tentative d'audit.                  |
+| Erreurs               | HTTP 400 si les données sont invalides, 401 sans jeton, 403 pour un utilisateur standard, 404 si l'espace demandé n'existe pas          |
+| Critère d'acceptation | La liste reflète la création, la modification ou la suppression. Un `USER` ne peut effectuer aucune écriture.                           |
+| Preuves               | `workspaces.dto.spec.ts`, `workspaces.service.spec.ts`, `admin.routes.spec.ts`, `http.routes.spec.ts` et `authorized-api.spec.ts`       |
 
 _Diagramme d’activité_
 
@@ -874,21 +909,21 @@ _Diagramme de séquence_
 
 ![Séquence - Gestion des espaces](../diagrams/sequence%20diagram%20-%20gestion%20espaces%20admin.png)
 
-_Données/Actions_
+### 5.7.4. Fonctionnalité 4 - Check-in par QR code
 
-| En entrée                  | Traitement                                                                                                                   | En sortie                        | Contrôles                                                     |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------- |
-| `name`, `type`, `capacity` | Validation Zod, création, modification partielle (`PATCH`) ou suppression en base ; tentative d'audit lors d'une suppression | Espace créé, modifié ou supprimé | Rôle `ADMIN`, corps PATCH non vide, capacité entière positive |
+Le propriétaire ou un administrateur génère un QR code renouvelable. Le code contient une URL dont le jeton reste dans le fragment, ce qui évite son envoi automatique au serveur lors du chargement de la page. PostgreSQL ne conserve que son hash. Un participant accepté peut confirmer sa présence pendant le créneau.
 
-_Ecran/Affichage_
-
-Tableau d'administration des espaces avec formulaire partagé de création/modification et action de suppression, accessible uniquement aux comptes administrateurs.
-
-### 5.7.4. Fonctionnalité 4 — Check-in par QR Code
-
-_Description_
-
-Un collaborateur confirme sa présence physique dans l'espace réservé en scannant un QR code, ce qui valide sa réservation.
+| Élément               | Spécification                                                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans la V1                                                                                                                                                            |
+| Préconditions         | Participant accepté ; réservation en cours ; QR code valide                                                                                                                   |
+| Interface             | QR affiché dans `/bookings`, validation dans `/check-in`                                                                                                                      |
+| Endpoints et droits   | `POST /bookings/:id/qr` pour le propriétaire ou `ADMIN` ; `POST /bookings/:id/check-in` pour un participant accepté                                                           |
+| Données               | `bookingId`, jeton QR, `checkedInAt`                                                                                                                                          |
+| Scénario nominal      | Génération et hachage du jeton, scan de l'URL, contrôle du participant et du créneau, enregistrement de l'heure de présence                                                   |
+| Erreurs               | HTTP 403 pour un jeton invalide ou un non-participant ; 409 pour une invitation non acceptée, un check-in anticipé ou une réservation terminée                                |
+| Critère d'acceptation | Le QR ne permet un check-in que sur la réservation concernée et pendant son créneau. La date de présence apparaît ensuite dans la liste des participants.                     |
+| Preuves               | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `authorized-api.spec.ts`, `route-guard.spec.ts` et le second parcours `booking-flow.spec.ts` |
 
 _Diagramme d’activité_
 
@@ -898,108 +933,179 @@ _Diagramme de séquence_
 
 ![Séquence - Check-in](../diagrams/sequence%20diagram%20-%20checkin.png)
 
-_Données/Actions_
+### 5.7.5. Fonctionnalité 5 - Authentification
 
-| En entrée                              | Traitement                                                                                                | En sortie                           | Contrôles                        |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------- | -------------------------------- |
-| Contenu du QR code scanné, `bookingId` | Vérification de la correspondance QR code / réservation et du créneau horaire (`startAt <= now <= endAt`) | Statut de la réservation mis à jour | Créneau en cours, QR code valide |
+Le même écran permet de créer un compte puis de se connecter. Après une authentification réussie, l'application redirige vers `/`, qui affiche un accueil adapté au rôle.
 
-_Ecran/Affichage_
+| Élément               | Spécification                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Statut                | Réalisé dans le MVP                                                                                                                                          |
+| Précondition          | Aucune pour l'inscription ; compte existant pour la connexion                                                                                                |
+| Interface             | Formulaire `/login`                                                                                                                                          |
+| Endpoints             | `POST /auth/register` et `POST /auth/login`                                                                                                                  |
+| Données               | `email`, `password`                                                                                                                                          |
+| Scénario nominal      | Validation Zod, hachage avec `Bun.password.hash`, vérification avec `Bun.password.verify`, émission d'un JWT valable 24 heures, stockage dans `localStorage` |
+| Erreurs               | HTTP 400 si les données sont invalides, 401 si les identifiants sont faux, 409 si l'email existe déjà, 429 lorsque la limite de requêtes est atteinte        |
+| Critère d'acceptation | Aucun hash n'est renvoyé au client. Le JWT permet l'accès aux routes protégées et les liens d'administration ne sont affichés qu'au rôle `ADMIN`.            |
+| Preuves               | `auth.service.spec.ts`, `app.security.spec.ts`, `rate-limit.spec.ts`, `auth.svelte.spec.ts`, `route-guard.spec.ts` et `e2e/booking-flow.spec.ts`             |
 
-Écran de scan (caméra du mobile) avec retour visuel de confirmation ou d'erreur.
+### 5.7.6. Fonctionnalité 6 - Statistiques d'occupation
 
-### 5.7.5. Fonctionnalité 5 — Authentification (inscription / connexion)
+La page `/admin/analytics` présente les totaux et l'utilisation actuelle de chaque espace.
 
-_Description_
+| Élément               | Spécification                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans le MVP                                                                                                                      |
+| Précondition          | Compte `ADMIN` connecté                                                                                                                  |
+| Interface             | Cartes de synthèse et tableau de `/admin/analytics`                                                                                      |
+| Endpoints et droits   | `GET /analytics/overview` et `GET /analytics/workspaces`, rôle `ADMIN`                                                                   |
+| Données               | Utilisateurs, espaces, réservations et heure courante                                                                                    |
+| Scénario nominal      | Une réservation est active si `startAt <= maintenant < endAt`. Le service compte les espaces distincts occupés.                          |
+| Erreurs               | HTTP 401 sans jeton, 403 pour un utilisateur standard, 500 si le calcul échoue                                                           |
+| Critère d'acceptation | Le taux global vaut `espaces distincts occupés / espaces totaux × 100`, reste entre 0 et 100 %, et vaut 0 % quand aucun espace n'existe. |
+| Preuves               | `analytics.service.spec.ts`, `admin.routes.spec.ts`, `http.routes.spec.ts` et `authorized-api.spec.ts`                                   |
 
-Un utilisateur crée un compte avec un email et un mot de passe, puis se connecte pour accéder à l'application. Un jeton JWT est délivré et transmis à chaque requête pour authentifier l'utilisateur.
+La capacité limite maintenant le nombre de participants actifs ou invités. Le calcul analytique reste fondé sur l'occupation de l'espace entier : un espace avec une réservation active est utilisé à 100 %, sinon à 0 %.
 
-_Diagramme d’activité / séquence_
+### 5.7.7. Fonctionnalité 7 - Consultation des logs d'audit
 
-Voir `use case diagram.png` (section 5.6) pour la vue d'ensemble des cas d'utilisation d'authentification.
+| Élément               | Spécification                                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans le MVP                                                                                                                       |
+| Précondition          | Compte `ADMIN` connecté                                                                                                                   |
+| Interface             | Tableau `/admin/audit`                                                                                                                    |
+| Endpoint et droits    | `GET /audit?limit=100`, rôle `ADMIN`; la limite acceptée va de 1 à 200                                                                    |
+| Données               | Type et identifiant de l'entité, données supprimées, date, identifiant, email et rôle de l'auteur                                         |
+| Scénario nominal      | Lecture MongoDB du plus récent au plus ancien, puis affichage dans le tableau                                                             |
+| Erreurs               | HTTP 400 si la limite est invalide, 401 sans jeton, 403 pour un utilisateur standard, 500 si MongoDB ne répond pas                        |
+| Critère d'acceptation | L'administrateur voit les suppressions dans l'ordre décroissant. Un utilisateur standard ne peut ni ouvrir l'écran ni appeler l'endpoint. |
+| Preuves               | `audit.service.spec.ts`, `mongo-audit.integration.spec.ts`, `admin.routes.spec.ts`, `route-guard.spec.ts` et `authorized-api.spec.ts`     |
 
-_Données/Actions_
+### 5.7.8. Fonctionnalité 8 - Invitations et participants
 
-| En entrée           | Traitement                                                                                                                                      | En sortie                              | Contrôles                                                                    |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- |
-| `email`, `password` | Hachage du mot de passe (`Bun.password.hash`) à l'inscription, vérification (`Bun.password.verify`) et génération d'un JWT signé à la connexion | Compte créé / jeton JWT (validité 24h) | Email unique, format email valide (Zod), mot de passe correct à la connexion |
-
-_Ecran/Affichage_
-
-Formulaire unique de connexion/inscription (`/login`), redirection vers `/bookings` après authentification réussie.
-
-### 5.7.6. Fonctionnalité 6 — Statistiques d'occupation (Admin)
-
-_Description_
-
-L'administrateur consulte le nombre d'utilisateurs, d'espaces et de réservations, ainsi que l'occupation actuelle globale et par espace. Une réservation est active lorsque `startAt <= maintenant < endAt` : une réservation future n'est donc pas comptée comme active.
-
-_Données/Actions_
-
-| En entrée                                             | Traitement                                                                  | En sortie                                                      | Contrôles           |
-| ----------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------- |
-| Utilisateurs, espaces, réservations et heure courante | Filtrage des réservations actives et décompte des espaces distincts occupés | Totaux, réservations actives et taux d'occupation de 0 à 100 % | Rôle `ADMIN` requis |
-
-Le taux global est calculé ainsi : `nombre d'espaces distincts actuellement occupés / nombre total d'espaces × 100`. Il vaut 0 % lorsqu'aucun espace n'existe et est plafonné à 100 % par sécurité. Comme une réservation bloque l'espace entier et que le modèle ne stocke pas le nombre de participants, l'utilisation actuelle d'un espace vaut 100 % s'il possède une réservation active, sinon 0 % ; la capacité affichée est informative et ne sert pas de dénominateur.
-
-_Ecran/Affichage_
-
-La page `/admin/analytics`, réservée aux administrateurs, présente des cartes de synthèse et un tableau détaillé par espace.
+| Élément               | Spécification                                                                                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Statut                | Réalisé dans la V1                                                                                                                                                               |
+| Préconditions         | Réservation non terminée ; utilisateur invité déjà inscrit ; capacité disponible                                                                                                 |
+| Interface             | Actions "Gérer", "Inviter", "Accepter", "Refuser" et "Rejoindre" dans `/bookings`                                                                                                |
+| Endpoints et droits   | Invitation par le propriétaire ou `ADMIN`, réponse par l'invité, participation libre pour une réservation publique                                                               |
+| Données               | `bookingId`, `userId`, rôle `OWNER` ou `GUEST`, statut `PENDING`, `ACCEPTED` ou `DECLINED`, dates de réponse et de check-in                                                      |
+| Scénario nominal      | Le service verrouille la réservation pendant le contrôle de capacité, crée l'invitation, puis l'utilisateur accepte ou refuse. Le propriétaire est toujours participant accepté. |
+| Erreurs               | HTTP 403 pour une réservation privée rejointe sans invitation ; 404 si l'utilisateur n'existe pas ; 409 en cas de doublon, de capacité atteinte ou de réservation terminée       |
+| Critère d'acceptation | Une réservation privée reste limitée à ses membres. Une réservation publique peut être rejointe sans dépasser la capacité de l'espace.                                           |
+| Preuves               | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `authorized-api.spec.ts` et `booking-flow.spec.ts`                                              |
 
 # 6\. SPECIFICATIONS TECHNIQUES
 
 ## 6.1. Référencement
 
-Sans objet : Tempo est une application interne, protégée par authentification, qui n'a pas vocation à être indexée par les moteurs de recherche (aucune balise SEO spécifique n'est nécessaire au-delà des balises `<title>` et `<meta charset>` standards générées par SvelteKit).
+Tempo est une application interne protégée par authentification. Le document HTML déclare `lang="fr"` et la balise `<meta name="robots" content="noindex, nofollow">` demande aux moteurs de ne pas indexer l'application. Cette directive n'est pas un contrôle d'accès ; les gardes frontend et backend restent nécessaires.
 
 ## 6.2. Environnement technique
 
-| Domaine          | Technologie                      | Justification                                                                                 |
-| ---------------- | -------------------------------- | --------------------------------------------------------------------------------------------- |
-| Runtime          | Bun 1.3.14                       | Runtime JS/TS rapide, gestionnaire de paquets et de workspaces intégré                        |
-| Monorepo         | Bun Workspaces                   | Gestion centralisée de deux applications (backend/frontend) avec dépendances partagées        |
-| Backend          | Hono 4.x                         | Framework web ultra-léger, performant, compatible Edge                                        |
-| Validation       | Zod 4.x                          | Validation stricte et typée des entrées (sécurité by design)                                  |
-| Frontend         | Svelte 5.x (Runes) + SvelteKit   | Framework réactif moderne sans Virtual DOM, apprentissage démontré des dernières technologies |
-| Style            | Tailwind CSS 4.x + shadcn-svelte | Développement rapide, cohérent et responsive des interfaces                                   |
-| Base SQL         | PostgreSQL 18.6 (Alpine 3.24)    | Stockage relationnel fort (utilisateurs, espaces, réservations), intégrité référentielle      |
-| ORM SQL          | Drizzle ORM                      | Typesafe, léger, génération automatique de migrations SQL                                     |
-| Base NoSQL       | MongoDB 8.0.29 (Noble)           | Stockage souple des logs d'audit (volumétrie variable, schéma flexible)                       |
-| Authentification | `hono/jwt` + `Bun.password`      | Jetons JWT signés HS256, hachage natif des mots de passe                                      |
-| Qualité de code  | Oxlint / Oxfmt                   | Linting et formatage haute performance (Rust), homogénéité du code                            |
-| Tests            | Bun Test / Vitest / Playwright   | Tests unitaires, HTTP, intégration aux bases et parcours E2E Chromium                         |
-| CI               | GitHub Actions                   | Contrôle qualité, tests, build et recette locale de la stack Docker Compose                   |
-| Conteneurs       | Docker / Docker Compose          | Isolation des services, environnement reproductible identique dev/prod                        |
+| Domaine        | Version utilisée                            | Usage dans Tempo                                            |
+| -------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| Runtime        | Bun 1.3.14                                  | Exécution TypeScript, scripts et workspaces                 |
+| Backend        | Hono 4.12.24                                | Routes HTTP, middlewares et client RPC typé                 |
+| Validation     | Zod 4.4.3                                   | Validation des corps, paramètres et requêtes                |
+| Frontend       | Svelte 5.56.3 et SvelteKit 2.63.1           | Pages, composants et navigation                             |
+| Build frontend | Vite 7.3.5                                  | Serveur de développement et build                           |
+| Style          | Tailwind CSS 4.3.0 et shadcn-svelte         | Mise en page responsive et composants                       |
+| Accès SQL      | Drizzle ORM 0.45.2 et Drizzle Kit 0.31.10   | Schéma typé et migrations                                   |
+| Base SQL       | PostgreSQL 18.6, image Alpine 3.24          | Utilisateurs, espaces et réservations                       |
+| Base NoSQL     | MongoDB 8.0.29, image Noble                 | Logs de suppression                                         |
+| Qualité        | Oxlint 1.68.0 et Oxfmt 0.21.0               | Lint et formatage                                           |
+| Tests          | Bun Test, Vitest 4.1.8 et Playwright 1.57.0 | Tests unitaires, HTTP, intégration et parcours E2E Chromium |
+| CI             | GitHub Actions                              | Vérifications qualité et recette de la stack Docker Compose |
 
-Le choix de Bun et Hono répond à un objectif de performance et de modernité technique ; le choix conjoint PostgreSQL + MongoDB répond au besoin de démontrer une persistance hybride (données structurées vs. données de log) ; aucune contrainte technique n'a été imposée par un tiers, tous les choix ont été faits librement dans une logique d'apprentissage et de démonstration de compétences.
+Le poste utilisé pour la finalisation fonctionne sous Windows 10 Pro avec PowerShell et Codex Desktop. Le dépôt ne dépend d'aucun réglage propre à cet outil. La CI s'exécute sur un runner Ubuntu fourni par GitHub Actions.
+
+| Environnement | Composition                                                                                                                         |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Développement | Backend et frontend lancés par Bun ; PostgreSQL et MongoDB joignables en local                                                      |
+| Test          | Tests isolés par mocks, bases d'intégration PostgreSQL/MongoDB et navigateur Chromium piloté par Playwright                         |
+| Démonstration | Stack Docker Compose composée de PostgreSQL, MongoDB, backend et frontend ; profil `demo` pour charger un jeu de données idempotent |
+
+### 6.2.1. Ports et configuration
+
+| Service            | Port hôte | Port conteneur |
+| ------------------ | --------- | -------------- |
+| PostgreSQL         | 5432      | 5432           |
+| MongoDB            | 27017     | 27017          |
+| API Hono           | 3000      | 3000           |
+| Frontend SvelteKit | 5173      | 3000           |
+
+Les exemples de configuration sont regroupés dans `.env.example` et `apps/backend/.env.example`. Les valeurs sensibles restent dans des fichiers `.env` ignorés par Git.
+
+| Groupe                   | Variables                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| PostgreSQL               | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DATABASE_URL`                                |
+| MongoDB                  | `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_URL`, `MONGO_DB_NAME`           |
+| Authentification et HTTP | `JWT_SECRET`, `FRONTEND_ORIGIN`, `AUTH_RATE_LIMIT_MAX`, `AUTH_RATE_LIMIT_WINDOW_MS`, `TRUST_PROXY` |
+| Frontend                 | `PUBLIC_API_URL`                                                                                   |
+| Jeu de démonstration     | `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD`, `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`                 |
 
 ## 6.3. Navigation et accessibilité
 
-L'application est actuellement prévue pour une exécution locale via Docker Compose (`docker compose up --build --detach --wait`) : frontend sur `http://localhost:5173`, API backend sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'a encore été mis en place. La configuration Compose et son exécution complète sont vérifiées automatiquement sur un runner GitHub ; l'environnement Windows local utilisé pour le développement ne dispose pas de Docker.
+L'application se lance localement avec Docker Compose (`docker compose up --build --detach --wait`). Le frontend répond sur `http://localhost:5173` et l'API sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'est configuré. Le poste Windows utilisé pour la finalisation ne dispose pas de Docker ; GitHub Actions construit et démarre donc la stack complète sur un runner neuf.
 
 Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`, `/admin/audit`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
 
-La conception utilise les classes responsives de Tailwind CSS. Une matrice de vérification Chrome, Firefox, Edge et Safari reste à exécuter avant d'affirmer une compatibilité complète.
+Les formulaires utilisent des libellés associés aux champs et des boutons nommés. Le document est déclaré en français et les contrôles Svelte ne signalent ni erreur ni avertissement. Les parcours Playwright valident la réservation, l'annulation, l'invitation et le check-in par QR code dans Chromium. Aucun audit WCAG complet n'a encore été mené. Firefox, Edge et Safari n'ont pas été vérifiés ; la compatibilité navigateur prouvée se limite donc à Chromium.
+
+### 6.3.1. Routes de l'API
+
+| Méthode  | Route                                      | Autorisation                  | Fonction                                                       |
+| -------- | ------------------------------------------ | ----------------------------- | -------------------------------------------------------------- |
+| `GET`    | `/health`                                  | Publique                      | Vérifie que l'API répond                                       |
+| `POST`   | `/auth/register`                           | Publique, limitée par adresse | Crée un compte `USER`                                          |
+| `POST`   | `/auth/login`                              | Publique, limitée par adresse | Renvoie le JWT et l'utilisateur                                |
+| `GET`    | `/users`                                   | `ADMIN`                       | Liste les utilisateurs                                         |
+| `POST`   | `/users`                                   | `ADMIN`                       | Crée un utilisateur sans renvoyer son hash                     |
+| `GET`    | `/workspaces`                              | Utilisateur connecté          | Liste les espaces                                              |
+| `GET`    | `/workspaces/:id`                          | Utilisateur connecté          | Consulte un espace                                             |
+| `POST`   | `/workspaces`                              | `ADMIN`                       | Crée un espace                                                 |
+| `PATCH`  | `/workspaces/:id`                          | `ADMIN`                       | Modifie un espace                                              |
+| `DELETE` | `/workspaces/:id`                          | `ADMIN`                       | Supprime un espace et tente de l'auditer                       |
+| `GET`    | `/bookings`                                | Utilisateur connecté          | Liste ses réservations, invitations et réservations publiques  |
+| `POST`   | `/bookings`                                | Utilisateur connecté          | Crée une réservation publique ou privée                        |
+| `POST`   | `/bookings/:id/invitations`                | Propriétaire ou `ADMIN`       | Invite un utilisateur existant                                 |
+| `PATCH`  | `/bookings/:id/invitations/:participantId` | Utilisateur invité            | Accepte ou refuse une invitation                               |
+| `POST`   | `/bookings/:id/join`                       | Utilisateur connecté          | Rejoint une réservation publique si une place reste disponible |
+| `POST`   | `/bookings/:id/qr`                         | Propriétaire ou `ADMIN`       | Génère ou renouvelle le QR code                                |
+| `POST`   | `/bookings/:id/check-in`                   | Participant accepté           | Enregistre la présence pendant le créneau                      |
+| `DELETE` | `/bookings/:id`                            | Propriétaire ou `ADMIN`       | Supprime une réservation et tente de l'auditer                 |
+| `GET`    | `/analytics/overview`                      | `ADMIN`                       | Renvoie les totaux et le taux d'occupation actuel              |
+| `GET`    | `/analytics/workspaces`                    | `ADMIN`                       | Renvoie l'utilisation actuelle de chaque espace                |
+| `GET`    | `/audit?limit=100`                         | `ADMIN`                       | Liste les suppressions auditées                                |
 
 ## 6.4. Services tiers
 
-Aucun service tiers n'est intégré à ce jour (pas d'analytics, pas de réseaux sociaux, pas d'emailing, pas de CRM). Le projet reste autonome pour rester démontrable sans dépendance externe.
+Aucun service tiers métier n'est intégré. L'application n'appelle ni service d'analytics, ni réseau social, ni service d'emailing ou CRM. GitHub Actions intervient seulement pour l'intégration continue.
 
 ## 6.5. Sécurité
 
-**Rôles et droits :** deux rôles (`ADMIN`, `USER`) portés par un enum PostgreSQL et embarqués dans le payload du JWT ; chaque route sensible vérifie le rôle avant d'autoriser l'action (ex : suppression d'un espace réservée à `ADMIN`).
+Deux rôles existent : `ADMIN` et `USER`. Ils sont définis par un enum PostgreSQL et inclus dans le JWT. Les gardes backend contrôlent toutes les routes protégées. Les gardes frontend masquent ou bloquent les écrans interdits, mais ne remplacent pas les contrôles de l'API.
 
-**Authentification :** jetons JWT signés en HS256 (`hono/jwt`), durée de vie de 24h, secret d'application obligatoirement chargé depuis la variable d'environnement `JWT_SECRET`. Le backend refuse de démarrer si cette variable est absente ou vide.
+Les jetons JWT sont signés en HS256 avec `hono/jwt` et expirent après 24 heures. `JWT_SECRET` est obligatoire ; le backend refuse de démarrer si la valeur manque ou reste vide. Les mots de passe sont hachés avec `Bun.password.hash` puis vérifiés avec `Bun.password.verify`. Aucun endpoint ne renvoie leur hash.
 
-**Sécurité HTTP :** le backend n'autorise via CORS que l'origine définie par `FRONTEND_ORIGIN` et refuse de démarrer si cette valeur est absente ou n'est pas une origine HTTP(S) valide. Le middleware `secureHeaders` ajoute notamment une politique CSP restrictive, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et une `Permissions-Policy`. Les routes `/auth/login` et `/auth/register` partagent une limite configurable de 10 requêtes par adresse sur 15 minutes et retournent HTTP 429 avec `Retry-After` lorsque la limite est atteinte.
+Le CORS n'accepte que l'origine fournie par `FRONTEND_ORIGIN`. Le backend refuse une origine absente ou invalide. `secureHeaders` ajoute aux réponses de l'API une CSP restrictive, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et `Permissions-Policy`. Les routes d'inscription et de connexion partagent, par défaut, une limite de 10 requêtes par adresse sur 15 minutes. Une requête supplémentaire reçoit HTTP 429 et `Retry-After`.
 
-**Mots de passe :** hachage natif avec `Bun.password.hash`/`verify` (Argon2id), aucun mot de passe n'est stocké en clair.
+Zod valide les corps, paramètres et chaînes de requête avant le traitement. PostgreSQL complète ces contrôles par les clés étrangères, les contraintes `CHECK` et la contrainte d'exclusion des réservations concurrentes.
 
-**Validation des entrées :** tous les corps de requête sont validés par des schémas Zod (`@hono/zod-validator`) avant tout traitement métier.
+Le QR code contient une URL de check-in avec un jeton aléatoire de 256 bits dans le fragment. Le fragment n'est pas transmis lors du chargement initial de la page et il est retiré de l'historique avant l'appel API. PostgreSQL conserve uniquement le hash SHA-256 du jeton. Chaque nouvelle génération invalide le code précédent, et le backend refuse le check-in avant le début ou après la fin de la réservation.
 
-**Sauvegarde/Stockage :** volumes Docker persistants (`postgres_data`, `mongo_data`) pour la durabilité des données en environnement conteneurisé. Le `README.md` documente les commandes `pg_dump`/`pg_restore` et `mongodump`/`mongorestore`, ainsi que la stratégie de rollback associée.
+### 6.5.1. Limites connues
 
-**Versioning :** Git/GitHub, avec un workflow d'intégration continue détectant le code non testé, mal formaté, non typé ou non déployable. La branche `main` n'est volontairement pas protégée pendant la phase de développement ; aucune affirmation de blocage automatique des envois ou des fusions n'est donc faite.
+- Le JWT reste dans `localStorage`. Un script injecté par une faille XSS pourrait le lire. Une exposition publique demanderait un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF adaptée.
+- Aucun mécanisme de révocation individuelle des jetons ou de rotation automatique du secret n'est implémenté. Un jeton volé reste valable jusqu'à son expiration ou jusqu'au changement global du secret.
+- Le limiteur de requêtes réside dans la mémoire du processus. Plusieurs instances backend nécessiteraient un stockage partagé.
+- Le projet local utilise HTTP. TLS doit être terminé par un reverse proxy ou la plateforme d'hébergement avant une mise en ligne.
+- Les volumes Docker conservent les données, et le README fournit les commandes `pg_dump`, `pg_restore`, `mongodump` et `mongorestore`. Les sauvegardes ne sont ni planifiées ni externalisées automatiquement.
+- L'audit MongoDB fonctionne en mode best effort. Une panne MongoDB n'annule pas une suppression PostgreSQL déjà validée.
+- Le QR code est partagé entre les participants d'une réservation. Une personne qui en obtient une copie doit encore être connectée avec un compte participant accepté, mais elle peut effectuer son check-in à distance pendant le créneau.
+
+GitHub Actions vérifie le format, le lint, les types, les tests, les builds et le démarrage Docker Compose. La branche `main` reste volontairement non protégée pendant le développement. La CI signale donc un échec sans empêcher techniquement un envoi direct.
 
 # 7\. REALISATIONS
 
@@ -1206,7 +1312,8 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | Module            | Fichier de test                                                                          | Ce qui est testé                                                                     |
 | ----------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `auth`            | `auth.service.spec.ts`                                                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT      |
-| `bookings`        | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, consultation et suppression             |
+| `bookings`        | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, visibilité, consultation et suppression |
+| Collaboration     | `booking-collaboration.routes.spec.ts`                                                   | Invitations, participation publique, autorisations et fenêtre de check-in            |
 | `workspaces`      | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                                 | Création, consultation, modification, suppression et validation PATCH                |
 | `users`           | `users.service.spec.ts`                                                                  | Gestion des comptes utilisateurs                                                     |
 | `audit`           | `audit.service.spec.ts`                                                                  | Écriture et lecture des logs d'audit MongoDB                                         |
@@ -1214,14 +1321,14 @@ Le plan de tests repose principalement sur des **tests unitaires backend** (Bun 
 | `authGuard`       | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
 | Routes admin      | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
 | Routes HTTP       | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
-| Intégration PG    | `postgres-bookings.integration.spec.ts`                                                  | Migrations, persistance réelle et rejet atomique de deux réservations concurrentes   |
+| Intégration PG    | `postgres-bookings.integration.spec.ts`                                                  | Persistance, concurrence, invitation, acceptation et QR sur PostgreSQL réel          |
 | Intégration Mongo | `mongo-audit.integration.spec.ts`                                                        | Écriture, auteur, horodatage, ordre et filtrage des logs d'audit réels               |
-| E2E navigateur    | `booking-flow.spec.ts`                                                                   | Connexion, réservation, consultation puis annulation dans Chromium                   |
+| E2E navigateur    | `booking-flow.spec.ts`                                                                   | Réservation/annulation puis invitation/acceptation/check-in dans Chromium            |
 | Sécurité HTTP     | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
 | Seed démo         | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
 | Frontend          | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
 
-Au total, **94 tests backend unitaires/HTTP et 15 tests frontend** sont exécutés par `bun run test`. Deux tests d'intégration PostgreSQL, deux tests d'intégration MongoDB et un parcours E2E Playwright supplémentaires sont exécutés dans le job Docker. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, l'écriture et la lecture ordonnée et filtrée des audits, puis la connexion, la création, la consultation et l'annulation d'une réservation dans Chromium. L'[exécution GitHub Actions réussie du 1er septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33485477310) confirme à distance que ces cinq tests d'intégration/E2E passent sur un runner neuf avec la stack Docker complète.
+Au total, **99 tests backend unitaires/HTTP et 18 tests frontend** sont exécutés par `bun run test`. Trois tests d'intégration PostgreSQL, deux tests d'intégration MongoDB et deux parcours E2E Playwright complètent cette validation. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, les invitations et le check-in par QR code, l'écriture et la lecture des audits, puis les deux parcours navigateur. Ces sept scénarios d'intégration/E2E passent localement. L'[exécution GitHub Actions réussie du 1er septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33485477310) confirme par ailleurs le fonctionnement du pipeline sur un runner neuf avec la stack Docker complète ; une nouvelle exécution validera cette évolution dans la CI.
 
 Ce plan de tests sera enrichi au fil des évolutions technologiques (autres parcours E2E, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
 

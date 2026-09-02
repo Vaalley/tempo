@@ -4,6 +4,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { safeReturnTo } from '$lib/route-guard';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
@@ -13,6 +14,15 @@
 	let error = $state('');
 	let loading = $state(false);
 	let isRegister = $state(false);
+
+	function destinationAfterLogin(): string {
+		const storedReturnTo = sessionStorage.getItem('tempo:returnTo');
+		sessionStorage.removeItem('tempo:returnTo');
+
+		return safeReturnTo(
+			storedReturnTo ?? new URLSearchParams(window.location.search).get('returnTo'),
+		);
+	}
 
 	async function handleSubmit(): Promise<void> {
 		if (!email || !password) {
@@ -31,7 +41,7 @@
 			} else {
 				await auth.login(email, password);
 			}
-			goto('/');
+			await goto(destinationAfterLogin());
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Une erreur est survenue';
 		} finally {

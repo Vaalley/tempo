@@ -42,6 +42,39 @@ describe('authorized API', () => {
 		expect(booking.id).toBe('booking-1');
 	});
 
+	it('sends a QR token to the typed check-in endpoint', async () => {
+		let method = '';
+		let pathname = '';
+		let requestBody: unknown;
+		const client = createApiClient('http://tempo.test', {
+			token: 'signed-token',
+			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
+				const request = new Request(input, init);
+				method = request.method;
+				pathname = new URL(request.url).pathname;
+				requestBody = await request.json();
+				return Response.json({
+					id: 'participant-1',
+					bookingId: 'booking-1',
+					userId: 'user-1',
+					role: 'GUEST',
+					invitationStatus: 'ACCEPTED',
+					invitedAt: '2026-09-02T09:00:00.000Z',
+					respondedAt: '2026-09-02T09:05:00.000Z',
+					checkedInAt: '2026-09-02T10:00:00.000Z',
+				});
+			},
+		});
+		const api = createAuthorizedApi({ getClient: () => client });
+		const token = 'a'.repeat(64);
+
+		await api.bookings.checkIn('booking-1', { token });
+
+		expect(method).toBe('POST');
+		expect(pathname).toBe('/bookings/booking-1/check-in');
+		expect(requestBody).toEqual({ token });
+	});
+
 	it('clears the session and redirects on 401', async () => {
 		const onUnauthorized = vi.fn();
 		const onForbidden = vi.fn();

@@ -1,6 +1,6 @@
-import { and, eq, lt, gt, ne } from 'drizzle-orm';
+import { and, eq, gt, inArray, lt, ne, or } from 'drizzle-orm';
 import { db } from '../../db';
-import { bookings, workspaces } from '../../db/schema';
+import { bookingParticipants, bookings, workspaces } from '../../db/schema';
 import type { CreateBookingDto } from './bookings.dto';
 
 type Booking = typeof bookings.$inferSelect;
@@ -90,17 +90,28 @@ export const bookingService = {
 		}
 
 		try {
-			const [booking] = await db
-				.insert(bookings)
-				.values({
-					userId,
-					workspaceId: data.workspaceId,
-					startAt,
-					endAt,
-				})
-				.returning();
+			return await db.transaction(async (transaction) => {
+				const [booking] = await transaction
+					.insert(bookings)
+					.values({
+						userId,
+						workspaceId: data.workspaceId,
+						startAt,
+						endAt,
+						visibility: data.visibility,
+					})
+					.returning();
 
-			return booking;
+				await transaction.insert(bookingParticipants).values({
+					bookingId: booking.id,
+					userId,
+					role: 'OWNER',
+					invitationStatus: 'ACCEPTED',
+					respondedAt: booking.createdAt ?? new Date(),
+				});
+
+				return booking;
+			});
 		} catch (error) {
 			// PostgreSQL remains the source of truth if two requests pass the
 			// application-level overlap check at the same time.
@@ -113,8 +124,25 @@ export const bookingService = {
 	},
 
 	async getByUser(userId: string) {
+		const memberships = await db.query.bookingParticipants.findMany({
+			where: and(
+				eq(bookingParticipants.userId, userId),
+				ne(bookingParticipants.invitationStatus, 'DECLINED'),
+			),
+			columns: { bookingId: true },
+		});
+		const membershipIds = memberships.map((membership) => membership.bookingId);
+		const visibilityConditions = [
+			eq(bookings.visibility, 'PUBLIC'),
+			eq(bookings.userId, userId),
+		];
+
+		if (membershipIds.length > 0) {
+			visibilityConditions.push(inArray(bookings.id, membershipIds));
+		}
+
 		return await db.query.bookings.findMany({
-			where: eq(bookings.userId, userId),
+			where: or(...visibilityConditions),
 			with: {
 				workspace: true,
 				user: {
@@ -122,6 +150,17 @@ export const bookingService = {
 						id: true,
 						email: true,
 						role: true,
+					},
+				},
+				participants: {
+					with: {
+						user: {
+							columns: {
+								id: true,
+								email: true,
+								role: true,
+							},
+						},
 					},
 				},
 			},
@@ -138,6 +177,17 @@ export const bookingService = {
 						id: true,
 						email: true,
 						role: true,
+					},
+				},
+				participants: {
+					with: {
+						user: {
+							columns: {
+								id: true,
+								email: true,
+								role: true,
+							},
+						},
 					},
 				},
 			},

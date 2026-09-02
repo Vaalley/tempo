@@ -4,6 +4,17 @@ Application SaaS de gestion d'espaces de travail (Flex-office) permettant aux co
 
 > **Projet RNCP 37873** - Concepteur Développeur d'Applications
 
+## Fonctionnalités de la V1
+
+- réservations publiques, visibles et accessibles aux collaborateurs connectés ;
+- réservations privées, limitées au propriétaire, aux invités et aux administrateurs ;
+- invitations avec acceptation ou refus et respect de la capacité de l'espace ;
+- participants et heure de présence individuelle ;
+- QR code renouvelable par réservation, avec jeton stocké sous forme de hash ;
+- check-in autorisé uniquement pendant le créneau pour un participant accepté ;
+- prévention atomique des doubles réservations par PostgreSQL ;
+- gestion des espaces, analytique et audit réservés aux administrateurs.
+
 ## Stack Technique
 
 | Domaine        | Technologie        |
@@ -155,8 +166,8 @@ docker compose --profile demo run --build --rm seed
 ```
 
 Cette commande crée ou remet à jour un compte administrateur, un compte
-collaborateur et quatre espaces. Elle peut être rejouée sans dupliquer les
-espaces portant les noms de démonstration.
+collaborateur, quatre espaces et une réservation publique de démonstration avec
+une invitation en attente. Elle peut être rejouée sans dupliquer ces données.
 
 ### Vérification
 
@@ -169,19 +180,23 @@ curl --fail http://localhost:5173/
 La suite d'intégration PostgreSQL applique les migrations, crée une réservation
 complète, puis lance deux créations concurrentes sur le même créneau. Elle
 vérifie qu'une seule insertion subsiste et que l'autre requête reçoit un conflit
-HTTP 409. La suite MongoDB vérifie l'écriture, l'auteur, l'horodatage, l'ordre et
-le filtrage des logs d'audit. Les données créées sont supprimées automatiquement :
+HTTP 409. Un troisième test couvre une réservation publique, l'invitation, son
+acceptation et le check-in avec un vrai QR code. La suite MongoDB vérifie
+l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit. Les
+données créées sont supprimées automatiquement :
 
 ```bash
 docker compose exec --no-TTY backend bun run test:integration:postgres
 docker compose exec --no-TTY backend bun run test:integration:mongo
 ```
 
-Le test E2E Playwright utilise le compte collaborateur et l'espace créés par le
-seed. Il vérifie dans Chromium la connexion, la création, l'affichage puis
-l'annulation d'une réservation. Installez le navigateur une première fois, puis
-exécutez le scénario pendant que la stack et les données de démonstration sont
-disponibles :
+Les tests E2E Playwright utilisent les comptes et les espaces créés par le seed.
+Le premier parcours vérifie la connexion, la création, l'affichage puis
+l'annulation d'une réservation. Le second crée une réservation publique,
+invite le collaborateur, lui fait accepter l'invitation puis ouvre l'URL encodée
+dans le QR code pour confirmer sa présence. Installez Chromium une première
+fois, puis exécutez les scénarios pendant que la stack et les données de
+démonstration sont disponibles :
 
 ```bash
 npx playwright install chromium
@@ -189,11 +204,11 @@ bun run test:e2e
 ```
 
 Les variables optionnelles `E2E_BASE_URL`, `E2E_API_URL`, `E2E_USER_EMAIL`,
-`E2E_USER_PASSWORD` et `E2E_WORKSPACE_NAME` permettent de cibler un autre
-environnement. En local, Playwright démarre automatiquement le backend et le
-frontend s'ils ne répondent pas déjà ; PostgreSQL, MongoDB et le seed restent des
-prérequis. La réservation créée est supprimée même si une assertion ultérieure
-échoue.
+`E2E_USER_PASSWORD`, `E2E_ADMIN_EMAIL`, `E2E_ADMIN_PASSWORD` et
+`E2E_WORKSPACE_NAME` permettent de cibler un autre environnement. En local,
+Playwright démarre automatiquement le backend et le frontend s'ils ne répondent
+pas déjà ; PostgreSQL, MongoDB et le seed restent des prérequis. Les réservations
+créées sont supprimées même si une assertion ultérieure échoue.
 
 ### Sauvegarde et restauration
 
