@@ -87,6 +87,11 @@ connexions locales à PostgreSQL/MongoDB et le secret JWT requis :
 | `AUTH_RATE_LIMIT_WINDOW_MS` | Durée de la fenêtre du limiteur en millisecondes              |
 | `TRUST_PROXY`               | Prise en compte de `X-Forwarded-For` derrière un proxy fiable |
 
+Pour le frontend lancé directement avec Vite, copiez également
+`apps/frontend/.env.example` vers `apps/frontend/.env`. La variable
+`PUBLIC_API_URL` doit pointer vers l'API locale, par défaut
+`http://localhost:3000`.
+
 Pour lancer la stack complète avec Docker Compose, copiez le modèle racine :
 
 ```bash

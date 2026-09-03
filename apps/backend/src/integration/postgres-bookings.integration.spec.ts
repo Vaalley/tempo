@@ -153,7 +153,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		}
 
 		expect(await conflictingResponse.json()).toEqual({
-			error: 'This workspace is already booked for this time slot',
+			error: 'Ce créneau est déjà réservé pour cet espace',
 		});
 		expect(persisted).toHaveLength(1);
 	});

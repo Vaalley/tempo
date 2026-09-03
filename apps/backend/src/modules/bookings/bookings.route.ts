@@ -44,10 +44,7 @@ const app = new Hono<AuthEnv>()
 					return c.json({ error: 'Workspace not found' }, 404);
 				}
 				if (error.message === 'BOOKING_OVERLAP') {
-					return c.json(
-						{ error: 'This workspace is already booked for this time slot' },
-						409,
-					);
+					return c.json({ error: 'Ce créneau est déjà réservé pour cet espace' }, 409);
 				}
 			}
 			return c.json({ error: 'Server error' }, 500);

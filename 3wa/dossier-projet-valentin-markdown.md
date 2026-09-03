@@ -1,5 +1,3 @@
-![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)
-
 Certification professionnelle
 
 Titre professionnel: **Concepteur développeur d'applications**
@@ -20,694 +18,345 @@ Date : _7 Octobre 2026_
 
 **SOMMAIRE**
 
-[**1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET 5**](#_heading=h.q0csxcn7m3b6)
-
-[1.1 Développer une application sécurisée 5](#_heading=h.zgknclrva8dg)
-
-[1.1.1. Installer et configurer son environnement de travail en fonction du projet 5](#_heading=h.iv9l2oxmryuq)
-
-[1.1.2. Développer des interfaces utilisateur 5](#_heading=h.hvmu9o7mnhn)
-
-[1.1.3. Développer des composants métier 6](#_heading=h.rd66saot106b)
-
-[1.1.4. Contribuer à la gestion d’un projet informatique 6](#_heading=h.dmc92bv3pf0y)
-
-[1.2. Concevoir et développer une application sécurisée organisée en couches 7](#_heading=h.55z3s9enzo44)
-
-[1.2.1. Analyser les besoins et maquetter une application 7](#_heading=h.bwc1y7afymco)
-
-[1.2.2. Définir l’architecture logicielle d’une application 7](#_heading=h.ee3p06xiek5u)
-
-[1.2.3. Concevoir et mettre en place une base de données relationnelle 8](#_heading=h.p57fqm153z0m)
-
-[1.2.4. Développer des composants d’accès aux données SQL et NoSQL 8](#_heading=h.j5c7j03jfu7e)
-
-[1.3. Préparer le déploiement d’une application sécurisée 9](#_heading=h.e1q9txizy794)
-
-[1.3.1. Préparer et exécuter les plans de tests d’une application 9](#_heading=h.ml885hoekyv)
-
-[1.3.2. Préparer et documenter le déploiement d’une application 9](#_heading=h.a2wy8s9oh637)
-
-[1.3.3. Contribuer à la mise en production dans une démarche DevOps 10](#_heading=h.c3fzifay2rt2)
-
-[**2\. CAHIER DES CHARGES 10**](#_heading=h.717sjx161azr)
-
-[2.1. Description de l’existant 11](#_heading=h.roobauohrn6j)
-
-[2.2. Reprise de l’existant 11](#_heading=h.a1a6b59gqa4z)
-
-[2.3. Principes de référencement 11](#_heading=h.nzo2zub5cjoe)
-
-[2.4. Exigences de performances et de volumétrie 11](#_heading=h.vewcadtmz9hx)
-
-[2.5. Multilinguisme & adaptations pour un public spécifique 11](#_heading=h.pvoesii9jn4y)
-
-[2.6. Description graphique et ergonomique 11](#_heading=h.h3yf8vbzkh65)
-
-[2.6.1. Composants de la charte graphique 11](#_heading=h.sle2t5coid52)
-
-[2.6.2. Design, Responsive design et autres exigences liées au design 12](#_heading=h.m45s1yg0kr66)
-
-[2.7. Besoins fonctionnels « métier » 12](#_heading=h.bwkwq0e7cu48)
-
-[2.7.1. Utilisateurs du projet 12](#_heading=h.f3gf204bglfa)
-
-[2.7.2. Informations relatives aux contenus 12](#_heading=h.qkkogx47ksyd)
-
-[2.7.3. Inventaire des besoins fonctionnels 12](#_heading=h.dqt5ooe4opsg)
-
-[2.8. Budget 13](#_heading=h.xtntveccwyfw)
-
-[**3\. PRESENTATION DE L’ENTREPRISE ET DU SERVICE 13**](#_heading=h.v4vymgp7mzaw)
-
-[3.1. Présentation de l’entreprise et du service 13](#_heading=h.q1cbo285b4k4)
-
-[3.2. Objectifs du projet 13](#_heading=h.cje3jfeqgukc)
-
-[3.3. Cible adressée par le projet 13](#_heading=h.2oqm6rqyrn9v)
-
-[3.4. Processus utilisateur impacté 13](#_heading=h.fjftw0brin51)
-
-[**4\. GESTION DE PROJET 13**](#_heading=h.z2twetev8qvz)
-
-[4.1. Intervenants sur le projet 13](#_heading=h.h5hqv82srs6t)
-
-[4.2. Méthodologie 14](#_heading=h.7vv6o6uovqor)
-
-[4.3. Outils, planning et suivi 14](#_heading=h.9iyyf1hgaxjg)
-
-[4.4. Objectifs de qualité 14](#_heading=h.91a0fe802vdv)
-
-[**5\. SPECIFICATIONS FONCTIONNELLES 14**](#_heading=h.r55u82i5749q)
-
-[5.1. Contraintes du projet et livrables attendus 14](#_heading=h.588sbic6a0x7)
-
-[5.1.1. Criticité de l’application 14](#_heading=h.ujikzl5eisrt)
-
-[5.1.2. Applications connexes 14](#_heading=h.wd4hy4sjnafp)
-
-[5.1.3. Services tiers 14](#_heading=h.ebaq7fpx8jji)
-
-[5.1.4. Livrables attendus 15](#_heading=h.j0kblgidqrt1)
-
-[5.2. Architecture logicielle du projet 15](#_heading=h.oas5q9xrngzt)
-
-[5.3. Maquettes et enchainement des maquettes 15](#_heading=h.grhgg1cclqy7)
-
-[5.3.1. Cartographie 15](#_heading=h.ugldkiqvv5d4)
-
-[5.3.2. Maquettes 15](#_heading=h.khrm0nsx8zcf)
-
-[5.4. Diagramme du comportement des fonctionnalités de type cas d’utilisations 16](#_heading=h.1vc4p7fudiru)
-
-[5.4.1. MCD (MERISE) 16](#_heading=h.95pb8dmdjuhw)
-
-[5.4.2. MLD (MERISE) 16](#_heading=h.dswgdfpwb0ev)
-
-[5.4.3. MPD (MERISE) 16](#_heading=h.5li51dpo76v2)
-
-[5.4.4. Diagramme de classes (UML) 16](#_heading=h.1e5qp7ks08z7)
-
-[5.5. Script de création et/ou de modification de la base de données 16](#_heading=h.89g3wdqx8vqc)
-
-[5.5.1. Script de création 16](#_heading=h.vtfauvdbaafq)
-
-[5.5.2. Argumentation 16](#_heading=h.c29av2da32er)
-
-[5.5.3. Script de modification 16](#_heading=h.70fefffytdps)
-
-[5.5.4. Argumentation 16](#_heading=h.ft2g1su1j6ut)
-
-[5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations 16](#_heading=h.tyzy94mfdory)
-
-[5.6.1. Diagramme de cas d’utilisation global (UML) 16](#_heading=h.seh7oycsy8qk)
-
-[5.7. Fonctionnalités détaillées les plus significatives 16](#_heading=h.d7ay29cwkfr1)
-
-[5.7.1. Fonctionnalité 1 16](#_heading=h.9vtaqgveaphf)
-
-[5.7.2. Fonctionnalité 2 17](#_heading=h.ldddwin3ak98)
-
-[5.7.3. Fonctionnalité 3 17](#_heading=h.34fyzeufhr9r)
-
-[5.7.4. Fonctionnalité 4 17](#_heading=h.koujl4q2vsf)
-
-[5.7.5. Fonctionnalité 5 17](#_heading=h.pz4hcr6x4623)
-
-[**6\. SPECIFICATIONS TECHNIQUES 17**](#_heading=h.4ol9l8qf9nye)
-
-[6.1. Référencement 17](#_heading=h.4ar0eyllmooc)
-
-[6.2. Environnement technique 17](#_heading=h.tqfkinf5x5p3)
-
-[6.3. Navigation et accessibilité 18](#_heading=h.yz8m5on7qevc)
-
-[6.4. Services tiers 18](#_heading=h.8nld3ppwzuog)
-
-[6.5. Sécurité 18](#_heading=h.70pdhxshncr)
-
-[**7\. REALISATIONS 18**](#_heading=h.hfrh9es5ht4c)
-
-[7.1. Exemple 1 : xxx (Composants Métier) 19](#_heading=h.yofz38owczco)
-
-[7.1.1. Affichage 19](#_heading=h.aj5blhloa4sg)
-
-[7.1.2. Extrait(s) de code 19](#_heading=h.ewgr4ckt8vey)
-
-[7.1.3. Argumentation 19](#_heading=h.pke3sloambje)
-
-[7.2. Exemple 1 : xxx (Composants Métier) 19](#_heading=h.t2pzl7v6zorv)
-
-[7.2.1. Affichage 19](#_heading=h.73wgyca75igp)
-
-[7.2.2. Extrait(s) de code 19](#_heading=h.nxjh2epkwy0h)
-
-[7.2.3. Argumentation 19](#_heading=h.jxjpt7whoyi9)
-
-[7.3. Exemple 1 : xxx (Composants d’accès aux données) 19](#_heading=h.ixp7iht4cqhf)
-
-[7.3.1. Affichage 19](#_heading=h.83v0drffglar)
-
-[7.3.2. Extrait(s) de code 19](#_heading=h.ouuuxia9nu9m)
-
-[7.3.3. Argumentation 19](#_heading=h.szs89lvz11xt)
-
-[7.4. Exemple 1 : xxx (Composants d’accès aux données) 19](#_heading=h.o6oumfxhgwj)
-
-[7.4.1. Affichage 19](#_heading=h.u8o10fp4pzhj)
-
-[7.4.2. Extrait(s) de code 19](#_heading=h.dxmdp3hei969)
-
-[7.4.3. Argumentation 19](#_heading=h.5u327oh5pe)
-
-[7.5. Exemple 1 : xxx (Autres) 19](#_heading=h.2bvzxoro6kk6)
-
-[7.5.1. Affichage 19](#_heading=h.w9ujtev4pznk)
-
-[7.5.2. Extrait(s) de code 19](#_heading=h.3p2dpewe1o6c)
-
-[7.5.3. Argumentation 19](#_heading=h.8db133daok71)
-
-[**8\. ELEMENTS DE SECURITE DE L’APPLICATION 19**](#_heading=h.6cr22bg5aggb)
-
-[**9\. PLAN DE TESTS 19**](#_heading=h.gd985yt6u2c)
-
-[**10\. JEU D’ESSAI DE LA FONCTIONNALITE LA PLUS REPRESENTATIVE 20**](#_heading=h.v073hqrdsavw)
-
-[10.1. Fonctionnalité testée 20](#_heading=h.ooom1yk8i7an)
-
-[10.2. Description des scenarios 20](#_heading=h.5oooznhgdxox)
-
-[10.3. Résultats des tests 20](#_heading=h.u7t470fetadg)
-
-[10.4. Conclusion 20](#_heading=h.te6o45arycqm)
-
-[**11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ 20**](#_heading=h.r2ma1mm4epee)
+1. Liste des compétences du référentiel couvertes par le projet
+    1. Développer une application sécurisée
+    2. Concevoir et développer une application sécurisée organisée en couches
+    3. Préparer le déploiement d'une application sécurisée
+2. Cahier des charges
+3. Présentation de l'entreprise et du service
+4. Gestion de projet
+5. Spécifications fonctionnelles
+6. Spécifications techniques
+7. Réalisations
+8. Éléments de sécurité de l'application
+9. Plan de tests
+10. Jeu d'essai de la fonctionnalité la plus représentative
+11. Veille sur les vulnérabilités de sécurité
 
 # 1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET
 
-Exprimer à la première du singulier vos compétences mises en œuvre dans votre projet. Adapter la description des activités à votre projet et à vos activités
+J'ai mobilisé les compétences suivantes pendant la conception, le développement et la mise en service de Tempo. Les éléments cités renvoient à des fichiers, des tests ou des écrans présents dans le dépôt.
 
 ## 1.1 Développer une application sécurisée
 
 ### 1.1.1. Installer et configurer son environnement de travail en fonction du projet
 
-_Description des activités à mettre en avant_
+J'ai organisé Tempo sous la forme d'un monorepo Bun composé d'un backend Hono et d'un frontend SvelteKit. Les commandes communes sont centralisées à la racine pour lancer le développement, les tests, le lint, le formatage et le build. Cette organisation évite de maintenir deux procédures différentes pour les deux applications.
 
-Le concepteur développeur d’applications prépare son environnement de travail en fonction du projet qui lui est confié. Il installe et configure sur son poste de travail tous les outils nécessaires à son environnement de travail afin de reconstituer un environnement de développement conforme à l’environnement de production.
+PostgreSQL et MongoDB peuvent être lancés localement ou avec Docker Compose. Les versions de Bun et des images de base sont épinglées pour limiter les écarts entre un poste de développement et le runner GitHub Actions. Les identifiants de base de données et le secret JWT proviennent de fichiers d'environnement ignorés par Git. Les fichiers `.env.example` décrivent uniquement la structure attendue avec des valeurs factices.
 
-_Ma contribution sur le projet Tempo_
-
-J'ai installé et configuré mon environnement de travail à partir des besoins spécifiques du projet : le runtime **Bun** (exécution TypeScript, gestionnaire de paquets et de workspaces), **Docker** et **Docker Compose** pour lancer localement les services PostgreSQL et MongoDB dans des conteneurs identiques à ceux utilisés en production, ainsi que **Git/GitHub** pour le versioning. J'ai mis en place les outils de qualité de code (Oxlint, Oxfmt) et de test (Bun Test, Vitest) directement intégrés à l'environnement de développement, avec des scripts `bun run dev`, `bun run lint`, `bun run test` centralisés à la racine du monorepo.
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- Les outils de développement nécessaires sont installés
-- Les outils de gestion des versions et de collaboration sont installés
-- Les conteneurs implémentent les services requis
-- La documentation technique de l’environnement de travail est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
+Git assure le versionnement. Oxlint et Oxfmt contrôlent la qualité du code, Bun Test et Vitest exécutent les tests unitaires, et Playwright pilote Chromium pour les parcours complets. Le `README.md` regroupe les commandes de démarrage, de migration, de seed, de sauvegarde et de restauration.
 
 ### 1.1.2. Développer des interfaces utilisateur
 
-_Description des activités à mettre en avant_
+J'ai développé les écrans avec Svelte 5, SvelteKit, Tailwind CSS et les composants shadcn-svelte. Les pages utilisent les runes Svelte pour leurs états locaux. Les formulaires indiquent les chargements et affichent les erreurs retournées par l'API, par exemple lorsqu'un espace est déjà réservé ou qu'une invitation ne peut pas être créée.
 
-A partir du dossier de conception, il développe la partie dynamique de l’application avec des composants métier sécurisés, dans un style défensif, éventuellement en asynchrone, en respectant les bonnes pratiques de la programmation.
+L'interface s'adapte au rôle connecté. Un collaborateur ne voit ni les liens ni les actions d'administration. Un administrateur accède à la gestion des utilisateurs et des espaces, aux statistiques, aux audits et à la vue globale des réservations. La page des réservations permet aussi de choisir la visibilité, d'inviter un participant, de répondre à une invitation, de rejoindre une réservation publique et de générer un QR code.
 
-_Ma contribution sur le projet Tempo_
-
-J'ai développé les interfaces utilisateur du frontend avec **Svelte 5** (Runes : `$state`, `$derived`, `$effect`) et la librairie de composants **shadcn-svelte**, stylées avec **Tailwind CSS** pour garantir un rendu responsive sur desktop, tablette et mobile. Les appels à l'API backend sont effectués de façon asynchrone via le client RPC typé (`hc<AppType>`), avec gestion des erreurs et des états de chargement côté interface (ex : message d'erreur en cas de créneau déjà réservé).
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- L’interface est conforme au dossier de conception
-- L’interface s’adapte au type d’utilisation de l‘application et notamment à la taille, au type et à la disposition du support
-- La charte graphique est respectée
-- La réglementation en vigueur est respectée
-- Le code est documenté
-- Les tests unitaires ont été réalisés pour les composants concernés
-- Le jeu d’essai fonctionnel est complet
-- Les tests de sécurité sont réalisés
-- La documentation technique des interfaces utilisateur est comprise, en langue française ou anglaise (niveau B1 CECRL pour l’anglais)
-- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les interfaces utilisateur
+Les appels réseau passent par un client Hono RPC typé avec `AppType`. Les réponses 401 et 403 sont traitées de manière centralisée. Le retour vers la page de check-in après une connexion conserve le jeton QR dans le stockage de session, sans l'ajouter à la requête HTTP vers `/login`. Les tests Vitest et les contrôles Svelte couvrent ces comportements.
 
 ### 1.1.3. Développer des composants métier
 
-_Description des activités à mettre en avant_
+Le backend est découpé en modules `auth`, `users`, `workspaces`, `bookings`, `analytics` et `audit`. Chaque module sépare les routes HTTP de la logique métier et de l'accès aux données. Les entrées sont validées avec Zod avant d'atteindre les services.
 
-A partir du dossier de conception, il développe la partie dynamique de l’application avec des composants métier sécurisés, dans un style défensif, éventuellement en asynchrone, en respectant les bonnes pratiques de la programmation.
+Le module de réservation concentre les règles les plus importantes. Il vérifie les créneaux, traduit les conflits PostgreSQL en réponses HTTP 409, gère la visibilité publique ou privée, les invitations, les participants et la capacité de l'espace. Une transaction verrouille la réservation pendant l'ajout d'un participant afin que deux requêtes simultanées ne dépassent pas la capacité disponible.
 
-Il documente le code. Il conçoit un jeu d’essai fonctionnel et réalise les tests unitaires de chaque composant. Il détermine une démarche structurée de résolution de problème en cas de découverte d’un dysfonctionnement lors de l’analyse des résultats des tests unitaires ou en cas d’incident survenant en production. Il réalise les tests de sécurité. Il effectue une veille technologique sur les évolutions techniques et de sécurité liées aux technologies qu’il utilise.
+Pour le check-in, le serveur génère un jeton aléatoire de 256 bits et n'enregistre que son hash SHA-256. Seul un participant accepté peut confirmer sa présence, pendant le créneau de la réservation. La génération d'un nouveau QR code invalide le précédent. Ces règles sont couvertes par des tests de routes et par un scénario d'intégration sur PostgreSQL réel.
 
-_Ma contribution sur le projet Tempo_
+### 1.1.4. Contribuer à la gestion d'un projet informatique
 
-J'ai développé les composants métier du backend en TypeScript, organisés en modules (`auth`, `users`, `workspaces`, `bookings`, `audit`), chacun suivant le même découpage Route/Service/Accès aux données. Le composant le plus représentatif est l'algorithme de détection de chevauchement de réservations (`bookingService.checkOverlap`), que j'ai conçu, documenté et couvert par des tests unitaires (Bun Test) traitant tous les cas limites (chevauchement partiel, total, réservations consécutives). J'ai sécurisé les composants avec une validation stricte des entrées (Zod) et un contrôle des rôles utilisateur. J'effectue une veille technique régulière (changelogs Bun/Hono/Drizzle, avis de sécurité npm) pour suivre les évolutions des technologies utilisées.
+J'ai mené ce projet seul et assuré le cadrage, la conception, le développement, la recette et la préparation du déploiement. Le travail a été découpé dans Trello avec un tableau Kanban, puis suivi à court terme dans `todo.md` et dans le plan de corrections du dossier.
 
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
+La priorité a d'abord porté sur l'authentification, la création d'espaces et la réservation. Les contrôles d'accès, l'intégrité des données, la CI et les tests d'intégration ont ensuite consolidé ce premier socle. Les réservations publiques ou privées, les invitations, les participants et le check-in par QR code ont été intégrés à la V1 avant la reprise du dossier.
 
-- Les bonnes pratiques de la programmation orientée objet (POO) sont respectées
-- Les composants métier sont sécurisés
-- Les règles de nommage sont conformes aux normes de qualité de l’entreprise
-- Le code source est documenté
-- Les traitements répondent aux fonctionnalités décrites dans le dossier de conception
-- Les tests unitaires sont réalisés
-- Les tests de sécurité sont réalisés
-- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité en lien avec les composants métier d’une application
-
-### 1.1.4. Contribuer à la gestion d’un projet informatique
-
-_Description des activités à mettre en avant_
-
-Le concepteur développeur d’applications contribue à la gestion du projet informatique en planifiant et en faisant le suivi de ses tâches de conception et de développement. Il définit les environnements de développement en adéquation avec l’architecture du projet. Il définit les outils collaboratifs en fonction de la méthode de développement et rédige les comptes rendus de réunion.
-
-_Ma contribution sur le projet Tempo_
-
-Ayant mené ce projet seul, j'ai assuré moi-même la gestion de projet : planification des tâches sur un tableau **Trello** en colonnes Kanban (À faire / En cours / Terminé), suivi de l'avancement au fil des itérations, et priorisation des fonctionnalités critiques (authentification, réservation) avant les fonctionnalités secondaires (audit, administration). J'ai également tenu un fichier `todo.md` pour le suivi des tâches restantes à court terme, en remplacement des comptes rendus de réunion habituels à une équipe.
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- Les tâches de conception et de développement sont planifiées en fonction du délai défini
-- Le suivi des tâches est mis en rapprochement avec la planification, les éventuels retards sont identifiés et les acteurs concernés sont alertés
-- Les procédures qualité sont mises en œuvre
-- L’environnement de développement défini est en adéquation avec l’architecture du projet
-- Les outils collaboratifs sont choisis en fonction de la méthode de développement
-- Les comptes rendus de réunion sont structurés, rédigés dans un style adapté, dans le respect des règles orthographiques et grammaticales, et contiennent les informations nécessaires
+Chaque évolution est vérifiée localement avant l'envoi sur GitHub. La CI rejoue ensuite le formatage, le lint, les types, les tests, les builds et la recette Docker. La branche `main` reste volontairement non protégée pendant le développement, mais le résultat de la CI sert de contrôle avant de poursuivre.
 
 ## 1.2. Concevoir et développer une application sécurisée organisée en couches
 
 ### 1.2.1. Analyser les besoins et maquetter une application
 
-_Description des activités à mettre en avant_
+J'ai commencé par formaliser le besoin dans `SPECS.md`. Le cahier des charges distingue le collaborateur de l'administrateur et délimite les fonctions de réservation, de supervision et d'audit. Les cas d'utilisation et les règles de gestion ont ensuite servi à préparer les modèles de données et les routes de l'API.
 
-Le concepteur développeur d’applications analyse les besoins utilisateurs de l’application. Il réalise les maquettes de l’application, ainsi que leur enchaînement. Il rédige le dossier de conception.
+Une première maquette Figma a fixé la navigation générale. L'interface a évolué pendant l'implémentation pour tenir compte des composants disponibles et des retours obtenus pendant les tests. La cartographie des pages, la maquette initiale et les diagrammes de comportement figurent en section 5.
 
-Le concepteur développeur d’applications analyse le cahier des charges en identifiant les limites du système, les acteurs et les messages. Il formalise les besoins utilisateurs. Il construit les maquettes de l’application et l’enchaînement des écrans, éventuellement à l’aide d’un outil de maquettage.
+### 1.2.2. Définir l'architecture logicielle d'une application
 
-_Ma contribution sur le projet Tempo_
+J'ai retenu une architecture en trois couches. SvelteKit gère la présentation, Hono porte les routes et les services métier, tandis que PostgreSQL et MongoDB assurent la persistance. Le frontend et le backend sont deux workspaces du même dépôt. Le type de l'application Hono est partagé avec le client RPC, ce qui permet à TypeScript de détecter une incompatibilité de route ou de données pendant la compilation.
 
-J'ai rédigé le cahier des charges technique du projet (`SPECS.md`) en identifiant les acteurs, les limites du système et les besoins fonctionnels. J'ai préparé une première maquette dans Figma, puis je l'ai fait évoluer pendant l'implémentation avec les composants shadcn-svelte. Le diagramme de cas d'utilisation, la cartographie des écrans et la maquette sont présentés en section 5.
+La sécurité est répartie sans être dupliquée. Le frontend adapte la navigation, mais l'API reste responsable des autorisations. Les middlewares vérifient le JWT, le rôle, le CORS, les en-têtes de sécurité et la limite de requêtes. Zod contrôle les entrées. PostgreSQL applique les clés étrangères, les contraintes temporelles et l'exclusion des réservations concurrentes.
 
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- Les besoins recensés couvrent l’ensemble des exigences utilisateur exprimées dans le cahier des charges
-- Les maquettes sont réalisées conformément au cahier des charges en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
-- L’enchaînement des maquettes est formalisé par un schéma
-- Le dossier de conception est structuré, en conformité avec la démarche de conception
-
-### 1.2.2. Définir l’architecture logicielle d’une application
-
-_Description des activités à mettre en avant_
-
-Il conçoit l’architecture logicielle multicouche répartie en vue du développement d’une application sécurisée. Il définit le rôle de chaque couche en tenant compte de la stratégie de sécurité. Il identifie les besoins d’éco-conception de l’application. Il conçoit le schéma conceptuel des données en respectant les règles des bases de données relationnelles, les règles de nommage en vigueur dans l’entreprise, et en assurant l’intégrité des données.
-
-_Ma contribution sur le projet Tempo_
-
-J'ai conçu une architecture 3-tiers (présentation / métier / persistance) répartie en un monorepo Bun composé de deux workspaces indépendants (frontend Svelte, backend Hono), communiquant via une API RPC typée. J'ai défini le rôle de chaque couche en intégrant la sécurité dès la conception (validation systématique des entrées, authentification JWT centralisée dans un middleware). Pour l'éco-conception, j'ai privilégié un runtime performant et léger (Bun) ainsi que des images Docker multi-stage optimisées, réduisant la consommation de ressources par rapport à une stack Node.js classique. J'ai conçu le schéma conceptuel des données (MCD) en respectant les règles du modèle relationnel et en garantissant l'intégrité référentielle (clés étrangères, contraintes de suppression en cascade).
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- L’architecture logicielle est conforme aux bonnes pratiques d’une architecture multicouche répartie sécurisée
-- Le rôle de chaque couche est bien défini en tenant compte de la stratégie de sécurité
-- Les besoins d’éco-conception de l’application sont identifiés
+Le projet reste un monolithe modulaire adapté à la volumétrie prévue. Les images Docker multi-stage et le runtime commun limitent le nombre de composants à construire et à maintenir. Aucun gain chiffré de consommation n'a été mesuré, donc l'éco-conception est abordée ici par la sobriété de l'architecture et la réduction des services inutiles.
 
 ### 1.2.3. Concevoir et mettre en place une base de données relationnelle
 
-_Description des activités à mettre en avant_
+J'ai traduit le modèle de données dans le schéma Drizzle puis généré des migrations SQL versionnées. PostgreSQL contient les utilisateurs, les espaces, les réservations, les participants et les hashes des jetons QR. Les clés étrangères et les suppressions en cascade évitent les enregistrements orphelins. Des contraintes supplémentaires garantissent un créneau valide, une capacité positive et l'absence de chevauchement pour un même espace.
 
-A partir du schéma physique, Il met en place la base de données. Il définit les utilisateurs et leurs droits d’accès en respectant les règles de sécurité et de confidentialité du cahier des charges. Il crée un jeu d’essai complet dans une base de données de test et la sauvegarde afin de pouvoir la restaurer.
+Le seed crée deux comptes, plusieurs espaces et une réservation publique avec une invitation en attente. Il est idempotent afin de pouvoir être rejoué dans un environnement de démonstration. Les tests unitaires utilisent des mocks, tandis que les tests d'intégration appliquent les migrations et travaillent sur une base PostgreSQL réelle.
 
-_Ma contribution sur le projet Tempo_
+Les volumes Docker conservent les données entre deux démarrages. Le `README.md` documente aussi les commandes `pg_dump` et `pg_restore` nécessaires à une sauvegarde ou à une restauration manuelle.
 
-À partir du schéma physique (MPD), j'ai mis en place la base de données **PostgreSQL** en générant les scripts de création via **Drizzle Kit** (`bunx drizzle-kit generate` / `migrate`) à partir du schéma TypeScript déclaratif (`schema.ts`). Un utilisateur applicatif dédié (`admin`) est défini avec ses droits d'accès via les variables d'environnement (`DATABASE_URL`), séparé de tout accès direct en production. J'ai créé un jeu d'essai (mocks) utilisé dans les tests unitaires pour valider les traitements sans dépendre d'une base réelle, et la persistance des données de test/développement est assurée par un volume Docker (`postgres_data`) restaurable.
+### 1.2.4. Développer des composants d'accès aux données SQL et NoSQL
 
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
+Drizzle ORM exécute les opérations SQL et conserve les types du schéma jusqu'aux services. Les créations de réservations et de participants utilisent des transactions. Les recherches relationnelles chargent les espaces, les propriétaires et les participants sans reconstruire ces relations dans le frontend.
 
-- Le schéma conceptuel respecte les règles du relationnel
-- Le schéma physique est conforme aux besoins exprimés dans le cahier des charges
-- Les règles de nommage ont été respectées
-- L’intégrité, la sécurité et la confidentialité des données est assurée
-- La base de données de test est créée avec un jeu d’essai complet et peut être restaurée en cas d’incident
-- La documentation technique des bases de données est comprise, en langue française ou anglaise (niveau B1 du CECRL pour l’anglais)
+MongoDB stocke les audits de suppression. Le service enregistre l'entité supprimée, l'auteur et la date, puis restitue les événements du plus récent au plus ancien. Cet audit fonctionne en mode best effort : un échec MongoDB est journalisé, mais ne revient pas sur une suppression déjà validée dans PostgreSQL.
 
-### 1.2.4. Développer des composants d’accès aux données SQL et NoSQL
+Les routes convertissent les erreurs métier en statuts HTTP cohérents. Les tests unitaires isolent les services avec des mocks. Les tests d'intégration vérifient la persistance réelle, le conflit de concurrence, le parcours d'invitation et de check-in, ainsi que l'ordre et le filtrage des audits.
 
-_Description des activités à mettre en avant_
+## 1.3. Préparer le déploiement d'une application sécurisée
 
-Il code les traitements relatifs aux accès aux données en consultation, modification, création et suppression. Il s’assure que les traitements gèrent l’intégrité et les conflits d’accès aux données, et qu’ils permettent de respecter la confidentialité. Il prend en compte les cas d’exception. Il valide et contrôle les entrées dans les composants serveurs sécurisés avant la mise à jour de la base de données.
+### 1.3.1. Préparer et exécuter les plans de tests d'une application
 
-Il réalise les tests unitaires et de sécurité. Il détermine une démarche structurée de résolution de problème en cas de découverte d’un dysfonctionnement lors de l’analyse des résultats des tests unitaires ou lors d’un incident de production.
+J'ai organisé les tests en plusieurs niveaux. Les 99 tests backend unitaires et HTTP couvrent les services, les routes, les autorisations et la sécurité. Les 18 tests frontend vérifient l'authentification, le client RPC, les erreurs et les gardes de navigation.
 
-_Ma contribution sur le projet Tempo_
+Trois tests PostgreSQL utilisent une base réelle pour contrôler la persistance d'une réservation, le rejet atomique de deux créations concurrentes et le parcours public avec invitation, acceptation puis check-in. Deux tests MongoDB vérifient l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des audits. Enfin, deux parcours Playwright reproduisent la réservation puis l'annulation, et le parcours collaboratif jusqu'au check-in par QR code.
 
-J'ai développé les composants d'accès aux données SQL avec **Drizzle ORM** (requêtes typées, jointures déclaratives via `db.query.*.findMany`) pour les entités relationnelles (utilisateurs, espaces, réservations), et NoSQL avec le driver **MongoDB natif** pour les logs d'audit (`auditService`). Chaque composant gère les cas d'exception métier (espace introuvable, chevauchement de créneau, accès non autorisé) en levant des erreurs typées interceptées au niveau de la route. Les entrées sont validées par des schémas Zod avant toute écriture en base. J'ai réalisé les tests unitaires associés (mocks des accès base de données) pour valider ces traitements indépendamment de l'infrastructure.
+La section 9 relie chaque groupe de tests aux règles qu'il vérifie. Les résultats locaux sont complétés par la recette GitHub Actions sur une stack Docker neuve.
 
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
+### 1.3.2. Préparer et documenter le déploiement d'une application
 
-- Les traitements relatifs aux manipulations des données répondent aux fonctionnalités décrites dans le dossier de conception
-- Les cas d’exception sont pris en compte
-- L’intégrité et la confidentialité des données sont maintenues
-- Les conflits d’accès aux données sont gérés
-- Toutes les entrées sont contrôlées et validées dans les composants serveurs sécurisés
-- Les tests unitaires et de sécurité sont associés à chaque composant
-- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées aux bases de données SQL et NoSQL
+J'ai écrit deux Dockerfiles multi-stage et un fichier `docker-compose.yml` pour PostgreSQL, MongoDB, le backend et le frontend. Compose attend les contrôles de santé des bases. Le backend applique ensuite les migrations avant de démarrer, puis le frontend attend que l'API soit disponible. Un profil optionnel charge le jeu de démonstration.
 
-## 1.3. Préparer le déploiement d’une application sécurisée
-
-### 1.3.1. Préparer et exécuter les plans de tests d’une application
-
-_Description des activités à mettre en avant_
-
-Le concepteur développeur d’applications prépare et exécute les plans de tests d’une application. Il vérifie que les résultats sont ceux qui sont attendus.
-
-Le concepteur développeur d’applications prépare un plan de tests, crée ou fait créer un environnement de test. Il exécute ou fait exécuter les tests sur cet environnement manuellement ou automatiquement. Il vérifie que les résultats sont conformes aux résultats attendus.
-
-_Ma contribution sur le projet Tempo_
-
-J'ai préparé un plan de tests couvrant les règles métier critiques du projet (authentification, détection de chevauchement de réservations, autorisations par rôle, collaboration et journalisation d'audit), détaillé en section 9. J'ai créé un environnement de test isolé permettant d'exécuter 99 tests backend unitaires/HTTP, 3 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB avec Bun Test, 18 tests frontend avec Vitest et 2 parcours E2E avec Playwright. Ils vérifient notamment les statuts HTTP 200/201/400/401/403/404/409, le refus d'un utilisateur `USER`, l'autorisation d'un `ADMIN`, la persistance d'une réservation, le rejet atomique d'une double réservation concurrente, les invitations et le check-in par QR code, ainsi que l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des logs d'audit réels. Les tests navigateur pilotent réellement l'interface pour vérifier le parcours de réservation et d'annulation, puis le parcours d'invitation, d'acceptation et de check-in. Les suites couvrent aussi les bornes temporelles des statistiques, la modification des espaces, les protections HTTP, la configuration du seed de démonstration et les redirections sur réponses 401/403. Je vérifie systématiquement que les résultats obtenus correspondent aux résultats attendus avant de considérer une fonctionnalité comme terminée.
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- Le plan de tests couvre l’ensemble des fonctionnalités retenues pour l’application
-- Un environnement de tests est créé
-- L’intégralité des tests exécutés sont conformes au plan de tests défini
-- Les résultats obtenus sont cohérents avec les résultats attendus
-- Le plan de tests tient compte des évolutions technologiques et des problèmes de sécurité liés aux tests logiciels
-
-### 1.3.2. Préparer et documenter le déploiement d’une application
-
-_Description des activités à mettre en avant_
-
-Il écrit et documente les scripts et la procédure de déploiement d’une application. Il définit les environnements de tests et les procédures pour exécuter les tests.
-
-_Ma contribution sur le projet Tempo_
-
-J'ai écrit et documenté les scripts de déploiement de l'application : deux `Dockerfile` multi-stage (un par workspace) et un fichier `docker-compose.yml` orchestrant PostgreSQL, MongoDB, le backend et le frontend. Les versions de Bun et des bases sont épinglées. Compose attend les health checks des bases, le backend applique automatiquement les migrations Drizzle avant de démarrer, puis le frontend attend que l'API soit saine. Un profil optionnel charge un jeu de démonstration idempotent. La procédure locale, les sauvegardes, la restauration et la stratégie de rollback sont documentées dans le `README.md`. L'exécution complète a été validée sur un runner GitHub disposant de Docker par le pipeline d'intégration continue.
-
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- La procédure de déploiement est rédigée
-- Les scripts de déploiement sont écrits et documentés
-- Les environnements de tests sont définis et la procédure d’exécution des tests d’intégration, système et d’acceptation client est rédigée
-- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées au déploiement d’une application
+Le `README.md` décrit la configuration, le lancement, les contrôles de santé, les tests d'intégration, les sauvegardes, la restauration et le retour à une version précédente. Les versions des services sont épinglées et les secrets restent hors du dépôt.
 
 ### 1.3.3. Contribuer à la mise en production dans une démarche DevOps
 
-_Description des activités à mettre en avant_
+J'ai configuré le workflow `.github/workflows/ci.yml`. Le premier job vérifie le format, le lint, les types, les tests et le build. Le second construit la stack Docker Compose, attend les services, charge le seed et exécute les intégrations PostgreSQL et MongoDB ainsi que les deux parcours Playwright. Les traces, captures et vidéos d'un échec E2E sont conservées comme artefacts pendant sept jours.
 
-Cette compétence s’exerce seul ou au sein d’une équipe, en adéquation avec la méthode de gestion de projet choisie.
-
-Dans le cadre d’une démarche Devops, le concepteur développeur d’applications réalise l’intégration en continu du projet (CI Continuous Integration) en collaboration avec les équipes systèmes (operations OPS) qui contrôlent ou effectuent le déploiement en continu (CD Continuous Delivery).
-
-Selon les projets, la communication écrite et orale peut s’effectuer en anglais avec les acteurs concernés.
-
-_Ma contribution sur le projet Tempo_
-
-Ayant travaillé seul sur ce projet, j'ai cumulé les rôles de développeur et d'« exploitant » en mettant en place moi-même le pipeline d'intégration continue avec **GitHub Actions** (`.github/workflows/ci.yml`). Ce pipeline exécute automatiquement, à chaque `push` et `pull request` : formatage, lint, contrôles TypeScript/Svelte, tests et build applicatif. Un second job construit puis démarre la stack Docker Compose, attend les health checks, charge le jeu de démonstration, exécute les tests d'intégration PostgreSQL et MongoDB puis le parcours E2E Playwright dans Chromium, et vérifie les endpoints publics ainsi que la connexion administrateur. En cas d'échec du parcours navigateur, ses traces, captures et vidéos sont conservées sept jours comme artefact. L'[exécution réussie du 1er septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33485477310) prouve l'exécution complète du pipeline : le job « Quality & Tests » et le job « Docker Build Check » sont verts, y compris l'étape E2E Playwright.
+L'[exécution du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) est entièrement réussie. Les jobs de qualité et de recette Docker sont verts avec les fonctionnalités collaboratives et le check-in de la V1.
 
 ![Exécution GitHub Actions réussie avec les jobs Quality et Docker](github-ci.png)
 
-Pour info, éléments de preuve des compétences (vérifier que ces éléments sont présents dans votre projet, dans votre dossier et dans votre présentation) :
-
-- Les outils de qualité de code sont utilisés
-- Les outils d’automatisation de tests sont utilisés
-- Les scripts d’intégration continue s’exécutent sans erreur
-- Le serveur d’automatisation est paramétré pour les livrables et les tests
-- Les rapports de l’Intégration Continue sont interprétés
-- La documentation technique des différents outils est comprise, en langue française ou anglaise (niveau B1du CECRL pour l’anglais)
-- La démarche structurée de résolution de problème est adaptée en cas de dysfonctionnement
-- Le système de veille permet de suivre les évolutions technologiques et les problématiques de sécurité liées à la démarche DevOps
-
 # 2\. CAHIER DES CHARGES
 
-S’exprimer au présent et d’une façon totalement impersonnelle. Éviter les termes techniques dans le CDC.
+Le cahier des charges décrit le besoin du point de vue métier. Les choix d'implémentation sont détaillés dans les sections 5 et 6.
 
-## 2.1. Description de l’existant
+## 2.1. Description de l'existant
 
-Tempo est un projet réalisé en dehors de tout contexte professionnel (projet personnel de certification, sans lien avec la structure qui accueille mon alternance). Il n’existe donc pas d’application antérieure à reprendre : il s’agit d’une création complète (« greenfield »).
+Tempo est un projet personnel de certification, réalisé en dehors de la structure d'alternance. Aucune application antérieure n'est à reprendre.
 
-Le constat de départ est le suivant : de nombreuses entreprises ont adopté le flex-office (postes de travail non attitrés) sans toujours disposer d’un outil simple pour réserver un bureau ou une salle et pour permettre aux équipes de piloter le taux d’occupation des locaux. Les solutions actuelles (tableur partagé, plan papier, outils de réservation de salles génériques) ne couvrent ni la gestion des chevauchements de créneaux, ni le suivi de présence, ni la vision d’ensemble pour un administrateur. Tempo répond à ce besoin avec une application web dédiée.
+Le point de départ est l'usage du flex-office sans outil dédié. Un tableur partagé ou un planning général permet de noter une occupation, mais gère mal les accès simultanés, les invitations et la présence réelle. Tempo propose un espace unique pour réserver un bureau ou une salle, inviter des participants et suivre l'occupation.
 
-## 2.2. Reprise de l’existant
+## 2.2. Reprise de l'existant
 
-Aucune version précédente n’existe. Aucun élément (nom de domaine, hébergement, documentation) n’est donc à reprendre. Le patrimoine documentaire du projet (cahier des charges `SPECS.md`, diagrammes MERISE/UML, README) a été rédigé intégralement dans le cadre de ce projet.
+Le projet est créé sans code, hébergement, nom de domaine ou documentation hérités. Le cahier des charges `SPECS.md`, les diagrammes, le code et la documentation ont été produits pour Tempo.
 
 ## 2.3. Principes de référencement
 
-Tempo est une application métier interne (SaaS B2B) destinée à être utilisée par les collaborateurs et administrateurs d’une entreprise après authentification. Elle n’a donc pas vocation à être référencée sur les moteurs de recherche publics : aucune stratégie SEO n’est requise pour les pages applicatives situées derrière l’authentification.
+Tempo est une application métier interne accessible après authentification. Les pages applicatives n'ont pas vocation à apparaître dans les moteurs de recherche. Le document demande donc leur non-indexation, sans considérer cette directive comme un moyen de contrôle d'accès.
 
 ## 2.4. Exigences de performances et de volumétrie
 
-Le projet vise une PME type de 50 à 300 collaborateurs répartis sur un ou plusieurs sites en flex-office. Ordres de grandeur retenus pour dimensionner l’architecture :
+La cible de départ est une entreprise de 50 à 300 collaborateurs, sur un ou plusieurs sites. L'usage devrait surtout se concentrer au début et à la fin de la journée de travail.
 
-- Nombre d’utilisateurs actifs simultanés : quelques dizaines (usage concentré aux heures d’arrivée/de départ de bureau) ;
-- Nombre de réservations créées par jour : quelques centaines pour une entreprise de cette taille ;
-- Disponibilité attendue : disponibilité aux heures ouvrées (l’indisponibilité en dehors de ces plages a un impact limité) ;
-- Temps de réponse attendu : inférieur à 300 ms sur les endpoints de consultation/réservation.
+Les hypothèses de dimensionnement sont les suivantes :
 
-Ce niveau de volumétrie reste modéré, ce qui justifie une architecture monolithique modulaire (backend Hono + PostgreSQL) plutôt qu’une architecture micro-services, tout en gardant une séparation claire par couches et par modules pour permettre une montée en charge ultérieure.
+- quelques dizaines d'utilisateurs connectés en même temps ;
+- quelques centaines de réservations créées chaque jour ;
+- un service disponible pendant les heures ouvrées ;
+- un temps de réponse visé inférieur à 300 ms pour la consultation et la réservation.
 
-## 2.5. Multilinguisme & adaptations pour un public spécifique
+Cette charge reste compatible avec une application modulaire unique et une base PostgreSQL. Une architecture distribuée ajouterait de l'exploitation sans répondre à un besoin mesuré dans cette première version.
 
-L’application est développée uniquement en français dans sa version actuelle. Aucune traduction n’est prévue à ce stade du projet.
+## 2.5. Multilinguisme et adaptations pour un public spécifique
 
-Aucune adaptation spécifique n’a été mise en place à ce jour ; l’accessibilité (RGAA — sémantique HTML, labels ARIA) est identifiée comme un axe d’amélioration pour une évolution future de l’application.
+La V1 est disponible uniquement en français. Aucune traduction n'est prévue dans le périmètre actuel.
+
+Les formulaires disposent de libellés associés et les actions principales ont des noms explicites. Aucun audit RGAA ou WCAG complet n'a toutefois été réalisé. L'accessibilité reste donc un chantier identifié, et non une conformité revendiquée.
 
 ## 2.6. Description graphique et ergonomique
 
 ### 2.6.1. Composants de la charte graphique
 
-Identité visuelle :
+Tempo utilise une identité visuelle sobre adaptée à un outil interne. Le nom du produit tient lieu de logotype. La typographie est celle du système et les composants partagent les mêmes tailles, espacements et états.
 
-- Logo : logotype simple « Tempo », sans identité graphique poussée (le projet n’a pas de charte graphique de marque, il s’agit d’une application interne) ;
-- Police et taille de caractères : police système par défaut (sans-serif) via Tailwind CSS, tailles harmonisées par les composants shadcn-svelte ;
-- Palette de couleurs : palette neutre (« zinc/slate ») générée via variables CSS OKLCH (`--primary`, `--secondary`, `--accent`, `--destructive`, …), avec un thème clair et un thème sombre (`.dark`) ;
-- Déclinaison de l’identité visuelle : cohérence assurée par la librairie de composants shadcn-svelte (boutons, cartes, tableaux, badges, alertes) réutilisés sur l’ensemble des écrans (connexion, réservations, administration des espaces).
+La palette repose sur les variables CSS de shadcn-svelte et Tailwind CSS. Elle comporte des couleurs neutres, une couleur principale et des variantes pour les alertes ou les actions destructives. Les boutons, cartes, tableaux, badges, champs et messages d'erreur restent cohérents d'un écran à l'autre.
 
-### 2.6.2. Design, Responsive design et autres exigences liées au design
+### 2.6.2. Responsive design et ergonomie
 
-L’application est conçue en responsive design grâce à Tailwind CSS (approche « utility-first », classes adaptatives). Elle doit rester utilisable aussi bien sur poste de travail (consultation du planning, administration) que sur mobile (réservation rapide, scan du QR code de check-in).
+Les écrans utilisent les classes adaptatives de Tailwind CSS. L'administration et les tableaux sont principalement destinés à un poste de travail. La création d'une réservation, la réponse à une invitation et le check-in doivent aussi rester utilisables sur mobile.
 
-Aucune exigence de design particulière (flat design, parallaxe, …) n’a été formulée : le parti pris est un design sobre et fonctionnel, cohérent avec les standards des outils métier (shadcn-svelte).
+Le projet privilégie des parcours courts et des libellés directs. Il ne comporte ni animation décorative ni effet de navigation complexe.
 
-## 2.7. Besoins fonctionnels « métier »
+## 2.7. Besoins fonctionnels métier
 
 ### 2.7.1. Utilisateurs du projet
 
-Deux profils d’utilisateurs sont identifiés (voir diagramme de cas d’utilisation `use case diagram.png`) :
+Deux profils utilisent Tempo :
 
-- **Collaborateur (`USER`)** : s’inscrit, se connecte, consulte les espaces disponibles, crée/consulte/annule ses réservations, confirme sa présence (check-in) ;
-- **Administrateur (`ADMIN`)** : hérite des droits du collaborateur, consulte, crée, modifie et supprime les espaces de travail, gère les comptes utilisateurs, supervise toutes les réservations, peut les annuler et consulte les statistiques ainsi que les logs d'audit.
+- le collaborateur `USER` crée un compte, se connecte, consulte les espaces et gère ses réservations. Il peut inviter des personnes, répondre à une invitation, rejoindre une réservation publique et confirmer sa présence ;
+- l'administrateur `ADMIN` possède les mêmes fonctions et gère aussi les utilisateurs et les espaces. Il voit toutes les réservations, peut les annuler et consulte les statistiques ainsi que les audits.
 
-Le processus métier impacté est la **gestion des ressources immobilières / facilities management** (occupation des locaux), en lien avec les fonctions RH et Office Management de l’entreprise.
+Le processus concerné est la gestion des espaces de travail, généralement suivie par les fonctions RH ou Office Management.
 
 ### 2.7.2. Informations relatives aux contenus
 
-L’application ne diffuse pas de contenu éditorial (articles, images, vidéos). Les données manipulées sont exclusivement des données métier :
+Tempo ne publie aucun contenu éditorial. L'application traite :
 
-- Données d’identité et de compte (email, mot de passe haché, rôle) ;
-- Données de réservation (espace réservé, créneau horaire, statut) ;
-- Données d’audit (traçabilité des actions sensibles : suppression d’un espace, d’une réservation, d’un utilisateur).
+- les comptes, avec l'adresse électronique, le hash du mot de passe et le rôle ;
+- les espaces, avec leur nom, leur type et leur capacité ;
+- les réservations, avec le créneau, la visibilité et le propriétaire ;
+- les participants, avec leur rôle, leur réponse à l'invitation et leur heure éventuelle de check-in ;
+- les hashes des jetons QR et leur date d'expiration ;
+- les audits de suppression, avec l'entité concernée et l'auteur de l'action.
 
-Ces données étant à caractère personnel (compte utilisateur, historique de présence), le projet applique une logique de protection des données dès la conception (mot de passe haché avec `Bun.password`, validation stricte des entrées via Zod, journalisation des actions de suppression dans MongoDB à des fins de traçabilité RGPD).
+Ces informations comprennent des données personnelles. Les mots de passe sont hachés, les entrées sont validées et les opérations sensibles sont soumises à une autorisation. Les suppressions font l'objet d'une tentative d'audit.
 
 ### 2.7.3. Inventaire des besoins fonctionnels
 
-| Thème            | Qui            | Quoi                                       | Pourquoi                                                                 |
-| ---------------- | -------------- | ------------------------------------------ | ------------------------------------------------------------------------ |
-| Authentification | Collaborateur  | S'inscrire                                 | Créer un compte pour accéder à l'application                             |
-| Authentification | Collaborateur  | Se connecter                               | Accéder à l'application de manière sécurisée                             |
-| Authentification | Collaborateur  | Se déconnecter                             | Quitter l'application en sécurité                                        |
-| Espaces          | Collaborateur  | Consulter les espaces disponibles          | Trouver un bureau ou une salle libre                                     |
-| Espaces          | Collaborateur  | Filtrer les espaces par type/capacité      | Trouver rapidement l'espace adapté au besoin                             |
-| Espaces          | Administrateur | Consulter / créer / supprimer un espace    | Tenir à jour l'inventaire des espaces disponibles                        |
-| Réservations     | Collaborateur  | Créer une réservation (publique ou privée) | Réserver un espace pour un créneau donné                                 |
-| Réservations     | Collaborateur  | Consulter ses réservations                 | Suivre ses réservations passées et à venir                               |
-| Réservations     | Collaborateur  | Annuler sa réservation                     | Libérer un espace qui ne sera plus utilisé                               |
-| Réservations     | Collaborateur  | Confirmer sa présence (check-in QR code)   | Valider l'occupation réelle de l'espace réservé                          |
-| Réservations     | Système        | Détecter les chevauchements de créneaux    | Garantir qu'un espace n'est jamais réservé deux fois sur le même créneau |
-| Supervision      | Administrateur | Consulter toutes les réservations          | Piloter le taux d'occupation des locaux                                  |
-| Supervision      | Administrateur | Consulter les logs d'audit                 | Assurer la traçabilité des actions sensibles (RGPD)                      |
+| Thème         | Acteur                         | Besoin                                         | Règle principale                                                    |
+| ------------- | ------------------------------ | ---------------------------------------------- | ------------------------------------------------------------------- |
+| Compte        | Collaborateur                  | S'inscrire, se connecter et se déconnecter     | Un compte créé par inscription reçoit le rôle `USER`                |
+| Espaces       | Utilisateur connecté           | Consulter les bureaux et salles                | Les écritures sont réservées à l'administrateur                     |
+| Espaces       | Administrateur                 | Créer, modifier ou supprimer un espace         | La capacité est un entier supérieur ou égal à 1                     |
+| Réservations  | Utilisateur connecté           | Créer une réservation publique ou privée       | Le créneau doit être valide, libre et lié à un espace existant      |
+| Réservations  | Propriétaire ou administrateur | Annuler une réservation                        | Un collaborateur ne peut pas supprimer celle d'un autre utilisateur |
+| Invitations   | Propriétaire ou administrateur | Inviter un utilisateur déjà inscrit            | Une invitation en attente occupe une place                          |
+| Invitations   | Utilisateur invité             | Accepter ou refuser                            | Seul l'utilisateur visé peut répondre                               |
+| Participation | Utilisateur connecté           | Rejoindre une réservation publique             | La capacité de l'espace ne doit pas être dépassée                   |
+| Check-in      | Participant accepté            | Confirmer sa présence avec le QR code          | Le check-in est possible uniquement pendant le créneau              |
+| Supervision   | Administrateur                 | Consulter les réservations et les statistiques | Les routes sont protégées par le rôle `ADMIN`                       |
+| Audit         | Administrateur                 | Consulter les suppressions enregistrées        | Les événements sont affichés du plus récent au plus ancien          |
 
-Le détail exhaustif des cas d'utilisation et de leurs relations (inclusions/extensions) est disponible dans le diagramme de cas d'utilisation (`use case diagram.png`, section 5.6).
-
-Aucun besoin non formulé de type e-commerce, boutique en ligne ou moteur de recherche n'a été identifié : Tempo est un outil métier interne, sans catalogue ni paiement. Les règles de gestion métier identifiées sont détaillées en section 5 (contrôle des chevauchements, quotas d'espaces, statuts de réservation).
+Le filtrage avancé des espaces, le multi-site, les notifications et les quotas plus fins restent hors du périmètre de la V1. Tempo ne comporte ni paiement, ni catalogue commercial, ni moteur de recherche public.
 
 ## 2.8. Budget
 
-S'agissant d'un projet personnel réalisé en parallèle de mon alternance, aucun budget financier n'a été alloué. L'investissement se mesure en temps de travail personnel, réparti approximativement comme suit :
+Aucun budget financier n'a été attribué, puisque Tempo est un projet personnel réalisé en parallèle de l'alternance. Le temps a été réparti entre le cadrage, la conception, le développement du backend et du frontend, les tests, la conteneurisation et la rédaction.
 
-| Phase                                        | Charge estimée     |
-| -------------------------------------------- | ------------------ |
-| Cadrage & cahier des charges (`SPECS.md`)    | quelques jours     |
-| Conception (MERISE, UML, maquettage)         | quelques jours     |
-| Développement backend (API, base de données) | plusieurs semaines |
-| Développement frontend (interfaces Svelte)   | plusieurs semaines |
-| Tests, CI et containerisation                | quelques jours     |
-| Rédaction de la documentation / dossier      | quelques jours     |
+Aucun relevé horaire exhaustif n'a été tenu. Les charges restent donc exprimées de manière qualitative : quelques jours pour le cadrage et la conception, plusieurs semaines pour le développement, puis quelques jours pour les tests, la CI, Docker et la documentation.
 
-_(à ajuster avec mes propres estimations de temps réel passé)_
+# 3\. PRÉSENTATION DE L'ENTREPRISE ET DU SERVICE
 
-# 3\. PRESENTATION DE L’ENTREPRISE ET DU SERVICE
+## 3.1. Présentation de l'entreprise et du service
 
-## 3.1. Présentation de l’entreprise et du service
+Tempo n'est pas développé pour une entreprise existante. C'est un projet personnel mené en autonomie pour couvrir les compétences du titre CDA sur un cas de gestion d'espaces en flex-office.
 
-Tempo n'est pas développé pour le compte d'une entreprise existante : il s'agit d'un projet personnel, mené en autonomie en dehors du cadre de mon alternance, dans l'objectif de démontrer l'ensemble des compétences du référentiel CDA sur un cas d'usage réaliste.
-
-Le projet est pensé comme un produit SaaS destiné à être commercialisé auprès de PME ayant adopté le flex-office : je me positionne à la fois comme porteur du besoin (maîtrise d'ouvrage fictive), concepteur et développeur (maîtrise d'œuvre) de l'application, ce qui m'a permis de mettre en œuvre l'ensemble de la démarche projet (cadrage, conception, développement, tests, déploiement).
+Le projet est envisagé comme un produit SaaS destiné à des PME. J'ai donc tenu à la fois le rôle du commanditaire pour formaliser le besoin et celui du concepteur développeur pour construire la solution. Cette situation est propre au cadre de certification et ne correspond pas à une commande commerciale réelle.
 
 ## 3.2. Objectifs du projet
 
-Le projet répond à un besoin métier réel et répandu : la gestion des espaces en flex-office. Les objectifs poursuivis sont :
+Tempo doit permettre à un collaborateur de réserver un bureau ou une salle sans conflit, seul ou avec d'autres participants. L'administrateur gère les espaces, les comptes et la vue globale des réservations. Il dispose aussi d'indicateurs d'occupation et d'un historique des suppressions.
 
-- Permettre à un collaborateur de consulter en temps réel les espaces disponibles (bureaux, salles de réunion) et de réserver un créneau sans conflit ;
-- Permettre à un administrateur de gérer le parc d'espaces avec un CRUD complet et de superviser le taux d'occupation ;
-- Fiabiliser la présence réelle grâce à un mécanisme de check-in par QR code ;
-- Assurer la traçabilité des actions sensibles (audit) dans une logique de conformité RGPD.
-
-Il ne s'agit pas d'un site e-commerce, mais d'une application métier interne (SaaS B2B) de gestion de ressources.
+Le QR code rapproche la réservation de l'usage réel : un participant accepté confirme sa présence pendant le créneau. Le produit reste une application interne de gestion de ressources, sans fonction de vente.
 
 ## 3.3. Cible adressée par le projet
 
-La cible est exclusivement BtoB : des entreprises (PME à ETI, 50 à 300 collaborateurs) ayant mis en place le flex-office sur un ou plusieurs sites. Deux segments d'utilisateurs internes à ces entreprises sont adressés : les collaborateurs (utilisateurs finaux, priorité à la simplicité d'usage) et les administrateurs/office managers (priorité au pilotage et à la supervision).
+La cible envisagée est une PME ou une ETI de 50 à 300 collaborateurs utilisant le flex-office sur un ou plusieurs sites. Les collaborateurs recherchent surtout un parcours rapide. Les administrateurs et office managers ont besoin d'une vue d'ensemble et d'outils de gestion.
 
 ## 3.4. Processus utilisateur impacté
 
-Le projet impacte principalement les fonctions **RH / Office Management** (gestion des espaces de travail et suivi de l'occupation des locaux) et, de manière indirecte, la **Gestion** (optimisation de la surface immobilière utilisée).
+Tempo intervient dans la réservation quotidienne des espaces et dans le suivi de leur occupation. Ce processus relève principalement des fonctions RH et Office Management. Les statistiques peuvent aussi aider à observer l'utilisation des surfaces, sans constituer à elles seules un outil de décision immobilière.
 
 # 4\. GESTION DE PROJET
 
-S’exprimer à la première du singulier. Vous parlez de vos compétences projet mises en œuvre dans le cadre de votre projet.
+J'ai organisé le projet et ses contrôles de la manière suivante.
 
 ## 4.1. Intervenants sur le projet
 
-Le projet a été mené en solo. J'ai assuré l'ensemble des rôles :
+J'ai réalisé Tempo seul. J'ai donc pris en charge :
 
-- **Maîtrise d'ouvrage (MOA)** : expression du besoin, rédaction du cahier des charges (`SPECS.md`) ;
-- **Maîtrise d'œuvre (MOE)** : conception (MERISE, UML, architecture logicielle) et développement (backend, frontend, base de données) ;
-- **Recette** : rédaction et exécution des tests unitaires (Bun Test / Vitest) ;
-- **Exploitation** : mise en place de la conteneurisation Docker et du pipeline CI (GitHub Actions).
+- l'expression du besoin et le cahier des charges ;
+- la conception des données, de l'architecture, des diagrammes et des écrans ;
+- le développement du backend, du frontend et des migrations ;
+- la rédaction et l'exécution des tests ;
+- Docker Compose, GitHub Actions et la documentation de déploiement.
 
-Aucun autre intervenant (webdesigner, chef de projet, client) n'est intervenu sur ce projet personnel.
+Aucun client, chef de projet ou designer extérieur n'est intervenu. Les arbitrages ont été consignés dans les documents du dépôt et dans le suivi des tâches.
 
 ## 4.2. Méthodologie
 
-La méthode Agile repose sur un découpage du travail en itérations courtes, une adaptation continue au fur et à mesure de l'avancement, et une priorisation permanente de la valeur livrée plutôt qu'une planification figée en amont (par opposition au cycle en V).
+J'ai utilisé une organisation Kanban adaptée à un projet individuel. Trello regroupait les tâches dans les colonnes "À faire", "En cours" et "Terminé". Une carte correspondait à une fonctionnalité ou à un travail technique suffisamment limité pour être vérifié séparément.
 
-Dans le cadre de ce projet solo, j'ai adopté une approche inspirée de la méthode **Kanban** : un tableau de tâches (Trello) organisé en colonnes (À faire / En cours / Terminé), avec des tickets représentant des fonctionnalités ou des tâches techniques (ex : « Implémenter la détection de chevauchement de réservations », « Ajouter le middleware JWT »). Cette approche m'a permis de garder une visibilité constante sur l'avancement, de prioriser les fonctionnalités critiques (authentification, réservation) avant les fonctionnalités secondaires, et de livrer par petites itérations testées (chaque fonctionnalité étant accompagnée de ses tests unitaires avant d'être considérée comme terminée).
+Le développement s'est fait par itérations. Une fonctionnalité était codée, testée puis intégrée avant le passage à la suivante. Après le socle fonctionnel, un plan de corrections a servi à traiter les écarts de sécurité, de documentation et de déploiement. Les trois fonctions collaboratives ont ensuite été ramenées dans la V1.
 
 ## 4.3. Outils, planning et suivi
 
-Les phases de gestion de projet suivies sont : cadrage (rédaction du cahier des charges `SPECS.md`), conception (diagrammes MERISE/UML, maquettage des écrans), développement (backend puis frontend, en parallèle des tests), intégration continue (vérification automatique à chaque `push`/`pull request`), puis rédaction de la documentation.
+Le projet a suivi les étapes suivantes : cadrage, conception, développement du backend, développement du frontend, sécurisation, tests d'intégration, conteneurisation, CI et documentation. Certaines étapes se sont chevauchées, notamment les tests et le développement.
 
-Outils utilisés pour le suivi :
+Trello a servi au suivi visuel. Git et GitHub conservent l'historique du code. `todo.md` a regroupé les actions courtes, tandis que `PLAN_CORRECTIONS_DOSSIER.md` a suivi la mise en conformité du projet et du dossier. GitHub Actions fournit un retour après chaque envoi.
 
-- **Trello** (tableau Kanban) pour le suivi des tâches ;
-- **Git / GitHub** pour le versioning et l'historique des commits ;
-- **GitHub Actions** pour l'intégration continue (lint, tests, build Docker) ;
-- Un fichier `todo.md` à la racine du dépôt pour le suivi des tâches restantes à court terme.
+![Tableau Kanban du projet dans Trello](trello.png)
 
-_(Insérer ici une ou deux captures d'écran du tableau Trello et de l'historique Git.)_
+![Historique des commits GitHub](github-commits.png)
 
 ## 4.4. Objectifs de qualité
 
-Les objectifs de qualité fixés pour le projet sont :
+Les critères retenus sont vérifiables dans le dépôt :
 
-- **Fiabilité fonctionnelle** : couverture des règles métier critiques et des principaux comportements frontend (authentification, réservation, invitations, check-in, autorisations, espaces, routes administrateur, statistiques et sécurité HTTP) — 99 tests backend unitaires/HTTP, 3 tests d'intégration PostgreSQL, 2 tests d'intégration MongoDB et 18 tests frontend ;
-- **Qualité de code** : linting automatisé avec Oxlint et formatage homogène avec Oxfmt, regroupés dans un script `precommit` manuel et exécutés en CI ;
-- **Sécurité** : validation stricte des entrées avec Zod, hachage des mots de passe, protection des routes par JWT et contrôle des rôles ;
-- **Maintenabilité** : architecture modulaire en couches (route / service / accès aux données) répliquée à l'identique sur chaque module métier (auth, users, workspaces, bookings, audit) ;
-- **Non-régression** : intégration continue (GitHub Actions) détectant les échecs de format, lint, types, tests ou déploiement Docker. La protection de `main` reste volontairement désactivée pendant le développement : la CI informe donc le développeur sans bloquer techniquement ses envois directs.
+- les règles métier sont couvertes par 99 tests backend unitaires et HTTP, 3 tests PostgreSQL, 2 tests MongoDB, 18 tests frontend et 2 parcours E2E ;
+- Oxlint, Oxfmt, TypeScript et Svelte Check contrôlent le code avant le build ;
+- Zod valide les entrées, les mots de passe sont hachés, les routes sont protégées par JWT et les droits sont vérifiés côté API ;
+- les modules séparent les routes, les services et la persistance ;
+- GitHub Actions reconstruit l'application et exécute la recette Docker sur un environnement neuf.
 
-# 5\. SPECIFICATIONS FONCTIONNELLES
+La CI informe du résultat sans bloquer les envois directs, car la protection de `main` est volontairement désactivée pendant le développement.
 
-S’exprimer au présent et d’une façon totalement impersonnelle. Les spécifications fonctionnelles détaillées sont rédigées par la maîtrise d’œuvre après réception et analyse du cahier des charges. C’est la traduction du cahier des charges en termes plus techniques (données en entrée, données en sortie, description des écrans de l’IHM, règles de calcul, de transformation des données, …) dont le but est de décrire de façon détaillée comment les exigences fonctionnelles vont être implémentées dans le SI, et donc permettre le développement du logiciel. Les SFD doivent être validées par la maîtrise d’ouvrage, elles constituent donc le point d’articulation entre la demande et la solution qui y répond et doivent être compréhensibles par les 2 parties.
+# 5\. SPÉCIFICATIONS FONCTIONNELLES
 
-Les SFD vont préciser le découpage en traitements, pour chacun d’entre eux la description des écrans si traitement transactionnel, les données en entrée (saisies par un utilisateur ou contenues dans un fichier), leur description et format, les règles de contrôle à appliquer avant traitement, les règles de traitement, les données en sortie, etc…
+La V1 livrée est décrite ci-dessous à travers ses écrans, ses règles de gestion, ses données et les réponses de l'API.
 
 ## 5.1. Contraintes du projet et livrables attendus
 
-### 5.1.1. Criticité de l’application
+### 5.1.1. Criticité de l'application
 
-L'application est un outil métier interne utilisé pendant les heures ouvrées. Sa criticité est modérée : une indisponibilité en journée empêcherait la consultation et la création des réservations, les réponses aux invitations et le check-in.
+Tempo est un outil interne utilisé pendant les heures de bureau. Sa criticité est modérée. Une interruption en journée empêche temporairement de consulter ou de créer une réservation, de répondre à une invitation et de confirmer une présence.
 
-Cible de disponibilité (KPI) : disponibilité aux heures ouvrées (8h-19h en semaine), support en 5/7. Nombre d'utilisateurs visé pour une PME type : quelques dizaines à quelques centaines de comptes actifs.
+La plage de service visée va de 8 h à 19 h, cinq jours sur sept. Le produit cible quelques dizaines à quelques centaines de comptes actifs dans une même entreprise. Aucun engagement contractuel de disponibilité n'est défini pour cette version de démonstration.
 
 ### 5.1.2. Applications connexes
 
-Tempo est une application autonome, sans dépendance fonctionnelle vis-à-vis d'une autre application existante. Elle pourrait à terme s'interfacer avec un annuaire d'entreprise (SSO/LDAP) ou un calendrier professionnel (synchronisation des réservations), mais aucune intégration de ce type n'est implémentée à ce jour.
+Tempo fonctionne de manière autonome. Aucun annuaire, calendrier ou outil RH n'est nécessaire à son fonctionnement. Une connexion SSO ou une synchronisation de calendrier pourrait être ajoutée plus tard, mais ne fait pas partie de la V1.
 
 ### 5.1.3. Services tiers
 
-Aucun service tiers externe (Google Analytics, réseaux sociaux, emailing, CRM) n'est intégré à ce jour. Le projet reste volontairement autonome (auto-hébergé, sans dépendance à des API externes payantes) afin de rester démontrable en local via Docker.
+L'application n'utilise ni service d'emailing, ni CRM, ni outil d'analytics externe. GitHub Actions est utilisé uniquement pour la CI. La stack de démonstration reste exécutable en local avec Docker Compose.
 
 ### 5.1.4. Livrables attendus
 
-- Cahier des charges technique (`SPECS.md`) ;
-- Diagrammes de conception : MERISE (MCD/MLD/MPD), UML (cas d'utilisation, classes, séquence, activité) ;
-- Code source (backend + frontend) versionné sur GitHub ;
-- Scripts de création de base de données (migrations Drizzle) ;
-- Tests unitaires (backend) ;
-- Conteneurisation Docker (Dockerfiles + `docker-compose.yml`) ;
-- Pipeline d'intégration continue (GitHub Actions) ;
-- Documentation (README, présent dossier projet).
+Les livrables sont :
+
+- le cahier des charges `SPECS.md` ;
+- les modèles MERISE, les diagrammes UML et la maquette Figma ;
+- le backend, le frontend et les migrations versionnés sur GitHub ;
+- les tests unitaires, HTTP, frontend, d'intégration et E2E ;
+- les Dockerfiles et le fichier `docker-compose.yml` ;
+- le workflow GitHub Actions ;
+- le seed de démonstration, le `README.md` et le présent dossier.
 
 ## 5.2. Architecture logicielle du projet
 
-Tempo utilise une architecture 3-tiers dans un monorepo Bun :
+Tempo suit une architecture en trois couches dans un monorepo Bun.
 
-- la présentation est assurée par SvelteKit et Svelte 5. Les pages appellent l'API avec le client Hono RPC typé par `AppType` ;
-- le backend Hono regroupe les middlewares HTTP, les routes et les services des modules `auth`, `users`, `workspaces`, `bookings`, `analytics` et `audit` ;
-- PostgreSQL conserve les utilisateurs, les espaces, les réservations, les participants et les jetons QR hachés. MongoDB reçoit les journaux de suppression.
+La présentation repose sur SvelteKit et Svelte 5. Les pages utilisent un client Hono RPC dont les types proviennent du backend. Hono reçoit les requêtes, applique les middlewares, puis appelle les services des modules `auth`, `users`, `workspaces`, `bookings`, `analytics` et `audit`.
 
-Dans le backend, le chemin d'un traitement est `Route → Service → Drizzle/Mongo`. Il n'existe pas de couche Repository distincte. Le frontend et le backend occupent deux workspaces (`apps/frontend` et `apps/backend`) et disposent chacun de leur Dockerfile multi-stage. Docker Compose orchestre ces deux applications avec PostgreSQL et MongoDB.
+PostgreSQL contient les comptes, les espaces, les réservations, les participants et les hashes de jetons QR. MongoDB contient les audits de suppression. Le chemin principal d'un traitement est `Route -> Service -> Drizzle/Mongo`. Il n'existe pas de couche Repository séparée.
 
-Le schéma suivant décrit l'architecture observée dans le code de la V1.
+Le frontend et le backend disposent chacun d'un Dockerfile multi-stage. Docker Compose les lance avec PostgreSQL et MongoDB.
 
 ![Architecture 3-tiers implémentée de Tempo](../diagrams/architecture-as-built.svg)
 
-## 5.3. Maquettes et enchainement des maquettes
+## 5.3. Maquettes et enchaînement des écrans
 
 ### 5.3.1. Cartographie
 
-Cartographie des écrans de l'application (routing SvelteKit) :
-
-```
-/                      Page d'accueil
-/login                 Connexion / inscription
-/bookings              Réservations personnelles ou vue globale pour un administrateur
+```text
+/                      Accueil après authentification
+/login                 Connexion et inscription
+/bookings              Réservations, invitations, participants et QR code
 /check-in              Validation de présence depuis un QR code
-/admin/workspaces      Administration CRUD des espaces (rôle ADMIN)
-/admin/analytics       Statistiques d'occupation (réservé au rôle ADMIN)
-/admin/audit           Consultation des suppressions auditées (réservé au rôle ADMIN)
+/admin/workspaces      Gestion des espaces, rôle ADMIN
+/admin/analytics       Statistiques d'occupation, rôle ADMIN
+/admin/audit           Consultation des audits, rôle ADMIN
 ```
 
-Enchaînement : un visiteur non authentifié est redirigé vers `/login`. Après la connexion ou l'inscription suivie d'une connexion, l'application ouvre `/`. Cet accueil propose l'accès aux réservations pour un collaborateur. Pour un administrateur, il affiche aussi la gestion des utilisateurs et les liens vers `/admin/workspaces`, `/admin/analytics` et `/admin/audit`. La page `/bookings` montre les réservations de l'utilisateur standard ou l'ensemble des réservations avec leur propriétaire pour un administrateur.
+Un visiteur qui tente d'ouvrir une page protégée est redirigé vers `/login`. Après la connexion, l'accueil affiche les fonctions disponibles pour son rôle. Le collaborateur accède à ses réservations, à ses invitations et aux réservations publiques. L'administrateur voit aussi les outils de gestion, les statistiques, les audits et l'ensemble des réservations.
+
+Lorsqu'un utilisateur non connecté scanne un QR code, la destination est conservée dans `sessionStorage` pendant le passage par la page de connexion. Le jeton reste dans le fragment de l'URL et n'est pas envoyé dans la requête initiale au serveur frontend.
 
 ### 5.3.2. Maquettes
 
-Une première maquette a été réalisée dans [Figma](https://www.figma.com/design/cvMJhj3qr2kSouD2GR3fE8/Tempo?node-id=0-1&t=08qaUd48S0dcjfgZ-1). Elle a servi à poser la navigation et les principaux écrans. L'interface a ensuite évolué pendant le développement avec les composants shadcn-svelte. La capture ci-dessous conserve l'état de cette maquette initiale ; les captures de l'application livrée servent de référence pour le MVP.
+La [maquette Figma](https://www.figma.com/design/cvMJhj3qr2kSouD2GR3fE8/Tempo?node-id=0-1&t=08qaUd48S0dcjfgZ-1) a servi à fixer la navigation et l'organisation des premiers écrans. L'interface a ensuite évolué avec les composants shadcn-svelte et les fonctions ajoutées à la V1. La maquette montre donc le point de départ, tandis que les captures de l'application représentent le produit livré.
 
 ![Maquette Figma de Tempo](figma-design.png)
 
@@ -729,15 +378,15 @@ Une première maquette a été réalisée dans [Figma](https://www.figma.com/des
 
 ![Diagramme de classes](../diagrams/class%20diagram.png)
 
-Ces quatre diagrammes décrivent le modèle cible. Les invitations, les participants et les QR codes de check-in font maintenant partie de la V1. Les sociétés multi-sites, les notifications et le statut d'annulation logique restent prévus pour une version ultérieure.
+Les diagrammes décrivent le modèle cible du projet. La V1 couvre les comptes, les espaces, les réservations publiques ou privées, les participants, les invitations et les QR codes. Le multi-site, les notifications et l'annulation logique restent prévus pour une version ultérieure.
 
-Le modèle implémenté dans `apps/backend/src/db/schema.ts` contient cinq tables PostgreSQL : `users`, `workspaces`, `bookings`, `booking_participants` et `booking_qr_tokens`. MongoDB conserve séparément les logs de suppression. Les migrations `0000` à `0004` constituent la preuve du modèle réellement déployé.
+Le schéma réellement exécuté est défini dans `apps/backend/src/db/schema.ts`. Il contient cinq tables PostgreSQL : `users`, `workspaces`, `bookings`, `booking_participants` et `booking_qr_tokens`. MongoDB conserve les audits dans une collection séparée. Les migrations `0000` à `0004` permettent de reconstruire ce modèle.
 
-## 5.5. Script de création et/ou de modification de la base de données
+## 5.5. Création et modification de la base de données
 
 ### 5.5.1. Script de création
 
-Drizzle Kit génère les migrations SQL à partir de `apps/backend/src/db/schema.ts`. La migration `0000_gorgeous_vapor.sql` crée les enums, les utilisateurs et les espaces :
+Drizzle Kit génère les migrations à partir du schéma TypeScript. La migration `0000_gorgeous_vapor.sql` crée les premiers enums, les comptes et les espaces :
 
 ```sql
 CREATE TYPE "public"."role" AS ENUM('ADMIN', 'USER');
@@ -760,7 +409,7 @@ CREATE TABLE "workspaces" (
 );
 ```
 
-La migration `0001_optimal_black_tarantula.sql` ajoute ensuite les réservations et leurs clés étrangères :
+La migration `0001_optimal_black_tarantula.sql` ajoute la table des réservations :
 
 ```sql
 CREATE TABLE "bookings" (
@@ -775,15 +424,15 @@ CREATE TABLE "bookings" (
 );
 ```
 
-### 5.5.2. Argumentation
+### 5.5.2. Choix retenus
 
-Drizzle fournit les types TypeScript utilisés par les services et génère la base des migrations SQL. Les contraintes PostgreSQL qui ne sont pas décrites par le schéma Drizzle restent dans des migrations SQL versionnées. Les clés étrangères avec `ON DELETE CASCADE` évitent les réservations orphelines après la suppression d'un utilisateur ou d'un espace.
+Drizzle relie le schéma SQL aux types utilisés par les services. Les migrations restent des fichiers SQL versionnés, ce qui permet d'ajouter manuellement les contraintes que le schéma déclaratif ne suffit pas à exprimer.
 
-Lorsqu'une réservation ou un espace est supprimé par l'API, le service tente aussi d'écrire un log dans MongoDB. Cet audit fonctionne en mode best effort : une panne MongoDB est journalisée, mais elle n'annule pas la suppression déjà effectuée dans PostgreSQL.
+Les clés étrangères avec `ON DELETE CASCADE` empêchent les réservations ou participants orphelins. L'audit MongoDB intervient après la suppression. Il n'appartient pas à la transaction PostgreSQL et fonctionne donc en mode best effort.
 
-### 5.5.3. Script de modification
+### 5.5.3. Scripts de modification
 
-La migration `0001_optimal_black_tarantula.sql` est le premier script de modification de la base initiale. Elle crée la table `bookings`, comme présenté en 5.5.1. La migration personnalisée `0002_booking_overlap_constraint.sql` ajoute les règles temporelles :
+La migration `0002_booking_overlap_constraint.sql` ajoute les contraintes temporelles :
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
@@ -800,7 +449,7 @@ EXCLUDE USING gist (
 );
 ```
 
-La migration `0003_data_integrity_indexes.sql` complète l'intégrité et les index :
+La migration `0003_data_integrity_indexes.sql` renforce les valeurs obligatoires et les index :
 
 ```sql
 UPDATE "users" SET "role" = 'USER' WHERE "role" IS NULL;
@@ -815,227 +464,210 @@ CREATE INDEX "bookings_workspace_time_idx"
 ON "bookings" ("workspace_id", "start_at", "end_at");
 ```
 
-### 5.5.4. Argumentation
+La migration `0004_booking-collaboration-checkin.sql` ajoute la visibilité, les participants, les statuts d'invitation et les jetons QR. Pendant la migration, chaque propriétaire existant devient un participant `OWNER` avec le statut `ACCEPTED`.
 
-Une vérification applicative qui lit les réservations avant l'insertion laisse une fenêtre de concurrence entre deux requêtes. La migration `0002_booking_overlap_constraint.sql` confie donc la décision finale à PostgreSQL. La contrainte d'exclusion GiST interdit atomiquement deux créneaux qui se chevauchent pour le même espace. L'intervalle `[)` exclut l'heure de fin et autorise deux réservations consécutives. La contrainte `CHECK` rejette les créneaux vides ou inversés.
+### 5.5.4. Justification des contraintes
 
-La migration `0003_data_integrity_indexes.sql` rend le rôle obligatoire, impose une capacité minimale de 1 et indexe les recherches par utilisateur et par espace/créneau. Elle corrige d'abord les anciennes valeurs incompatibles avec ces contraintes.
+Une lecture suivie d'une insertion ne suffit pas à empêcher deux requêtes simultanées de réserver le même espace. La contrainte d'exclusion GiST tranche le conflit dans PostgreSQL. L'intervalle semi-ouvert `[)` autorise une réservation à commencer exactement à l'heure où la précédente se termine. Le backend traduit un conflit SQL en erreur `BOOKING_OVERLAP` et retourne HTTP 409.
 
-La migration `0004_booking-collaboration-checkin.sql` ajoute la visibilité publique ou privée, les participants, les statuts d'invitation et les jetons QR. Elle rattache automatiquement le propriétaire de chaque réservation existante comme participant accepté. Les index empêchent qu'un même utilisateur soit ajouté deux fois à une réservation et accélèrent les recherches par utilisateur, réservation et statut.
+La contrainte `CHECK` rejette un créneau vide ou inversé. La migration `0003` rend le rôle obligatoire, impose une capacité minimale et indexe les recherches principales. La migration `0004` empêche qu'un utilisateur apparaisse deux fois dans la même réservation et indexe les recherches par réservation, utilisateur et statut.
 
-## 5.6. Diagramme du comportement des fonctionnalités de type cas d’utilisations
+L'ajout d'un participant utilise aussi une transaction avec verrouillage de la réservation. La capacité reste ainsi cohérente lorsque plusieurs invitations ou demandes de participation arrivent en même temps.
 
-### 5.6.1. Diagramme de cas d’utilisation global (UML)
+## 5.6. Diagrammes de comportement
+
+### 5.6.1. Diagramme de cas d'utilisation global (UML)
 
 ![Diagramme de cas d'utilisation](../diagrams/use%20case%20diagram.png)
 
-Ce diagramme correspond au périmètre cible. La V1 reprend l'inscription, la connexion, la consultation des espaces, la création et l'annulation d'une réservation, la visibilité publique ou privée, les invitations, les participants, le check-in par QR code, la gestion des espaces et utilisateurs, les statistiques et la consultation des audits. Le filtrage des espaces et les fonctions multi-sites restent prévus pour une version ultérieure.
+La V1 couvre l'inscription, la connexion, la consultation des espaces, les réservations publiques ou privées, les invitations, les participants, le check-in, l'administration des espaces et des utilisateurs, les statistiques et les audits. Le filtrage avancé et le multi-site ne sont pas encore implémentés.
 
-Dans le code actuel, le rôle `ADMIN` reprend les droits du collaborateur et dispose des routes de gestion et de supervision. L'écriture d'un log intervient après la suppression d'une réservation ou d'un espace. Elle n'est pas déclenchée par un service planifié.
+Le rôle `ADMIN` reprend les droits du collaborateur et ajoute les fonctions de gestion. Un audit est tenté après la suppression d'un espace ou d'une réservation. Le service sait aussi produire un audit utilisateur, mais la V1 ne propose pas de route de suppression de compte.
 
 ## 5.7. Fonctionnalités détaillées les plus significatives
 
-### 5.7.1. Fonctionnalité 1 - Réservation d'un espace
+### 5.7.1. Fonctionnalité 1 : réserver un espace
 
-Le collaborateur choisit un espace, saisit les dates de début et de fin et définit une visibilité publique ou privée. La V1 ne propose pas encore le filtrage des espaces par type et capacité.
+Le collaborateur choisit un espace et un créneau, puis définit la réservation comme publique ou privée.
 
-| Élément               | Spécification                                                                                                                                                                                   |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans le MVP                                                                                                                                                                             |
-| Préconditions         | Utilisateur connecté ; espace existant                                                                                                                                                          |
-| Interface             | Formulaire de la page `/bookings`                                                                                                                                                               |
-| Endpoint et droits    | `POST /bookings`, rôles `USER` et `ADMIN`                                                                                                                                                       |
-| Données               | `workspaceId`, `startAt`, `endAt`, `visibility`                                                                                                                                                 |
-| Scénario nominal      | Validation Zod, contrôle de l'espace et du créneau, insertion PostgreSQL, retour HTTP 201                                                                                                       |
-| Erreurs               | HTTP 400 si les données sont invalides, 401 sans jeton, 404 si l'espace n'existe pas, 409 si le créneau chevauche une réservation                                                               |
-| Critère d'acceptation | Une réservation valide apparaît dans la liste de l'utilisateur. Deux requêtes concurrentes sur le même espace et le même créneau ne peuvent pas créer deux réservations.                        |
-| Preuves               | `bookings.service.spec.ts`, `http.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `e2e/booking-flow.spec.ts` et contrainte `bookings_workspace_time_exclusion` de la migration `0002` |
+| Élément       | Spécification                                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| État          | Livré dans la V1                                                                                                                     |
+| Préconditions | Utilisateur connecté et espace existant                                                                                              |
+| Interface     | Formulaire de `/bookings`                                                                                                            |
+| Endpoint      | `POST /bookings`, rôles `USER` et `ADMIN`                                                                                            |
+| Entrées       | `workspaceId`, `startAt`, `endAt`, `visibility`                                                                                      |
+| Traitement    | Validation Zod, contrôle de l'espace et du créneau, transaction PostgreSQL, création du participant propriétaire                     |
+| Erreurs       | 400 pour des données invalides, 401 sans JWT, 404 si l'espace n'existe pas, 409 en cas de chevauchement                              |
+| Acceptation   | La réservation apparaît dans la liste et deux requêtes concurrentes ne peuvent pas occuper le même espace sur le même créneau        |
+| Preuves       | `bookings.service.spec.ts`, `http.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `booking-flow.spec.ts`, migration `0002` |
 
-_Diagramme d'activité_
+![Activité de réservation](../diagrams/activity%20diagram%20-%20reservation.png)
 
-![Activité - Réservation](../diagrams/activity%20diagram%20-%20reservation.png)
+![Séquence de réservation](../diagrams/sequence%20diagram%20-%20reservation.png)
 
-_Diagramme de séquence_
+L'annulation reste une suppression physique. Le statut d'annulation logique visible dans le modèle cible n'est pas utilisé dans la V1.
 
-![Séquence - Réservation](../diagrams/sequence%20diagram%20-%20reservation.png)
+### 5.7.2. Fonctionnalité 2 : annuler une réservation
 
-Les deux diagrammes montrent le déroulement général. La visibilité et les participants sont implémentés. Le statut d'annulation logique reste limité au modèle cible, car une annulation supprime encore physiquement la réservation.
+Un collaborateur peut annuler sa propre réservation. Un administrateur peut annuler celle de n'importe quel utilisateur.
 
-### 5.7.2. Fonctionnalité 2 - Annulation d'une réservation
+| Élément       | Spécification                                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| État          | Livré dans la V1                                                                                                  |
+| Préconditions | Utilisateur connecté et réservation existante                                                                     |
+| Interface     | Action "Annuler" dans `/bookings`                                                                                 |
+| Endpoint      | `DELETE /bookings/:id`, propriétaire ou `ADMIN`                                                                   |
+| Entrée        | `bookingId` au format UUID                                                                                        |
+| Traitement    | Contrôle du droit, suppression PostgreSQL, tentative d'audit MongoDB                                              |
+| Erreurs       | 400 pour un identifiant invalide, 401 sans JWT, 403 pour la réservation d'un tiers, 404 si elle n'existe pas      |
+| Acceptation   | La réservation disparaît et l'audit contient l'entité supprimée ainsi que l'auteur lorsque MongoDB est disponible |
+| Preuves       | `bookings.service.spec.ts`, `http.routes.spec.ts`, `mongo-audit.integration.spec.ts`, `booking-flow.spec.ts`      |
 
-Un utilisateur standard peut supprimer l'une de ses réservations. Un administrateur peut supprimer n'importe quelle réservation depuis la vue globale.
+![Activité d'annulation](../diagrams/activity%20diagram%20-%20annulation%20reservation.png)
 
-| Élément               | Spécification                                                                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Statut                | Réalisé dans le MVP                                                                                                |
-| Préconditions         | Utilisateur connecté ; réservation existante                                                                       |
-| Interface             | Action "Annuler" dans `/bookings` ; le propriétaire est affiché dans la vue administrateur                         |
-| Endpoint et droits    | `DELETE /bookings/:id`, propriétaire ou rôle `ADMIN`                                                               |
-| Donnée                | `bookingId`                                                                                                        |
-| Scénario nominal      | Contrôle du propriétaire, suppression PostgreSQL, tentative d'écriture dans MongoDB, retour HTTP 200               |
-| Erreurs               | HTTP 401 sans jeton, 403 si un utilisateur vise la réservation d'un tiers, 404 si la réservation n'existe pas      |
-| Critère d'acceptation | La réservation disparaît de la liste. Une tentative d'audit contient l'entité supprimée et l'auteur de l'action.   |
-| Preuves               | `bookings.service.spec.ts`, `http.routes.spec.ts`, `mongo-audit.integration.spec.ts` et `e2e/booking-flow.spec.ts` |
+![Séquence d'annulation](../diagrams/sequence%20diagram%20-%20annulation%20reservation.png)
 
-_Diagramme d’activité_
+### 5.7.3. Fonctionnalité 3 : gérer les espaces
 
-![Activité - Annulation](../diagrams/activity%20diagram%20-%20annulation%20reservation.png)
+| Élément      | Spécification                                                                                         |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| État         | Livré dans la V1                                                                                      |
+| Précondition | Compte `ADMIN` connecté pour toute écriture                                                           |
+| Interface    | `/admin/workspaces`                                                                                   |
+| Endpoints    | `GET /workspaces` pour un utilisateur connecté, puis `POST`, `PATCH` et `DELETE` pour `ADMIN`         |
+| Entrées      | `name`, `type` parmi `DESK` et `MEETING_ROOM`, `capacity` supérieure ou égale à 1                     |
+| Traitement   | Validation Zod, écriture PostgreSQL et tentative d'audit après une suppression                        |
+| Erreurs      | 400 pour des données invalides, 401 sans JWT, 403 pour `USER`, 404 si l'espace n'existe pas           |
+| Acceptation  | Le tableau reflète l'opération et un utilisateur standard ne peut effectuer aucune écriture           |
+| Preuves      | `workspaces.dto.spec.ts`, `workspaces.service.spec.ts`, `admin.routes.spec.ts`, `http.routes.spec.ts` |
 
-_Diagramme de séquence_
+![Activité de gestion des espaces](../diagrams/activity%20diagram%20-%20gestion%20espaces%20admin.png)
 
-![Séquence - Annulation](../diagrams/sequence%20diagram%20-%20annulation%20reservation.png)
+![Séquence de gestion des espaces](../diagrams/sequence%20diagram%20-%20gestion%20espaces%20admin.png)
 
-### 5.7.3. Fonctionnalité 3 - Gestion des espaces
+### 5.7.4. Fonctionnalité 4 : effectuer un check-in par QR code
 
-L'administrateur consulte, crée, modifie ou supprime un bureau ou une salle de réunion.
+Le propriétaire ou un administrateur génère le QR code. Un participant accepté le scanne pendant le créneau.
 
-| Élément               | Spécification                                                                                                                           |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans le MVP                                                                                                                     |
-| Précondition          | Compte `ADMIN` connecté                                                                                                                 |
-| Interface             | Tableau et formulaire partagé de `/admin/workspaces`                                                                                    |
-| Endpoints et droits   | `GET /workspaces` pour tout utilisateur connecté ; `POST /workspaces`, `PATCH /workspaces/:id` et `DELETE /workspaces/:id` pour `ADMIN` |
-| Données               | `name`, `type` parmi `DESK` et `MEETING_ROOM`, `capacity` entière supérieure ou égale à 1                                               |
-| Scénario nominal      | Validation Zod, écriture PostgreSQL, réponse HTTP 200 ou 201. Une suppression déclenche ensuite une tentative d'audit.                  |
-| Erreurs               | HTTP 400 si les données sont invalides, 401 sans jeton, 403 pour un utilisateur standard, 404 si l'espace demandé n'existe pas          |
-| Critère d'acceptation | La liste reflète la création, la modification ou la suppression. Un `USER` ne peut effectuer aucune écriture.                           |
-| Preuves               | `workspaces.dto.spec.ts`, `workspaces.service.spec.ts`, `admin.routes.spec.ts`, `http.routes.spec.ts` et `authorized-api.spec.ts`       |
+| Élément       | Spécification                                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| État          | Livré dans la V1                                                                                                                               |
+| Préconditions | Participant accepté, réservation en cours et jeton valide                                                                                      |
+| Interfaces    | QR dans `/bookings`, validation dans `/check-in`                                                                                               |
+| Endpoints     | `POST /bookings/:id/qr` pour le propriétaire ou `ADMIN`, `POST /bookings/:id/check-in` pour un participant accepté                             |
+| Données       | `bookingId`, jeton QR et `checkedInAt`                                                                                                         |
+| Traitement    | Génération du jeton, stockage du hash, contrôle du participant et du créneau, enregistrement de l'heure                                        |
+| Erreurs       | 403 pour un jeton invalide ou un utilisateur non autorisé, 409 si l'invitation n'est pas acceptée ou si le créneau n'est pas actif             |
+| Acceptation   | Une présence est enregistrée uniquement pour la réservation concernée et pendant son créneau                                                   |
+| Preuves       | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `route-guard.spec.ts`, second parcours `booking-flow.spec.ts` |
 
-_Diagramme d’activité_
+![Activité de check-in](../diagrams/activity%20diagram%20-%20checkin.png)
 
-![Activité - Gestion des espaces](../diagrams/activity%20diagram%20-%20gestion%20espaces%20admin.png)
+![Séquence de check-in](../diagrams/sequence%20diagram%20-%20checkin.png)
 
-_Diagramme de séquence_
+### 5.7.5. Fonctionnalité 5 : s'authentifier
 
-![Séquence - Gestion des espaces](../diagrams/sequence%20diagram%20-%20gestion%20espaces%20admin.png)
+| Élément      | Spécification                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| État         | Livré dans la V1                                                                                                         |
+| Précondition | Aucune pour l'inscription, compte existant pour la connexion                                                             |
+| Interface    | `/login`                                                                                                                 |
+| Endpoints    | `POST /auth/register`, `POST /auth/login`                                                                                |
+| Entrées      | `email`, `password`                                                                                                      |
+| Traitement   | Validation Zod, hash ou vérification avec `Bun.password`, émission d'un JWT valable 24 heures                            |
+| Erreurs      | 400 pour des données invalides, 401 pour de mauvais identifiants, 409 si l'adresse existe, 429 si la limite est dépassée |
+| Acceptation  | Aucun hash ne quitte l'API et le rôle du JWT détermine l'accès aux routes protégées                                      |
+| Preuves      | `auth.service.spec.ts`, `app.security.spec.ts`, `rate-limit.spec.ts`, `auth.svelte.spec.ts`, `booking-flow.spec.ts`      |
 
-### 5.7.4. Fonctionnalité 4 - Check-in par QR code
+Le JWT est conservé dans `localStorage`. Cette limite est décrite dans la section sécurité.
 
-Le propriétaire ou un administrateur génère un QR code renouvelable. Le code contient une URL dont le jeton reste dans le fragment, ce qui évite son envoi automatique au serveur lors du chargement de la page. PostgreSQL ne conserve que son hash. Un participant accepté peut confirmer sa présence pendant le créneau.
+### 5.7.6. Fonctionnalité 6 : consulter les statistiques d'occupation
 
-| Élément               | Spécification                                                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans la V1                                                                                                                                                            |
-| Préconditions         | Participant accepté ; réservation en cours ; QR code valide                                                                                                                   |
-| Interface             | QR affiché dans `/bookings`, validation dans `/check-in`                                                                                                                      |
-| Endpoints et droits   | `POST /bookings/:id/qr` pour le propriétaire ou `ADMIN` ; `POST /bookings/:id/check-in` pour un participant accepté                                                           |
-| Données               | `bookingId`, jeton QR, `checkedInAt`                                                                                                                                          |
-| Scénario nominal      | Génération et hachage du jeton, scan de l'URL, contrôle du participant et du créneau, enregistrement de l'heure de présence                                                   |
-| Erreurs               | HTTP 403 pour un jeton invalide ou un non-participant ; 409 pour une invitation non acceptée, un check-in anticipé ou une réservation terminée                                |
-| Critère d'acceptation | Le QR ne permet un check-in que sur la réservation concernée et pendant son créneau. La date de présence apparaît ensuite dans la liste des participants.                     |
-| Preuves               | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `authorized-api.spec.ts`, `route-guard.spec.ts` et le second parcours `booking-flow.spec.ts` |
+| Élément      | Spécification                                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------------------------- |
+| État         | Livré dans la V1                                                                                               |
+| Précondition | Compte `ADMIN` connecté                                                                                        |
+| Interface    | `/admin/analytics`                                                                                             |
+| Endpoints    | `GET /analytics/overview`, `GET /analytics/workspaces`                                                         |
+| Données      | Comptes, espaces, réservations et heure courante                                                               |
+| Calcul       | Une réservation est active si `startAt <= maintenant < endAt`. Le service compte les espaces distincts occupés |
+| Erreurs      | 401 sans JWT, 403 pour `USER`, 500 si le calcul échoue                                                         |
+| Acceptation  | Le taux global vaut le nombre d'espaces occupés divisé par le nombre total d'espaces, entre 0 et 100 %         |
+| Preuves      | `analytics.service.spec.ts`, `admin.routes.spec.ts`, `authorized-api.spec.ts`                                  |
 
-_Diagramme d’activité_
+La capacité limite le nombre de participants. L'indicateur d'occupation reste binaire pour chaque espace : une réservation active occupe l'espace entier.
 
-![Activité - Check-in](../diagrams/activity%20diagram%20-%20checkin.png)
+### 5.7.7. Fonctionnalité 7 : consulter les audits
 
-_Diagramme de séquence_
+| Élément      | Spécification                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| État         | Livré dans la V1                                                                                            |
+| Précondition | Compte `ADMIN` connecté                                                                                     |
+| Interface    | `/admin/audit`                                                                                              |
+| Endpoint     | `GET /audit?limit=100`, avec une limite comprise entre 1 et 200                                             |
+| Données      | Action, entité, données supprimées, date, identifiant, adresse et rôle de l'auteur                          |
+| Traitement   | Lecture MongoDB du plus récent au plus ancien                                                               |
+| Erreurs      | 400 pour une limite invalide, 401 sans JWT, 403 pour `USER`, 500 si la lecture échoue                       |
+| Acceptation  | L'administrateur voit les suppressions, un utilisateur standard ne peut pas ouvrir la page ni appeler l'API |
+| Preuves      | `audit.service.spec.ts`, `mongo-audit.integration.spec.ts`, `admin.routes.spec.ts`, `route-guard.spec.ts`   |
 
-![Séquence - Check-in](../diagrams/sequence%20diagram%20-%20checkin.png)
+### 5.7.8. Fonctionnalité 8 : inviter et gérer les participants
 
-### 5.7.5. Fonctionnalité 5 - Authentification
+| Élément       | Spécification                                                                                                                                        |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| État          | Livré dans la V1                                                                                                                                     |
+| Préconditions | Réservation non terminée, utilisateur invité déjà inscrit et capacité disponible                                                                     |
+| Interface     | Actions "Gérer", "Inviter", "Accepter", "Refuser" et "Rejoindre" dans `/bookings`                                                                    |
+| Endpoints     | Invitation par le propriétaire ou `ADMIN`, réponse par l'invité, participation directe pour une réservation publique                                 |
+| Données       | Rôle `OWNER` ou `GUEST`, statut `PENDING`, `ACCEPTED` ou `DECLINED`, dates de réponse et de check-in                                                 |
+| Traitement    | Verrouillage de la réservation, contrôle de capacité, création ou mise à jour du participant                                                         |
+| Erreurs       | 403 pour rejoindre une réservation privée, 404 si l'utilisateur n'existe pas, 409 pour un doublon, une capacité atteinte ou une réservation terminée |
+| Acceptation   | Une réservation privée reste visible par ses membres. Une réservation publique peut être rejointe sans dépasser la capacité                          |
+| Preuves       | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `authorized-api.spec.ts`, `booking-flow.spec.ts`                    |
 
-Le même écran permet de créer un compte puis de se connecter. Après une authentification réussie, l'application redirige vers `/`, qui affiche un accueil adapté au rôle.
-
-| Élément               | Spécification                                                                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Statut                | Réalisé dans le MVP                                                                                                                                          |
-| Précondition          | Aucune pour l'inscription ; compte existant pour la connexion                                                                                                |
-| Interface             | Formulaire `/login`                                                                                                                                          |
-| Endpoints             | `POST /auth/register` et `POST /auth/login`                                                                                                                  |
-| Données               | `email`, `password`                                                                                                                                          |
-| Scénario nominal      | Validation Zod, hachage avec `Bun.password.hash`, vérification avec `Bun.password.verify`, émission d'un JWT valable 24 heures, stockage dans `localStorage` |
-| Erreurs               | HTTP 400 si les données sont invalides, 401 si les identifiants sont faux, 409 si l'email existe déjà, 429 lorsque la limite de requêtes est atteinte        |
-| Critère d'acceptation | Aucun hash n'est renvoyé au client. Le JWT permet l'accès aux routes protégées et les liens d'administration ne sont affichés qu'au rôle `ADMIN`.            |
-| Preuves               | `auth.service.spec.ts`, `app.security.spec.ts`, `rate-limit.spec.ts`, `auth.svelte.spec.ts`, `route-guard.spec.ts` et `e2e/booking-flow.spec.ts`             |
-
-### 5.7.6. Fonctionnalité 6 - Statistiques d'occupation
-
-La page `/admin/analytics` présente les totaux et l'utilisation actuelle de chaque espace.
-
-| Élément               | Spécification                                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans le MVP                                                                                                                      |
-| Précondition          | Compte `ADMIN` connecté                                                                                                                  |
-| Interface             | Cartes de synthèse et tableau de `/admin/analytics`                                                                                      |
-| Endpoints et droits   | `GET /analytics/overview` et `GET /analytics/workspaces`, rôle `ADMIN`                                                                   |
-| Données               | Utilisateurs, espaces, réservations et heure courante                                                                                    |
-| Scénario nominal      | Une réservation est active si `startAt <= maintenant < endAt`. Le service compte les espaces distincts occupés.                          |
-| Erreurs               | HTTP 401 sans jeton, 403 pour un utilisateur standard, 500 si le calcul échoue                                                           |
-| Critère d'acceptation | Le taux global vaut `espaces distincts occupés / espaces totaux × 100`, reste entre 0 et 100 %, et vaut 0 % quand aucun espace n'existe. |
-| Preuves               | `analytics.service.spec.ts`, `admin.routes.spec.ts`, `http.routes.spec.ts` et `authorized-api.spec.ts`                                   |
-
-La capacité limite maintenant le nombre de participants actifs ou invités. Le calcul analytique reste fondé sur l'occupation de l'espace entier : un espace avec une réservation active est utilisé à 100 %, sinon à 0 %.
-
-### 5.7.7. Fonctionnalité 7 - Consultation des logs d'audit
-
-| Élément               | Spécification                                                                                                                             |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans le MVP                                                                                                                       |
-| Précondition          | Compte `ADMIN` connecté                                                                                                                   |
-| Interface             | Tableau `/admin/audit`                                                                                                                    |
-| Endpoint et droits    | `GET /audit?limit=100`, rôle `ADMIN`; la limite acceptée va de 1 à 200                                                                    |
-| Données               | Type et identifiant de l'entité, données supprimées, date, identifiant, email et rôle de l'auteur                                         |
-| Scénario nominal      | Lecture MongoDB du plus récent au plus ancien, puis affichage dans le tableau                                                             |
-| Erreurs               | HTTP 400 si la limite est invalide, 401 sans jeton, 403 pour un utilisateur standard, 500 si MongoDB ne répond pas                        |
-| Critère d'acceptation | L'administrateur voit les suppressions dans l'ordre décroissant. Un utilisateur standard ne peut ni ouvrir l'écran ni appeler l'endpoint. |
-| Preuves               | `audit.service.spec.ts`, `mongo-audit.integration.spec.ts`, `admin.routes.spec.ts`, `route-guard.spec.ts` et `authorized-api.spec.ts`     |
-
-### 5.7.8. Fonctionnalité 8 - Invitations et participants
-
-| Élément               | Spécification                                                                                                                                                                    |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Statut                | Réalisé dans la V1                                                                                                                                                               |
-| Préconditions         | Réservation non terminée ; utilisateur invité déjà inscrit ; capacité disponible                                                                                                 |
-| Interface             | Actions "Gérer", "Inviter", "Accepter", "Refuser" et "Rejoindre" dans `/bookings`                                                                                                |
-| Endpoints et droits   | Invitation par le propriétaire ou `ADMIN`, réponse par l'invité, participation libre pour une réservation publique                                                               |
-| Données               | `bookingId`, `userId`, rôle `OWNER` ou `GUEST`, statut `PENDING`, `ACCEPTED` ou `DECLINED`, dates de réponse et de check-in                                                      |
-| Scénario nominal      | Le service verrouille la réservation pendant le contrôle de capacité, crée l'invitation, puis l'utilisateur accepte ou refuse. Le propriétaire est toujours participant accepté. |
-| Erreurs               | HTTP 403 pour une réservation privée rejointe sans invitation ; 404 si l'utilisateur n'existe pas ; 409 en cas de doublon, de capacité atteinte ou de réservation terminée       |
-| Critère d'acceptation | Une réservation privée reste limitée à ses membres. Une réservation publique peut être rejointe sans dépasser la capacité de l'espace.                                           |
-| Preuves               | `booking-collaboration.routes.spec.ts`, `postgres-bookings.integration.spec.ts`, `authorized-api.spec.ts` et `booking-flow.spec.ts`                                              |
-
-# 6\. SPECIFICATIONS TECHNIQUES
+# 6\. SPÉCIFICATIONS TECHNIQUES
 
 ## 6.1. Référencement
 
-Tempo est une application interne protégée par authentification. Le document HTML déclare `lang="fr"` et la balise `<meta name="robots" content="noindex, nofollow">` demande aux moteurs de ne pas indexer l'application. Cette directive n'est pas un contrôle d'accès ; les gardes frontend et backend restent nécessaires.
+Tempo est une application interne protégée par authentification. Le document HTML déclare `lang="fr"` et contient `<meta name="robots" content="noindex, nofollow">`. Cette balise indique aux moteurs de ne pas indexer les pages. Elle ne protège aucune donnée, ce rôle appartient aux gardes de l'application et de l'API.
 
 ## 6.2. Environnement technique
 
-| Domaine        | Version utilisée                            | Usage dans Tempo                                            |
-| -------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| Runtime        | Bun 1.3.14                                  | Exécution TypeScript, scripts et workspaces                 |
-| Backend        | Hono 4.12.24                                | Routes HTTP, middlewares et client RPC typé                 |
-| Validation     | Zod 4.4.3                                   | Validation des corps, paramètres et requêtes                |
-| Frontend       | Svelte 5.56.3 et SvelteKit 2.63.1           | Pages, composants et navigation                             |
-| Build frontend | Vite 7.3.5                                  | Serveur de développement et build                           |
-| Style          | Tailwind CSS 4.3.0 et shadcn-svelte         | Mise en page responsive et composants                       |
-| Accès SQL      | Drizzle ORM 0.45.2 et Drizzle Kit 0.31.10   | Schéma typé et migrations                                   |
-| Base SQL       | PostgreSQL 18.6, image Alpine 3.24          | Utilisateurs, espaces et réservations                       |
-| Base NoSQL     | MongoDB 8.0.29, image Noble                 | Logs de suppression                                         |
-| Qualité        | Oxlint 1.68.0 et Oxfmt 0.21.0               | Lint et formatage                                           |
-| Tests          | Bun Test, Vitest 4.1.8 et Playwright 1.57.0 | Tests unitaires, HTTP, intégration et parcours E2E Chromium |
-| CI             | GitHub Actions                              | Vérifications qualité et recette de la stack Docker Compose |
+| Domaine            | Version                                   | Usage                                              |
+| ------------------ | ----------------------------------------- | -------------------------------------------------- |
+| Runtime            | Bun 1.3.14                                | TypeScript, scripts, paquets et workspaces         |
+| Backend            | Hono 4.12.24                              | API HTTP, middlewares et RPC typé                  |
+| Validation         | Zod 4.4.3                                 | Corps, paramètres et chaînes de requête            |
+| Frontend           | Svelte 5.56.3, SvelteKit 2.63.1           | Pages, composants et navigation                    |
+| Build              | Vite 7.3.5                                | Développement et production                        |
+| Interface          | Tailwind CSS 4.3.0, shadcn-svelte         | Mise en page et composants                         |
+| SQL                | Drizzle ORM 0.45.2, Drizzle Kit 0.31.10   | Schéma, requêtes et migrations                     |
+| QR code            | qrcode 1.5.4                              | Génération du QR sous forme de Data URL            |
+| Base relationnelle | PostgreSQL 18.6, Alpine 3.24              | Comptes, espaces, réservations, participants et QR |
+| Base documentaire  | MongoDB 8.0.29, Noble                     | Audits de suppression                              |
+| Qualité            | Oxlint 1.68.0, Oxfmt 0.21.0               | Lint et formatage                                  |
+| Tests              | Bun Test, Vitest 4.1.8, Playwright 1.57.0 | Tests isolés, intégrations et E2E                  |
+| CI                 | GitHub Actions                            | Contrôles qualité et recette Docker                |
 
-Le poste utilisé pour la finalisation fonctionne sous Windows 10 Pro avec PowerShell et Codex Desktop. Le dépôt ne dépend d'aucun réglage propre à cet outil. La CI s'exécute sur un runner Ubuntu fourni par GitHub Actions.
+La finalisation a été effectuée sous Windows 10 Pro avec PowerShell. Le dépôt ne dépend pas de Codex Desktop ni d'un réglage propre au poste. La CI utilise un runner Ubuntu fourni par GitHub.
 
-| Environnement | Composition                                                                                                                         |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Développement | Backend et frontend lancés par Bun ; PostgreSQL et MongoDB joignables en local                                                      |
-| Test          | Tests isolés par mocks, bases d'intégration PostgreSQL/MongoDB et navigateur Chromium piloté par Playwright                         |
-| Démonstration | Stack Docker Compose composée de PostgreSQL, MongoDB, backend et frontend ; profil `demo` pour charger un jeu de données idempotent |
+| Environnement | Composition                                                                |
+| ------------- | -------------------------------------------------------------------------- |
+| Développement | Backend et frontend lancés avec Bun, PostgreSQL et MongoDB locaux          |
+| Test          | Mocks, bases PostgreSQL et MongoDB réelles, Chromium piloté par Playwright |
+| Démonstration | Quatre services Docker Compose et profil optionnel de seed                 |
 
 ### 6.2.1. Ports et configuration
 
-| Service            | Port hôte | Port conteneur |
-| ------------------ | --------- | -------------- |
-| PostgreSQL         | 5432      | 5432           |
-| MongoDB            | 27017     | 27017          |
-| API Hono           | 3000      | 3000           |
-| Frontend SvelteKit | 5173      | 3000           |
+| Service            | Port hôte | Port du conteneur |
+| ------------------ | --------: | ----------------: |
+| PostgreSQL         |      5432 |              5432 |
+| MongoDB            |     27017 |             27017 |
+| API Hono           |      3000 |              3000 |
+| Frontend SvelteKit |      5173 |              3000 |
 
-Les exemples de configuration sont regroupés dans `.env.example` et `apps/backend/.env.example`. Les valeurs sensibles restent dans des fichiers `.env` ignorés par Git.
+Les modèles de configuration se trouvent dans `.env.example` et `apps/backend/.env.example`. Les fichiers `.env` réels sont ignorés par Git.
 
 | Groupe                   | Variables                                                                                          |
 | ------------------------ | -------------------------------------------------------------------------------------------------- |
@@ -1043,84 +675,83 @@ Les exemples de configuration sont regroupés dans `.env.example` et `apps/backe
 | MongoDB                  | `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_URL`, `MONGO_DB_NAME`           |
 | Authentification et HTTP | `JWT_SECRET`, `FRONTEND_ORIGIN`, `AUTH_RATE_LIMIT_MAX`, `AUTH_RATE_LIMIT_WINDOW_MS`, `TRUST_PROXY` |
 | Frontend                 | `PUBLIC_API_URL`                                                                                   |
-| Jeu de démonstration     | `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD`, `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`                 |
+| Démonstration            | `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD`, `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`                 |
 
 ## 6.3. Navigation et accessibilité
 
-L'application se lance localement avec Docker Compose (`docker compose up --build --detach --wait`). Le frontend répond sur `http://localhost:5173` et l'API sur `http://localhost:3000`. Aucun nom de domaine ni hébergement public n'est configuré. Le poste Windows utilisé pour la finalisation ne dispose pas de Docker ; GitHub Actions construit et démarre donc la stack complète sur un runner neuf.
+La stack complète se lance avec `docker compose up --build --detach --wait`. Le frontend répond sur `http://localhost:5173` et l'API sur `http://localhost:3000`. Aucun domaine public n'est configuré.
 
-Les pages sont accessibles via des routes définies par SvelteKit (`/`, `/login`, `/bookings`, `/admin/workspaces`, `/admin/analytics`, `/admin/audit`). L'accès à `/bookings` est conditionné à la présence d'un jeton JWT, tandis que les routes `/admin/*` vérifient également le rôle `ADMIN`. Les mêmes autorisations sont appliquées côté API afin que la sécurité ne repose pas uniquement sur l'interface.
+Les routes `/bookings` et `/check-in` demandent un compte connecté. Les pages `/admin/*` demandent aussi le rôle `ADMIN`. Ces contrôles frontend améliorent le parcours, mais les mêmes droits sont vérifiés par l'API.
 
-Les formulaires utilisent des libellés associés aux champs et des boutons nommés. Le document est déclaré en français et les contrôles Svelte ne signalent ni erreur ni avertissement. Les parcours Playwright valident la réservation, l'annulation, l'invitation et le check-in par QR code dans Chromium. Aucun audit WCAG complet n'a encore été mené. Firefox, Edge et Safari n'ont pas été vérifiés ; la compatibilité navigateur prouvée se limite donc à Chromium.
+Les champs disposent de libellés et les boutons importants ont un nom accessible. Svelte Check ne signale aucune erreur ni aucun avertissement. Les deux parcours Playwright sont validés dans Chromium. Aucun audit WCAG complet n'a été mené et les autres moteurs de navigateur n'ont pas été testés.
 
 ### 6.3.1. Routes de l'API
 
-| Méthode  | Route                                      | Autorisation                  | Fonction                                                       |
-| -------- | ------------------------------------------ | ----------------------------- | -------------------------------------------------------------- |
-| `GET`    | `/health`                                  | Publique                      | Vérifie que l'API répond                                       |
-| `POST`   | `/auth/register`                           | Publique, limitée par adresse | Crée un compte `USER`                                          |
-| `POST`   | `/auth/login`                              | Publique, limitée par adresse | Renvoie le JWT et l'utilisateur                                |
-| `GET`    | `/users`                                   | `ADMIN`                       | Liste les utilisateurs                                         |
-| `POST`   | `/users`                                   | `ADMIN`                       | Crée un utilisateur sans renvoyer son hash                     |
-| `GET`    | `/workspaces`                              | Utilisateur connecté          | Liste les espaces                                              |
-| `GET`    | `/workspaces/:id`                          | Utilisateur connecté          | Consulte un espace                                             |
-| `POST`   | `/workspaces`                              | `ADMIN`                       | Crée un espace                                                 |
-| `PATCH`  | `/workspaces/:id`                          | `ADMIN`                       | Modifie un espace                                              |
-| `DELETE` | `/workspaces/:id`                          | `ADMIN`                       | Supprime un espace et tente de l'auditer                       |
-| `GET`    | `/bookings`                                | Utilisateur connecté          | Liste ses réservations, invitations et réservations publiques  |
-| `POST`   | `/bookings`                                | Utilisateur connecté          | Crée une réservation publique ou privée                        |
-| `POST`   | `/bookings/:id/invitations`                | Propriétaire ou `ADMIN`       | Invite un utilisateur existant                                 |
-| `PATCH`  | `/bookings/:id/invitations/:participantId` | Utilisateur invité            | Accepte ou refuse une invitation                               |
-| `POST`   | `/bookings/:id/join`                       | Utilisateur connecté          | Rejoint une réservation publique si une place reste disponible |
-| `POST`   | `/bookings/:id/qr`                         | Propriétaire ou `ADMIN`       | Génère ou renouvelle le QR code                                |
-| `POST`   | `/bookings/:id/check-in`                   | Participant accepté           | Enregistre la présence pendant le créneau                      |
-| `DELETE` | `/bookings/:id`                            | Propriétaire ou `ADMIN`       | Supprime une réservation et tente de l'auditer                 |
-| `GET`    | `/analytics/overview`                      | `ADMIN`                       | Renvoie les totaux et le taux d'occupation actuel              |
-| `GET`    | `/analytics/workspaces`                    | `ADMIN`                       | Renvoie l'utilisation actuelle de chaque espace                |
-| `GET`    | `/audit?limit=100`                         | `ADMIN`                       | Liste les suppressions auditées                                |
+| Méthode  | Route                                      | Droit                      | Fonction                                            |
+| -------- | ------------------------------------------ | -------------------------- | --------------------------------------------------- |
+| `GET`    | `/health`                                  | Public                     | Vérifier que l'API répond                           |
+| `POST`   | `/auth/register`                           | Public, limité par adresse | Créer un compte `USER`                              |
+| `POST`   | `/auth/login`                              | Public, limité par adresse | Obtenir le JWT et le compte                         |
+| `GET`    | `/users`                                   | `ADMIN`                    | Lister les comptes                                  |
+| `POST`   | `/users`                                   | `ADMIN`                    | Créer un compte sans renvoyer son hash              |
+| `GET`    | `/workspaces`                              | Connecté                   | Lister les espaces                                  |
+| `GET`    | `/workspaces/:id`                          | Connecté                   | Consulter un espace                                 |
+| `POST`   | `/workspaces`                              | `ADMIN`                    | Créer un espace                                     |
+| `PATCH`  | `/workspaces/:id`                          | `ADMIN`                    | Modifier un espace                                  |
+| `DELETE` | `/workspaces/:id`                          | `ADMIN`                    | Supprimer et tenter d'auditer                       |
+| `GET`    | `/bookings`                                | Connecté                   | Lister les réservations visibles et les invitations |
+| `POST`   | `/bookings`                                | Connecté                   | Créer une réservation publique ou privée            |
+| `POST`   | `/bookings/:id/invitations`                | Propriétaire ou `ADMIN`    | Inviter un utilisateur                              |
+| `PATCH`  | `/bookings/:id/invitations/:participantId` | Utilisateur invité         | Accepter ou refuser                                 |
+| `POST`   | `/bookings/:id/join`                       | Connecté                   | Rejoindre une réservation publique                  |
+| `POST`   | `/bookings/:id/qr`                         | Propriétaire ou `ADMIN`    | Générer ou renouveler le QR                         |
+| `POST`   | `/bookings/:id/check-in`                   | Participant accepté        | Enregistrer la présence                             |
+| `DELETE` | `/bookings/:id`                            | Propriétaire ou `ADMIN`    | Supprimer et tenter d'auditer                       |
+| `GET`    | `/analytics/overview`                      | `ADMIN`                    | Obtenir les totaux et le taux actuel                |
+| `GET`    | `/analytics/workspaces`                    | `ADMIN`                    | Obtenir l'état de chaque espace                     |
+| `GET`    | `/audit?limit=100`                         | `ADMIN`                    | Consulter les audits                                |
 
 ## 6.4. Services tiers
 
-Aucun service tiers métier n'est intégré. L'application n'appelle ni service d'analytics, ni réseau social, ni service d'emailing ou CRM. GitHub Actions intervient seulement pour l'intégration continue.
+Aucun service tiers métier n'est appelé. Tempo n'envoie pas d'email et n'utilise ni CRM, ni analytics externe, ni réseau social. GitHub Actions exécute uniquement la CI.
 
 ## 6.5. Sécurité
 
-Deux rôles existent : `ADMIN` et `USER`. Ils sont définis par un enum PostgreSQL et inclus dans le JWT. Les gardes backend contrôlent toutes les routes protégées. Les gardes frontend masquent ou bloquent les écrans interdits, mais ne remplacent pas les contrôles de l'API.
+Les rôles `ADMIN` et `USER` sont définis dans PostgreSQL et inclus dans le JWT. `authGuard` vérifie le jeton. `adminGuard` retourne HTTP 403 lorsqu'un utilisateur standard appelle une route d'administration. Les contrôles plus fins, comme la propriété d'une réservation ou l'identité d'un invité, restent dans les services concernés.
 
-Les jetons JWT sont signés en HS256 avec `hono/jwt` et expirent après 24 heures. `JWT_SECRET` est obligatoire ; le backend refuse de démarrer si la valeur manque ou reste vide. Les mots de passe sont hachés avec `Bun.password.hash` puis vérifiés avec `Bun.password.verify`. Aucun endpoint ne renvoie leur hash.
+Les JWT sont signés en HS256 avec `hono/jwt` et expirent après 24 heures. `JWT_SECRET` est obligatoire au démarrage. Les mots de passe sont hachés avec `Bun.password.hash` et vérifiés avec `Bun.password.verify`. Les réponses de l'API ne contiennent jamais le hash.
 
-Le CORS n'accepte que l'origine fournie par `FRONTEND_ORIGIN`. Le backend refuse une origine absente ou invalide. `secureHeaders` ajoute aux réponses de l'API une CSP restrictive, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et `Permissions-Policy`. Les routes d'inscription et de connexion partagent, par défaut, une limite de 10 requêtes par adresse sur 15 minutes. Une requête supplémentaire reçoit HTTP 429 et `Retry-After`.
+Le CORS accepte uniquement `FRONTEND_ORIGIN`. Les en-têtes HTTP ajoutent notamment une politique CSP, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et `Permissions-Policy`. Par défaut, l'inscription et la connexion sont limitées à 10 requêtes par adresse sur 15 minutes. La requête suivante reçoit HTTP 429 et un en-tête `Retry-After`.
 
-Zod valide les corps, paramètres et chaînes de requête avant le traitement. PostgreSQL complète ces contrôles par les clés étrangères, les contraintes `CHECK` et la contrainte d'exclusion des réservations concurrentes.
+Zod valide les données avant le service. PostgreSQL complète cette validation avec les clés étrangères, les contraintes `CHECK`, l'unicité des participants et l'exclusion des réservations concurrentes.
 
-Le QR code contient une URL de check-in avec un jeton aléatoire de 256 bits dans le fragment. Le fragment n'est pas transmis lors du chargement initial de la page et il est retiré de l'historique avant l'appel API. PostgreSQL conserve uniquement le hash SHA-256 du jeton. Chaque nouvelle génération invalide le code précédent, et le backend refuse le check-in avant le début ou après la fin de la réservation.
+Le jeton QR contient 256 bits aléatoires. L'URL le place dans le fragment, puis la page le retire de l'historique avant l'appel API. Si une connexion est nécessaire, la destination passe par `sessionStorage` et non par la chaîne de requête de `/login`. PostgreSQL ne conserve que le hash SHA-256. Le backend vérifie le participant, son statut, le créneau et l'expiration du jeton.
 
 ### 6.5.1. Limites connues
 
-- Le JWT reste dans `localStorage`. Un script injecté par une faille XSS pourrait le lire. Une exposition publique demanderait un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF adaptée.
-- Aucun mécanisme de révocation individuelle des jetons ou de rotation automatique du secret n'est implémenté. Un jeton volé reste valable jusqu'à son expiration ou jusqu'au changement global du secret.
-- Le limiteur de requêtes réside dans la mémoire du processus. Plusieurs instances backend nécessiteraient un stockage partagé.
-- Le projet local utilise HTTP. TLS doit être terminé par un reverse proxy ou la plateforme d'hébergement avant une mise en ligne.
-- Les volumes Docker conservent les données, et le README fournit les commandes `pg_dump`, `pg_restore`, `mongodump` et `mongorestore`. Les sauvegardes ne sont ni planifiées ni externalisées automatiquement.
-- L'audit MongoDB fonctionne en mode best effort. Une panne MongoDB n'annule pas une suppression PostgreSQL déjà validée.
-- Le QR code est partagé entre les participants d'une réservation. Une personne qui en obtient une copie doit encore être connectée avec un compte participant accepté, mais elle peut effectuer son check-in à distance pendant le créneau.
+- Le JWT est stocké dans `localStorage`. Une faille XSS exécutée dans la page pourrait le lire. Une mise en ligne publique demanderait un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF.
+- Il n'existe pas de révocation individuelle des JWT ni de rotation automatique du secret.
+- Le limiteur est en mémoire. Plusieurs instances backend devraient partager son état.
+- Le développement local utilise HTTP. Un déploiement public doit terminer TLS devant l'application.
+- Les sauvegardes sont documentées mais ne sont ni planifiées ni externalisées.
+- L'audit MongoDB est best effort. Une panne ne revient pas sur une suppression PostgreSQL déjà validée.
+- Le QR est commun aux participants d'une réservation. Un utilisateur doit tout de même être connecté, accepté et dans le créneau, mais un participant peut transmettre le code ou effectuer le check-in à distance.
 
-GitHub Actions vérifie le format, le lint, les types, les tests, les builds et le démarrage Docker Compose. La branche `main` reste volontairement non protégée pendant le développement. La CI signale donc un échec sans empêcher techniquement un envoi direct.
+GitHub Actions contrôle le format, le lint, les types, les tests, les builds et Docker Compose. La branche `main` n'est pas protégée, conformément au choix retenu pour la phase de développement.
 
-# 7\. REALISATIONS
+# 7\. RÉALISATIONS
 
-S’exprimer à la première du singulier. Vous parlez de vos réalisations mises en œuvre dans le cadre de votre projet.
+Les extraits suivants proviennent du code livré. Les fichiers complets restent la source de référence.
 
-## 7.1. Détection de chevauchement de réservations (Composants Métier)
+## 7.1. Détection des chevauchements
 
 ### 7.1.1. Affichage
 
-_(Insérer une capture d'écran du message d'erreur affiché à l'utilisateur lorsqu'un créneau est déjà réservé : « Ce créneau est déjà réservé pour cet espace ».)_
+_(Insérer une capture du message "Ce créneau est déjà réservé pour cet espace" dans la page des réservations.)_
 
-### 7.1.2. Extrait(s) de code
+### 7.1.2. Extrait de code
 
 ```typescript
-// apps/backend/src/modules/bookings/bookings.service.ts
 async checkOverlap(
     workspaceId: number,
     startAt: Date,
@@ -1129,108 +760,140 @@ async checkOverlap(
 ): Promise<boolean> {
     const conditions = [
         eq(bookings.workspaceId, workspaceId),
-        // Chevauchement : (startAt < existing.endAt) ET (endAt > existing.startAt)
         lt(bookings.startAt, endAt),
         gt(bookings.endAt, startAt),
     ];
 
-    if (excludeBookingId) {
-        const overlapping = await db.query.bookings.findFirst({
-            where: and(...conditions, ne(bookings.id, excludeBookingId)),
-        });
-        return !!overlapping;
-    }
-
     const overlapping = await db.query.bookings.findFirst({
-        where: and(...conditions),
+        where: excludeBookingId
+            ? and(...conditions, ne(bookings.id, excludeBookingId))
+            : and(...conditions),
     });
 
     return !!overlapping;
-},
+}
 ```
 
 ### 7.1.3. Argumentation
 
-Ce composant métier illustre une logique algorithmique au-delà du simple CRUD : la détection de chevauchement repose sur l'intersection de deux intervalles de temps (`startAt`/`endAt`). La condition retenue (`nouveauDébut < finExistante` ET `nouvelleFin > débutExistante`) couvre tous les cas de chevauchement (partiel, total, inclusion). Ce traitement est appelé avant toute création de réservation (`bookingService.create`) afin de fournir une erreur rapide. La migration `0002_booking_overlap_constraint.sql` ajoute en complément une contrainte d'exclusion PostgreSQL GiST sur l'espace et l'intervalle semi-ouvert `[startAt, endAt[`. PostgreSQL garantit ainsi atomiquement que deux requêtes concurrentes ne peuvent pas réserver le même espace sur des créneaux qui se chevauchent ; le conflit SQL est traduit en erreur métier `BOOKING_OVERLAP` (HTTP 409). Les réservations consécutives restent autorisées. La logique et la traduction de la contrainte sont couvertes par des tests unitaires.
+Deux intervalles se chevauchent lorsque le nouveau début se situe avant la fin existante et que la nouvelle fin se situe après le début existant. Cette condition couvre les intersections partielles, l'inclusion et les créneaux identiques. Deux créneaux consécutifs restent valides.
 
-## 7.2. Middleware d'authentification et de contrôle des rôles (Composants Métier)
+Le contrôle applicatif fournit une erreur rapide. La contrainte PostgreSQL `bookings_workspace_time_exclusion` reste la garantie finale lorsque deux requêtes arrivent en même temps. Le service reconnaît le code SQL `23P01` et retourne l'erreur métier `BOOKING_OVERLAP`, traduite en HTTP 409.
+
+## 7.2. Authentification et contrôle des rôles
 
 ### 7.2.1. Affichage
 
-_(Insérer une capture d'écran de la réponse HTTP 401/403 retournée par l'API lorsqu'un utilisateur non authentifié ou non autorisé tente d'accéder à une route protégée.)_
+_(Insérer une capture d'une réponse HTTP 401 et d'une réponse HTTP 403 sur une route protégée.)_
 
-### 7.2.2. Extrait(s) de code
+### 7.2.2. Extrait de code
 
 ```typescript
-// apps/backend/src/middlewares/auth.guard.ts
-import { jwt } from 'hono/jwt';
-import { authService } from '../modules/auth/auth.service';
-
 export const authGuard = jwt({
     secret: authService.getSecret(),
     alg: 'HS256',
 });
 
-export interface JWTPayload {
-    sub: string; // ID utilisateur
-    email: string;
-    role: 'ADMIN' | 'USER';
-    exp: number;
-}
-```
-
-```typescript
-// apps/backend/src/modules/bookings/bookings.route.ts (extrait)
-app.get('/', async (c) => {
+export const adminGuard: MiddlewareHandler<AuthEnv> = async (c, next) => {
     const payload = c.get('jwtPayload');
 
-    if (payload.role === 'ADMIN') {
-        return c.json(await bookingService.getAll());
+    if (payload.role !== 'ADMIN') {
+        return c.json({ error: 'Admin access required' }, 403);
     }
 
-    return c.json(await bookingService.getByUser(payload.sub));
-});
+    await next();
+};
 ```
 
 ### 7.2.3. Argumentation
 
-Le middleware `authGuard` est appliqué à l'ensemble des routes sensibles (`app.use('*', authGuard)`), ce qui centralise la vérification du jeton JWT et évite toute duplication de logique de sécurité dans les contrôleurs. Le payload décodé (`jwtPayload`) est ensuite exploité dans chaque route pour adapter le comportement au rôle de l'utilisateur (un `USER` ne voit que ses propres réservations, un `ADMIN` voit l'ensemble), démontrant une gestion fine des autorisations (RBAC) au-delà de la simple authentification.
+`authGuard` vérifie le JWT sur les groupes de routes protégées. `adminGuard` centralise le contrôle d'administration. Une route métier peut ensuite appliquer une règle plus précise avec l'identifiant `sub` du JWT, par exemple vérifier le propriétaire d'une réservation ou l'utilisateur visé par une invitation.
 
-## 7.3. Accès aux données relationnelles avec Drizzle ORM (Composants d’accès aux données)
+Cette séparation évite de confondre authentification et autorisation. Elle est testée avec un utilisateur standard, un administrateur, un jeton absent et plusieurs routes protégées.
+
+## 7.3. Capacité et concurrence des participants
 
 ### 7.3.1. Affichage
 
-_(Insérer une capture d'écran de la liste des réservations affichées côté frontend, alimentée par cette requête.)_
+_(Insérer une capture du panneau "Participants et QR code" avec une invitation en attente.)_
 
-### 7.3.2. Extrait(s) de code
+### 7.3.2. Extrait de code
 
 ```typescript
-// apps/backend/src/modules/bookings/bookings.service.ts
-async getByUser(userId: string): Promise<Booking[]> {
-    return await db.query.bookings.findMany({
-        where: eq(bookings.userId, userId),
-        with: {
-            workspace: true,
-        },
-        orderBy: (bookingTable, { desc }) => [desc(bookingTable.startAt)],
+return await db.transaction(async (transaction) => {
+    await transaction.execute(
+        sql`SELECT "id" FROM "bookings" WHERE "id" = ${bookingId} FOR UPDATE`,
+    );
+
+    const booking = await transaction.query.bookings.findFirst({
+        where: eq(bookings.id, bookingId),
+        with: { workspace: true },
     });
-},
+
+    if (!booking) throw new Error('BOOKING_NOT_FOUND');
+
+    const reservedPlaces = await countReservedPlaces(transaction, bookingId);
+    if (reservedPlaces >= booking.workspace.capacity) {
+        throw new Error('BOOKING_FULL');
+    }
+
+    // insertion ou réactivation du participant
+});
 ```
 
 ### 7.3.3. Argumentation
 
-Ce composant illustre l'utilisation de l'ORM Drizzle en mode « relational query » : la jointure avec la table `workspaces` (`with: { workspace: true }`) est exprimée de façon déclarative et typée, sans écrire de SQL manuel, tout en conservant les avantages du typage strict. Le tri par date décroissante (`orderBy`) répond au besoin métier d'afficher les réservations les plus récentes en premier.
+Une invitation en attente réserve déjà une place. Sans verrou, deux requêtes pourraient lire la même capacité disponible et ajouter chacune un participant. La transaction verrouille la réservation avec `FOR UPDATE`, recompte les participants non refusés, puis effectue l'écriture.
 
-## 7.4. Accès aux données NoSQL — Logs d'audit MongoDB (Composants d’accès aux données)
+La même règle est appliquée aux invitations et à la participation directe dans une réservation publique. Le propriétaire est créé comme participant accepté dans la transaction de création de la réservation.
+
+## 7.4. Jeton de check-in et stockage du hash
 
 ### 7.4.1. Affichage
 
-L'écran `/admin/audit` liste les 100 suppressions les plus récentes avec la date, l'action, l'entité concernée, l'auteur et son rôle. Une capture de cet écran alimenté par des données de démonstration reste à insérer dans la version PDF.
+_(Insérer une capture du QR code puis de l'écran "Présence confirmée".)_
 
-### 7.4.2. Extrait(s) de code
+### 7.4.2. Extrait de code
 
 ```typescript
-// apps/backend/src/modules/audit/audit.service.ts
+function hashToken(token: string): string {
+    return new Bun.CryptoHasher('sha256').update(token).digest('hex');
+}
+
+function createToken(): string {
+    const bytes = crypto.getRandomValues(new Uint8Array(32));
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+```
+
+```typescript
+if (!participant) throw new Error('PARTICIPANT_NOT_FOUND');
+if (participant.invitationStatus !== 'ACCEPTED') {
+    throw new Error('INVITATION_NOT_ACCEPTED');
+}
+
+const now = new Date();
+if (now < participant.booking.startAt) throw new Error('CHECK_IN_TOO_EARLY');
+if (now >= participant.booking.endAt) throw new Error('BOOKING_ENDED');
+```
+
+### 7.4.3. Argumentation
+
+Le jeton brut est nécessaire dans le QR, mais pas dans la base. Le serveur compare le hash reçu au hash enregistré. Une fuite de la table ne révèle donc pas directement le jeton utilisable. La génération suivante remplace la ligne associée à la réservation et invalide le QR précédent.
+
+Le QR seul ne suffit pas. L'utilisateur doit être connecté, appartenir à la réservation, avoir accepté l'invitation et effectuer l'action pendant le créneau.
+
+## 7.5. Audits MongoDB
+
+### 7.5.1. Affichage
+
+La page `/admin/audit` montre les 100 événements les plus récents avec l'action, l'entité, la date et l'auteur.
+
+_(Insérer une capture de cet écran avec les données de démonstration.)_
+
+### 7.5.2. Extrait de code
+
+```typescript
 async logDeletion(
     entityType: AuditLog['entityType'],
     entityId: string | number,
@@ -1250,23 +913,24 @@ async logDeletion(
         entityData,
         performedBy,
     });
-},
+}
 ```
 
-### 7.4.3. Argumentation
+### 7.5.3. Argumentation
 
-Ce composant démontre l'utilisation conjointe de deux systèmes de persistance selon la nature des données : PostgreSQL pour les données métier structurées (contraintes fortes, relations), MongoDB pour les logs d'audit dont le schéma peut évoluer sans migration SQL. Le service tente d'enregistrer chaque suppression sensible avec l'identité de son auteur. Dans le MVP, une panne MongoDB est journalisée côté serveur sans annuler la suppression PostgreSQL ; cette limite de traçabilité est explicitement conservée comme axe d'amélioration.
+PostgreSQL contient les données métier structurées. MongoDB reçoit les événements d'audit, dont le contenu peut varier selon l'entité supprimée. Le service conserve l'auteur et l'instant de l'action, puis trie les lectures par date décroissante.
 
-## 7.5. Client RPC typé de bout en bout (Autres)
+Le choix best effort évite qu'une indisponibilité MongoDB empêche une suppression PostgreSQL. Il implique en contrepartie qu'un événement puisse manquer. Cette limite est documentée et testée.
 
-### 7.5.1. Affichage
+## 7.6. Client RPC typé
 
-_(Insérer une capture d'écran de l'auto-complétion TypeScript dans l'éditeur, montrant l'inférence des routes/typages côté frontend.)_
+### 7.6.1. Affichage
 
-### 7.5.2. Extrait(s) de code
+_(Insérer une capture de l'autocomplétion TypeScript d'une route Hono dans le frontend.)_
+
+### 7.6.2. Extrait de code
 
 ```typescript
-// apps/frontend/src/lib/client.ts
 import { env } from '$env/dynamic/public';
 import { hc } from 'hono/client';
 import type { AppType } from '@tempo/backend/src/index';
@@ -1274,106 +938,128 @@ import type { AppType } from '@tempo/backend/src/index';
 export function createApiClient(apiUrl: string | undefined, options: ApiClientOptions = {}) {
     return hc<AppType>(normalizeApiUrl(apiUrl), {
         headers: options.token ? { Authorization: `Bearer ${options.token}` } : {},
+        fetch: options.fetch,
     });
-}
-
-export function getAuthClient() {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    return createApiClient(env.PUBLIC_API_URL, { token });
 }
 ```
 
-### 7.5.3. Argumentation
+### 7.6.3. Argumentation
 
-Cette approche (Hono RPC) permet au frontend Svelte d'importer directement le type `AppType` exporté par le backend, sans génération de code ni client SDK séparé. Toute évolution d'une route côté backend est immédiatement répercutée côté frontend par une erreur de compilation TypeScript, ce qui sécurise fortement l'intégration entre les deux couches de l'application dans un contexte de monorepo.
+Le frontend importe uniquement le type `AppType`. Hono en déduit les routes, les méthodes, les entrées et les réponses. Une modification incompatible du backend provoque une erreur TypeScript dans le frontend, sans générateur de SDK intermédiaire.
 
-# 8\. ELEMENTS DE SECURITE DE L’APPLICATION
+Cette solution est adaptée au monorepo. Elle ne remplace pas la validation à l'exécution, qui reste assurée par Zod et par la lecture contrôlée des réponses HTTP.
 
-Plusieurs mesures de sécurité ont été mises en place à chaque couche de l'application :
+# 8\. ÉLÉMENTS DE SÉCURITÉ DE L'APPLICATION
 
-- **Authentification** : JWT signé (HS256), durée de vie limitée (24h), middleware `authGuard` appliqué systématiquement aux routes sensibles ;
-- **Autorisation (RBAC)** : contrôle du rôle (`ADMIN`/`USER`) dans les routes, restreignant les actions d'administration (gestion des espaces, vue globale des réservations) ;
-- **Mots de passe** : hachage via `Bun.password` (Argon2id), aucun mot de passe en clair en base ni dans les logs ;
-- **Validation des entrées** : schémas Zod appliqués à chaque route (`@hono/zod-validator`), limitant les risques d'injection ou de données malformées ;
-- **Intégrité référentielle** : contraintes de clés étrangères avec suppression en cascade contrôlée (`ON DELETE CASCADE`) ;
-- **Traçabilité (audit)** : journalisation des suppressions sensibles dans MongoDB avec l'identité de l'auteur de l'action, à des fins de conformité RGPD ;
-- **Sécurité HTTP** : CORS limité à l'origine frontend configurée, en-têtes défensifs et limitation des requêtes de connexion/inscription avec réponse HTTP 429 ;
-- **Qualité et non-régression** : intégration continue (GitHub Actions) exécutant systématiquement lint, formatage, types, tests, build et recette Docker à chaque envoi ou proposition de fusion ;
-- **Secrets** : secret JWT et identifiants de connexion aux bases de données chargés via des variables d'environnement. Seuls des modèles `.env.example` avec valeurs factices sont versionnés ; les fichiers `.env` réels sont ignorés par Git.
+La sécurité repose sur plusieurs contrôles complémentaires :
 
-Dans le MVP, le jeton est stocké dans `localStorage`. Ce choix simplifie le client RPC mais rend le jeton accessible à tout script exécuté dans la page en cas de faille XSS. La CSP ajoutée aux réponses de l'API ne protège pas à elle seule le document frontend : ce risque demeure. Avant une exposition publique, l'amélioration recommandée est une session portée par un cookie `HttpOnly`, `Secure` et `SameSite`, accompagnée d'une protection CSRF adaptée. Le limiteur actuel est local à chaque processus ; plusieurs instances backend nécessiteraient un stockage partagé, par exemple Redis.
+| Risque                                | Mesure appliquée                                           | Preuve                                          |
+| ------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------- |
+| Mot de passe exposé                   | Hash avec `Bun.password`, aucun hash renvoyé               | `auth.service.spec.ts`, `users.service.spec.ts` |
+| Route appelée sans session            | JWT HS256 avec expiration de 24 heures                     | `auth.guard.spec.ts`, tests de routes           |
+| Action d'administration par `USER`    | `adminGuard` et contrôles de rôle                          | `admin.routes.spec.ts`                          |
+| Donnée malformée                      | Schémas Zod sur corps, paramètres et requêtes              | Tests DTO et HTTP 400                           |
+| Double réservation concurrente        | Exclusion GiST PostgreSQL                                  | Test d'intégration concurrent                   |
+| Dépassement de capacité               | Transaction et verrou `FOR UPDATE`                         | Service des participants                        |
+| Bruteforce sur l'authentification     | 10 requêtes par adresse sur 15 minutes                     | `rate-limit.spec.ts`                            |
+| Appel depuis une origine imprévue     | CORS limité à `FRONTEND_ORIGIN`                            | `app.security.spec.ts`                          |
+| Jeton QR lu en base                   | Hash SHA-256 et rotation                                   | Service de check-in                             |
+| Jeton QR transmis au serveur frontend | Fragment URL puis `sessionStorage` si connexion            | `route-guard.spec.ts`, E2E                      |
+| Secret versionné                      | Variables d'environnement et modèles factices              | `.gitignore`, `.env.example`                    |
+| Régression                            | Format, lint, types, tests, builds et recette Docker en CI | GitHub Actions                                  |
 
-Axes d'amélioration identifiés : migration du JWT vers un cookie sécurisé, limiteur distribué en cas de déploiement horizontal, rotation du secret JWT et chiffrement TLS lors d'un déploiement en production.
+Le JWT reste dans `localStorage`. Ce choix simplifie le client RPC, mais expose le jeton à un script exécuté par une faille XSS. Une version publique devrait utiliser un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF.
+
+Le limiteur actuel est propre à un processus. Un déploiement horizontal demanderait un stockage partagé. TLS doit aussi être terminé devant l'application. Enfin, l'audit best effort et le QR commun à une réservation sont des compromis connus de la V1.
 
 # 9\. PLAN DE TESTS
 
-Le plan de tests repose principalement sur des **tests unitaires backend** (Bun Test), couvrant les services métier de chaque module :
+## 9.1. Niveaux de test
 
-| Module            | Fichier de test                                                                          | Ce qui est testé                                                                     |
-| ----------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `auth`            | `auth.service.spec.ts`                                                                   | Inscription, connexion, hachage/vérification de mot de passe, génération du JWT      |
-| `bookings`        | `bookings.service.spec.ts`                                                               | Chevauchement, conflit PostgreSQL, création, visibilité, consultation et suppression |
-| Collaboration     | `booking-collaboration.routes.spec.ts`                                                   | Invitations, participation publique, autorisations et fenêtre de check-in            |
-| `workspaces`      | `workspaces.service.spec.ts` et `workspaces.dto.spec.ts`                                 | Création, consultation, modification, suppression et validation PATCH                |
-| `users`           | `users.service.spec.ts`                                                                  | Gestion des comptes utilisateurs                                                     |
-| `audit`           | `audit.service.spec.ts`                                                                  | Écriture et lecture des logs d'audit MongoDB                                         |
-| `analytics`       | `analytics.service.spec.ts`                                                              | Indicateurs globaux et agrégation par espace                                         |
-| `authGuard`       | `auth.guard.spec.ts`                                                                     | Refus du rôle `USER` et autorisation du rôle `ADMIN`                                 |
-| Routes admin      | `admin.routes.spec.ts`                                                                   | Réponses 401/403 et validation PATCH sur les routes d'audit et d'espaces             |
-| Routes HTTP       | `http.routes.spec.ts`                                                                    | Statuts 200/201/400/401/403/404/409, validation, gardes JWT et erreurs métier        |
-| Intégration PG    | `postgres-bookings.integration.spec.ts`                                                  | Persistance, concurrence, invitation, acceptation et QR sur PostgreSQL réel          |
-| Intégration Mongo | `mongo-audit.integration.spec.ts`                                                        | Écriture, auteur, horodatage, ordre et filtrage des logs d'audit réels               |
-| E2E navigateur    | `booking-flow.spec.ts`                                                                   | Réservation/annulation puis invitation/acceptation/check-in dans Chromium            |
-| Sécurité HTTP     | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts`                  | CORS, en-têtes, configuration, quotas, isolation et réinitialisation des fenêtres    |
-| Seed démo         | `demo-seed.config.spec.ts`                                                               | Validation des comptes de démonstration et refus des mots de passe trop courts       |
-| Frontend          | `auth.svelte.spec.ts`, `authorized-api.spec.ts`, `client.spec.ts`, `route-guard.spec.ts` | Connexion, configuration du client RPC, réservation, erreurs 401/403 et gardes admin |
+| Niveau                   | Outil      | Périmètre                                           | Nombre |
+| ------------------------ | ---------- | --------------------------------------------------- | -----: |
+| Backend unitaire et HTTP | Bun Test   | Services, DTO, middlewares, routes, sécurité        |     99 |
+| Frontend unitaire        | Vitest     | Authentification, client RPC, API autorisée, gardes |     18 |
+| Intégration PostgreSQL   | Bun Test   | Persistance, concurrence, collaboration et QR       |      3 |
+| Intégration MongoDB      | Bun Test   | Écriture, auteur, ordre et filtrage                 |      2 |
+| E2E Chromium             | Playwright | Réservation et parcours collaboratif                |      2 |
 
-Au total, **99 tests backend unitaires/HTTP et 18 tests frontend** sont exécutés par `bun run test`. Trois tests d'intégration PostgreSQL, deux tests d'intégration MongoDB et deux parcours E2E Playwright complètent cette validation. Ils couvrent une réservation complète, deux créations concurrentes dont une seule doit réussir, les invitations et le check-in par QR code, l'écriture et la lecture des audits, puis les deux parcours navigateur. Ces sept scénarios d'intégration/E2E passent localement. L'[exécution GitHub Actions réussie du 1er septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33485477310) confirme par ailleurs le fonctionnement du pipeline sur un runner neuf avec la stack Docker complète ; une nouvelle exécution validera cette évolution dans la CI.
+Les tests d'intégration ne sont pas compris dans les 99 tests backend standards. Le total backend, intégrations comprises, est donc de 104 tests.
 
-Ce plan de tests sera enrichi au fil des évolutions technologiques (autres parcours E2E, tests de charge sur l'algorithme de détection de chevauchement) et des retours de veille sécurité (voir section 11).
+## 9.2. Couverture par module
 
-# 10\. JEU D’ESSAI DE LA FONCTIONNALITE LA PLUS REPRESENTATIVE
+| Module           | Fichiers principaux                                                     | Points contrôlés                                                           |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Authentification | `auth.service.spec.ts`, `demo-seed.config.spec.ts`                      | Inscription, connexion, hash, JWT, configuration                           |
+| Sécurité HTTP    | `app.security.spec.ts`, `security.config.spec.ts`, `rate-limit.spec.ts` | CORS, en-têtes, origine, limite et HTTP 429                                |
+| Autorisations    | `auth.guard.spec.ts`, `admin.routes.spec.ts`                            | HTTP 401, HTTP 403, rôles `USER` et `ADMIN`                                |
+| Espaces          | `workspaces.service.spec.ts`, `workspaces.dto.spec.ts`                  | CRUD, capacité et validation PATCH                                         |
+| Réservations     | `bookings.service.spec.ts`, `http.routes.spec.ts`                       | Création, visibilité, chevauchement, suppression et statuts HTTP           |
+| Collaboration    | `booking-collaboration.routes.spec.ts`                                  | Invitation, réponse, participation publique, droits et fenêtre de check-in |
+| Statistiques     | `analytics.service.spec.ts`                                             | Totaux, bornes temporelles et taux                                         |
+| Audit            | `audit.service.spec.ts`                                                 | Écriture et lecture MongoDB                                                |
+| Frontend         | quatre fichiers `.spec.ts`                                              | Stockage de session, erreurs, client et navigation                         |
+| Intégration      | fichiers du dossier `integration`                                       | Bases réelles et migrations                                                |
+| E2E              | `e2e/booking-flow.spec.ts`                                              | Deux parcours utilisateur complets                                         |
 
-## 10.1. Fonctionnalité testée
+## 9.3. Environnements et critères de réussite
 
-La fonctionnalité retenue comme la plus représentative est la **création d'une réservation avec détection de chevauchement** (module `bookings`), car elle concentre à la fois une règle métier non triviale (intersection d'intervalles de temps), une logique d'autorisation, et une gestion d'erreurs métier explicite (espace introuvable, créneau déjà réservé).
+Les tests unitaires fonctionnent sans base grâce aux mocks. Les intégrations utilisent PostgreSQL et MongoDB réels. Playwright démarre le backend et le frontend puis contrôle Chromium. Le job Docker repart d'une stack neuve, applique les migrations et charge le seed.
 
-## 10.2. Description des scenarios
+Une suite est réussie si aucune assertion n'échoue, si Svelte Check ne produit ni erreur ni avertissement, et si le build de production se termine. Pour l'E2E, les réponses attendues doivent être reçues et les éléments visibles doivent correspondre au parcours. En cas d'échec, Playwright conserve une trace, une capture et une vidéo.
 
-| Jeu d'essai | Description                                                                                                     | Résultat attendu                                    |
-| ----------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| JE1         | Création d'une réservation sur un espace existant, créneau libre (10h-11h)                                      | Réservation créée (HTTP 201)                        |
-| JE2         | Création d'une réservation sur un espace inexistant                                                             | Erreur `WORKSPACE_NOT_FOUND` (HTTP 404)             |
-| JE3         | Création d'une réservation sur un créneau totalement identique à une réservation existante (10h-11h vs 10h-11h) | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
-| JE4         | Création d'une réservation chevauchant partiellement le début d'une réservation existante (9h-11h vs 10h-12h)   | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
-| JE5         | Création d'une réservation chevauchant partiellement la fin d'une réservation existante (11h-13h vs 10h-12h)    | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
-| JE6         | Création d'une réservation totalement incluse dans une réservation existante (11h-12h vs 10h-14h)               | Erreur `BOOKING_OVERLAP` (HTTP 409)                 |
-| JE7         | Création d'une réservation immédiatement consécutive à une réservation existante (12h-13h juste après 10h-12h)  | Réservation créée (HTTP 201), pas de chevauchement  |
-| JE8         | Suppression d'une réservation par son propriétaire                                                              | Réservation supprimée, log d'audit créé             |
-| JE9         | Suppression d'une réservation par un autre utilisateur que le propriétaire                                      | Erreur `UNAUTHORIZED` (HTTP 403)                    |
-| JE10        | Suppression de la réservation d'un utilisateur par un administrateur                                            | Réservation supprimée, auteur administrateur audité |
+Les vérifications locales ont donné 99 tests backend, 18 tests frontend, 3 intégrations PostgreSQL, 2 intégrations MongoDB et 2 E2E réussis. L'[exécution GitHub Actions du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) confirme le même résultat sur la stack Docker du runner.
 
-## 10.3. Résultats des tests
+## 9.4. Évolutions du plan
 
-| Jeu d'essai | Résultat attendu            | Résultat obtenu |
-| ----------- | --------------------------- | --------------- |
-| JE1         | Réservation créée (201)     | Conforme ✅     |
-| JE2         | `WORKSPACE_NOT_FOUND` (404) | Conforme ✅     |
-| JE3         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
-| JE4         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
-| JE5         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
-| JE6         | `BOOKING_OVERLAP` (409)     | Conforme ✅     |
-| JE7         | Réservation créée (201)     | Conforme ✅     |
-| JE8         | Suppression + log d'audit   | Conforme ✅     |
-| JE9         | `UNAUTHORIZED` (403)        | Conforme ✅     |
+La couverture actuelle vise les règles fonctionnelles et de sécurité de la V1. Elle ne mesure pas encore les performances sous charge, l'accessibilité complète ou la compatibilité avec Firefox et WebKit. Ces contrôles devront être ajoutés si le produit dépasse le cadre de démonstration.
 
-_(Les résultats ci-dessus correspondent à l'exécution des tests unitaires `bookings.service.spec.ts`, tous passants via `bun test`. Insérer ici une capture d'écran de l'exécution `bun test` en local ou du job CI GitHub Actions.)_
+# 10\. JEU D'ESSAI DE LA FONCTIONNALITÉ LA PLUS REPRÉSENTATIVE
+
+## 10.1. Fonctionnalité retenue
+
+Le parcours retenu est une réservation publique avec invitation, acceptation et check-in par QR code. Il traverse l'authentification, les droits, les transactions PostgreSQL, la capacité de l'espace, la visibilité, la génération du QR et l'interface Svelte. La contrainte de chevauchement reste vérifiée dans le même module.
+
+## 10.2. Scénarios
+
+| Référence | Action                                                           | Résultat attendu                                            |
+| --------- | ---------------------------------------------------------------- | ----------------------------------------------------------- |
+| JE1       | Créer une réservation sur un espace existant et un créneau libre | HTTP 201, propriétaire ajouté comme participant accepté     |
+| JE2       | Créer la même réservation avec deux requêtes simultanées         | Une seule création réussit, l'autre reçoit HTTP 409         |
+| JE3       | Créer une réservation sur un espace inexistant                   | HTTP 404 `WORKSPACE_NOT_FOUND`                              |
+| JE4       | Créer un créneau identique ou partiellement chevauchant          | HTTP 409 `BOOKING_OVERLAP`                                  |
+| JE5       | Créer un créneau qui commence à la fin du précédent              | HTTP 201, les intervalles sont consécutifs                  |
+| JE6       | Inviter un utilisateur existant lorsqu'une place est libre       | HTTP 201, participant `PENDING`                             |
+| JE7       | Rejoindre une réservation privée sans invitation                 | HTTP 403                                                    |
+| JE8       | Accepter l'invitation avec le compte concerné                    | HTTP 200, statut `ACCEPTED`                                 |
+| JE9       | Générer le QR avec le propriétaire ou un administrateur          | HTTP 200, QR généré et jeton utilisable pour la réservation |
+| JE10      | Effectuer le check-in avant le début du créneau                  | HTTP 409                                                    |
+| JE11      | Effectuer le check-in pendant le créneau avec le bon participant | HTTP 200 et `checkedInAt` enregistré                        |
+| JE12      | Annuler avec un autre utilisateur standard                       | HTTP 403                                                    |
+| JE13      | Annuler avec le propriétaire ou un administrateur                | HTTP 200 et tentative d'audit                               |
+
+## 10.3. Résultats
+
+| Groupe                                 | Scénarios validés                                 | Résultat |
+| -------------------------------------- | ------------------------------------------------- | -------- |
+| `bookings.service.spec.ts`             | JE1, JE3, JE4, JE5, JE12, JE13                    | Conforme |
+| `booking-collaboration.routes.spec.ts` | JE6, JE7, JE8, JE10                               | Conforme |
+| Intégration PostgreSQL                 | JE1, JE2, JE6, JE8, JE9, JE11                     | Conforme |
+| E2E réservation                        | JE1 et JE13 depuis l'interface                    | Conforme |
+| E2E collaboration                      | JE6, JE8, JE9 et JE11 depuis l'API et l'interface | Conforme |
+| Intégration MongoDB                    | Audit de JE13                                     | Conforme |
+
+Les scénarios sont exécutés automatiquement. Les tests PostgreSQL appliquent les migrations avant le parcours et vérifient la valeur de `checkedInAt` en base. Le test E2E se connecte avec les comptes du seed, accepte l'invitation dans l'interface, ouvre l'URL du QR et attend le message "Présence confirmée".
+
+![Exécution réussie du pipeline GitHub Actions](github-ci.png)
+
+_(Insérer ici une capture de l'écran "Présence confirmée".)_
 
 ## 10.4. Conclusion
 
-L'ensemble des jeux d'essai sur la fonctionnalité de réservation sont concluants : la logique de détection de chevauchement couvre correctement tous les cas d'intersection d'intervalles (chevauchement partiel, total, réservations consécutives). Aucune réserve n'a été identifiée sur cette fonctionnalité à ce stade.
+Les scénarios automatisés sont conformes en local et dans GitHub Actions. La contrainte PostgreSQL protège le créneau sous concurrence. La transaction des participants protège la capacité. Le check-in vérifie l'identité, le statut, la réservation, l'heure et le jeton QR.
 
-Action à accomplir : compléter ces tests unitaires par un test d'intégration bout-en-bout (appel HTTP réel sur une base de données de test) pour valider l'ensemble de la chaîne route → service → base de données.
+Ce jeu d'essai valide le parcours fonctionnel le plus complet de la V1. Les limites restantes concernent surtout une utilisation en production publique : stockage du JWT, check-in à distance possible avec un QR partagé, absence de tests de charge et audit MongoDB best effort.
 
 # 11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ
 

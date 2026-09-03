@@ -40,7 +40,7 @@ jobs:
               run: bun run build
 
     # JOB 2: Build Verification
-    docker-build:
+    integration-e2e:
         name: 🐳 Docker Build Check
         needs: quality # Only runs if Quality passes
         runs-on: ubuntu-latest
