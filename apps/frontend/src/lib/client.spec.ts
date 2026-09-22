@@ -13,19 +13,20 @@ describe('API client', () => {
 		},
 	);
 
-	it('adds the bearer token to authenticated requests', async () => {
-		let authorizationHeader: string | null = null;
+	it('sends cookies and CSRF protection without a bearer token', async () => {
+		let captured: Request | undefined;
 		const client = createApiClient('http://tempo.test', {
-			token: 'test-token',
 			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
-				authorizationHeader = request.headers.get('authorization');
+				captured = request;
 				return Response.json([]);
 			},
 		});
 
 		await client.bookings.$get();
 
-		expect(authorizationHeader).toBe('Bearer test-token');
+		expect(captured?.credentials).toBe('include');
+		expect(captured?.headers.get('X-CSRF-Protection')).toBe('1');
+		expect(captured?.headers.has('Authorization')).toBe(false);
 	});
 });

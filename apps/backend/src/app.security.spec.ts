@@ -49,6 +49,8 @@ describe('HTTP security middleware', () => {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Origin: 'https://tempo.example.com',
+					'X-CSRF-Protection': '1',
 					'x-forwarded-for': '192.0.2.10',
 				},
 				body: JSON.stringify({}),

@@ -12,6 +12,9 @@ import bookingsRoute from './modules/bookings/bookings.route';
 import usersRoute from './modules/users/users.route';
 import workspacesRoute from './modules/workspaces/workspaces.route';
 import { rateLimit } from './middlewares/rate-limit';
+import { csrfGuard } from './middlewares/csrf';
+import type { AuthEnv } from './middlewares/auth.guard';
+import { authService } from './modules/auth/auth.service';
 
 export interface AppOptions extends HttpSecurityConfig {
 	logger?: boolean;
@@ -34,7 +37,8 @@ function getClientAddress(context: Context, trustProxy: boolean): string {
 }
 
 export function createApp(options: AppOptions) {
-	const app = new Hono();
+	authService.getSecret();
+	const app = new Hono<AuthEnv>();
 
 	if (options.logger !== false) {
 		app.use('*', logger());
@@ -59,21 +63,23 @@ export function createApp(options: AppOptions) {
 		cors({
 			origin: options.frontendOrigin,
 			allowMethods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-			allowHeaders: ['Authorization', 'Content-Type'],
+			allowHeaders: ['Content-Type', 'X-CSRF-Protection'],
+			credentials: true,
 			maxAge: 600,
 		}),
 	);
-	app.use('/auth/*', async (context, next) => {
-		await next();
+	app.use('*', async (context, next) => {
+		context.set('sessionCookieSecure', new URL(options.frontendOrigin).protocol === 'https:');
 		context.header('Cache-Control', 'no-store');
+		await next();
 	});
-	app.use(
-		'/auth/*',
-		rateLimit({
-			...options.authRateLimit,
-			keyGenerator: (context) => getClientAddress(context, options.trustProxy),
-		}),
-	);
+	app.use('*', csrfGuard(options.frontendOrigin));
+	const authLimiter = rateLimit({
+		...options.authRateLimit,
+		keyGenerator: (context) => getClientAddress(context, options.trustProxy),
+	});
+	app.use('/auth/login', authLimiter);
+	app.use('/auth/register', authLimiter);
 
 	return app
 		.route('/auth', authRoute)

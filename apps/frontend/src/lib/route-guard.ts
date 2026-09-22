@@ -33,6 +33,7 @@ export function accessRedirect(
 }
 
 export async function enforceRouteAccess(requiredAccess: RouteAccess): Promise<boolean> {
+	await auth.restore();
 	const redirect = accessRedirect(auth, requiredAccess);
 
 	if (!redirect) return true;
@@ -42,6 +43,11 @@ export async function enforceRouteAccess(requiredAccess: RouteAccess): Promise<b
 }
 
 export async function logoutAndRedirect(): Promise<void> {
-	auth.logout();
+	try {
+		await auth.logout();
+	} catch {
+		window.alert('La déconnexion a échoué. Réessayez.');
+		return;
+	}
 	await goto('/login', { replaceState: true });
 }

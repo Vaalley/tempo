@@ -1,12 +1,13 @@
-import { jwt } from 'hono/jwt';
 import type { MiddlewareHandler } from 'hono';
-import { authService } from '../modules/auth/auth.service';
+import { readSession } from '../modules/auth/session';
 
 // Middleware JWT pour protéger les routes
-export const authGuard = jwt({
-	secret: authService.getSecret(),
-	alg: 'HS256',
-});
+export const authGuard: MiddlewareHandler<AuthEnv> = async (c, next) => {
+	const payload = await readSession(c);
+	if (!payload) return c.json({ error: 'Authentification requise' }, 401);
+	c.set('jwtPayload', payload);
+	await next();
+};
 
 // Type pour le payload JWT décodé
 export interface JWTPayload {
@@ -19,6 +20,7 @@ export interface JWTPayload {
 export type AuthEnv = {
 	Variables: {
 		jwtPayload: JWTPayload;
+		sessionCookieSecure?: boolean;
 	};
 };
 

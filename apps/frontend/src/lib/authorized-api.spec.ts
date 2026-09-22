@@ -8,7 +8,6 @@ describe('authorized API', () => {
 		let pathname = '';
 		let requestBody: unknown;
 		const client = createApiClient('http://tempo.test', {
-			token: 'signed-token',
 			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
 				method = request.method;
@@ -47,7 +46,6 @@ describe('authorized API', () => {
 		let pathname = '';
 		let requestBody: unknown;
 		const client = createApiClient('http://tempo.test', {
-			token: 'signed-token',
 			fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
 				const request = new Request(input, init);
 				method = request.method;

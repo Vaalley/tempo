@@ -174,7 +174,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		const invitationResponse = await bookingsRoute.request(`/${bookingId}/invitations`, {
 			method: 'POST',
 			headers: {
-				Authorization: authorization,
+				Cookie: authorization,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ email: guest.email }),
@@ -187,7 +187,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 			{
 				method: 'PATCH',
 				headers: {
-					Authorization: guestAuthorization,
+					Cookie: guestAuthorization,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ status: 'ACCEPTED' }),
@@ -196,7 +196,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		expect(acceptanceResponse.status).toBe(200);
 
 		const visibleBookingsResponse = await bookingsRoute.request('/', {
-			headers: { Authorization: guestAuthorization },
+			headers: { Cookie: guestAuthorization },
 		});
 		expect(visibleBookingsResponse.status).toBe(200);
 		const visibleBookings = (await visibleBookingsResponse.json()) as Array<{ id: string }>;
@@ -204,7 +204,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 
 		const qrResponse = await bookingsRoute.request(`/${bookingId}/qr`, {
 			method: 'POST',
-			headers: { Authorization: authorization },
+			headers: { Cookie: authorization },
 		});
 		expect(qrResponse.status).toBe(200);
 		const qrCode = (await qrResponse.json()) as {
@@ -219,7 +219,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		const checkInResponse = await bookingsRoute.request(`/${bookingId}/check-in`, {
 			method: 'POST',
 			headers: {
-				Authorization: guestAuthorization,
+				Cookie: guestAuthorization,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ token }),
@@ -244,7 +244,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		return bookingsRoute.request('/', {
 			method: 'POST',
 			headers: {
-				Authorization: authorization,
+				Cookie: authorization,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
@@ -261,7 +261,7 @@ describe.skipIf(!integrationEnabled)('PostgreSQL booking integration', () => {
 		email: string;
 		role: 'ADMIN' | 'USER';
 	}): Promise<string> {
-		return `Bearer ${await sign(
+		return `tempo_session=${await sign(
 			{
 				sub: user.id,
 				email: user.email,

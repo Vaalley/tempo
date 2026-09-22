@@ -4,10 +4,6 @@ interface CreatedBookingResponse {
 	id: string;
 }
 
-interface LoginResponse {
-	token: string;
-}
-
 interface InvitationResponse {
 	id: string;
 }
@@ -16,6 +12,10 @@ interface QrCodeResponse {
 	checkInUrl: string;
 }
 
+const csrfHeaders = {
+	Origin: (process.env.E2E_BASE_URL ?? 'http://localhost:5173').replace(/\/$/, ''),
+	'X-CSRF-Protection': '1',
+};
 const apiURL = (process.env.E2E_API_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const userEmail = process.env.E2E_USER_EMAIL ?? 'user@tempo.test';
 const userPassword = process.env.E2E_USER_PASSWORD ?? 'change-me-demo-user';
@@ -30,9 +30,8 @@ function futureDate(): string {
 	return date.toISOString().slice(0, 10);
 }
 
-test('connexion, réservation, consultation puis annulation', async ({ page, request }) => {
+test('connexion, réservation, consultation puis annulation', async ({ page }) => {
 	let bookingId: string | undefined;
-	let token: string | null = null;
 	const browserErrors: string[] = [];
 
 	page.on('pageerror', (error) => browserErrors.push(error.message));
@@ -55,8 +54,15 @@ test('connexion, réservation, consultation puis annulation', async ({ page, req
 		await expect(page).toHaveURL(/\/$/);
 		await page.waitForLoadState('networkidle');
 		await expect(page.getByText(userEmail)).toBeVisible();
-		token = await page.evaluate(() => localStorage.getItem('token'));
-		expect(token).toBeTruthy();
+		const cookie = (await page.context().cookies(apiURL)).find(
+			(item) => item.name === 'tempo_session',
+		);
+		expect(cookie?.httpOnly).toBe(true);
+		expect(cookie?.sameSite).toBe('Strict');
+		expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull();
+		expect(await page.evaluate(() => document.cookie)).not.toContain('tempo_session');
+		await page.reload();
+		await expect(page.getByText(userEmail)).toBeVisible();
 
 		await page.getByRole('link', { name: 'Accéder à mes réservations' }).click();
 		await expect(page).toHaveURL(/\/bookings$/);
@@ -68,6 +74,13 @@ test('connexion, réservation, consultation puis annulation', async ({ page, req
 		await page.getByLabel('Date de début').fill(date);
 		await page.getByLabel('Heure de début').fill('13:37');
 		await page.getByLabel('Date de fin').fill(date);
+		for (const invalidEnd of ['12:37', '13:37']) {
+			await page.getByLabel('Heure de fin').fill(invalidEnd);
+			await page.getByRole('button', { name: 'Réserver' }).click();
+			await expect(page.getByRole('alert')).toContainText(
+				'La date et l’heure de fin doivent être postérieures au début de la réservation.',
+			);
+		}
 		await page.getByLabel('Heure de fin').fill('14:37');
 
 		const creationResponsePromise = page.waitForResponse(
@@ -97,28 +110,38 @@ test('connexion, réservation, consultation puis annulation', async ({ page, req
 		expect(deletionResponse.status()).toBe(200);
 		await expect(bookingRow).toHaveCount(0);
 		bookingId = undefined;
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Se déconnecter' }).click();
+		await expect(page).toHaveURL(/\/login$/);
+		expect(
+			(await page.context().cookies(apiURL)).find((item) => item.name === 'tempo_session'),
+		).toBeUndefined();
+		await page.goto('/bookings');
+		await expect(page).toHaveURL(/\/login$/);
 	} finally {
-		if (bookingId && token) {
-			await request.delete(`${apiURL}/bookings/${bookingId}`, {
-				headers: { Authorization: `Bearer ${token}` },
+		if (bookingId) {
+			await page.request.delete(`${apiURL}/bookings/${bookingId}`, {
+				headers: csrfHeaders,
 			});
 		}
 	}
 });
 
-test('invitation à une réservation publique et check-in par QR code', async ({ page, request }) => {
+test('invitation à une réservation publique et check-in par QR code', async ({
+	page,
+	playwright,
+}) => {
 	let bookingId: string | undefined;
-	let adminToken = '';
+	const request = await playwright.request.newContext({ extraHTTPHeaders: csrfHeaders });
 
 	try {
 		const loginResponse = await request.post(`${apiURL}/auth/login`, {
 			data: { email: adminEmail, password: adminPassword },
 		});
 		expect(loginResponse.status()).toBe(200);
-		adminToken = ((await loginResponse.json()) as LoginResponse).token;
 
 		const workspacesResponse = await request.get(`${apiURL}/workspaces`, {
-			headers: { Authorization: `Bearer ${adminToken}` },
+			headers: csrfHeaders,
 		});
 		expect(workspacesResponse.status()).toBe(200);
 		const workspaces = (await workspacesResponse.json()) as Array<{
@@ -132,7 +155,7 @@ test('invitation à une réservation publique et check-in par QR code', async ({
 		const startAt = new Date(Date.now() - 2 * 60 * 1000);
 		const endAt = new Date(Date.now() + 58 * 60 * 1000);
 		const creationResponse = await request.post(`${apiURL}/bookings`, {
-			headers: { Authorization: `Bearer ${adminToken}` },
+			headers: csrfHeaders,
 			data: {
 				workspaceId: collaborativeWorkspace.id,
 				startAt: startAt.toISOString(),
@@ -146,7 +169,7 @@ test('invitation à une réservation publique et check-in par QR code', async ({
 		const invitationResponse = await request.post(
 			`${apiURL}/bookings/${bookingId}/invitations`,
 			{
-				headers: { Authorization: `Bearer ${adminToken}` },
+				headers: csrfHeaders,
 				data: { email: userEmail },
 			},
 		);
@@ -174,17 +197,18 @@ test('invitation à une réservation publique et check-in par QR code', async ({
 		expect((await acceptanceResponsePromise).status()).toBe(200);
 
 		const qrResponse = await request.post(`${apiURL}/bookings/${bookingId}/qr`, {
-			headers: { Authorization: `Bearer ${adminToken}` },
+			headers: csrfHeaders,
 		});
 		expect(qrResponse.status()).toBe(200);
 		const qrCode = (await qrResponse.json()) as QrCodeResponse;
 		await page.goto(qrCode.checkInUrl);
 		await expect(page.getByRole('heading', { name: 'Présence confirmée' })).toBeVisible();
 	} finally {
-		if (bookingId && adminToken) {
+		if (bookingId) {
 			await request.delete(`${apiURL}/bookings/${bookingId}`, {
-				headers: { Authorization: `Bearer ${adminToken}` },
+				headers: csrfHeaders,
 			});
 		}
+		await request.dispose();
 	}
 });

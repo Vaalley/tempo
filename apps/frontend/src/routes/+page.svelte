@@ -61,9 +61,9 @@
 </svelte:head>
 
 <div class="mx-auto max-w-2xl p-10">
-	<div class="flex justify-between items-center mb-6">
+	<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
 		<h1 class="text-3xl font-bold">Tempo</h1>
-		<div class="flex items-center gap-2">
+		<div class="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
 			<Button variant="ghost" size="sm" href="/bookings">
 				<CalendarDays class="size-4" />
 				{auth.user?.role === 'ADMIN' ? 'Toutes les réservations' : 'Mes réservations'}
@@ -87,11 +87,12 @@
 				</Button>
 			{/if}
 			<Separator orientation="vertical" class="h-6" />
-			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
+			<span class="min-w-0 max-w-full break-all text-sm text-muted-foreground">{auth.user?.email}</span>
 			<Button
 				variant="ghost"
 				size="sm"
 				onclick={logoutAndRedirect}
+				aria-label="Se déconnecter"
 			>
 				<LogOut class="size-4" />
 			</Button>
@@ -112,17 +113,19 @@
 						{error}
 					</div>
 				{/if}
-				<div class="flex gap-3">
+				<div class="flex flex-col gap-3 sm:flex-row">
 					<Input
 						type="email"
 						bind:value={email}
 						placeholder="Email pro"
+						aria-label="Email pro"
 						class="flex-1"
 					/>
 					<Input
 						type="password"
 						bind:value={password}
 						placeholder="Mot de passe"
+						aria-label="Mot de passe"
 						class="flex-1"
 					/>
 					<Button onclick={createUser} disabled={loading}>

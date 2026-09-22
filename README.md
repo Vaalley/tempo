@@ -15,6 +15,18 @@ Application SaaS de gestion d'espaces de travail (Flex-office) permettant aux co
 - prévention atomique des doubles réservations par PostgreSQL ;
 - gestion des espaces, analytique et audit réservés aux administrateurs.
 
+### Règles de capacité
+
+Le propriétaire, les participants acceptés et les invitations en attente occupent
+une place. Un refus libère cette place : une invitation refusée ne peut pas être
+réacceptée directement. L'organisateur doit la renvoyer, ou le collaborateur peut
+rejoindre à nouveau une réservation publique, sous réserve de place disponible.
+
+Une réduction de capacité est refusée avec HTTP 409 si une réservation en cours
+ou future comporte trop de participants. Les réservations terminées sont
+conservées et ne bloquent pas la modification. Les admissions et les changements
+de capacité sont coordonnés par des verrous PostgreSQL.
+
 ## Stack Technique
 
 | Domaine        | Technologie        |
@@ -195,6 +207,11 @@ docker compose exec --no-TTY backend bun run test:integration:postgres
 docker compose exec --no-TTY backend bun run test:integration:mongo
 ```
 
+La commande PostgreSQL inclut également 12 tests de capacité : transitions après
+refus, réduction compatible ou incompatible, admissions simultanées et réduction
+pendant une admission. Les deux fichiers sont exécutés dans des processus séparés
+afin que chacun puisse fermer son pool de connexions à la fin de sa suite.
+
 Les tests E2E Playwright utilisent les comptes et les espaces créés par le seed.
 Le premier parcours vérifie la connexion, la création, l'affichage puis
 l'annulation d'une réservation. Le second crée une réservation publique,
@@ -250,3 +267,30 @@ bases ; ne tentez pas de modifier manuellement la table de suivi Drizzle.
 ## Licence
 
 MIT
+
+## Sessions utilisateur
+
+L’API crée un cookie `tempo_session` à la connexion : `HttpOnly`, `SameSite=Strict`,
+`Path=/`, durée de 24 heures, sans attribut `Domain`. L’attribut `Secure` est activé
+lorsque `FRONTEND_ORIGIN` est en HTTPS ; le HTTP reste utilisable en développement local.
+Le JWT n’apparaît plus dans le JSON de connexion ni dans `localStorage`. Les anciennes
+clés `token` et `user` sont supprimées : une reconnexion est nécessaire après migration.
+
+Le client envoie les cookies avec `credentials: include`. Au chargement,
+`GET /auth/session` retourne le compte ou `{ user: null }`. Les données du compte
+restent en mémoire. `POST /auth/logout` supprime le cookie avec les mêmes attributs.
+Les réponses API utilisent `Cache-Control: no-store`.
+
+Les requêtes qui modifient les données, y compris connexion, inscription et déconnexion,
+exigent `Origin` égal à `FRONTEND_ORIGIN` et `X-CSRF-Protection: 1`.
+CORS autorise uniquement cette origine, avec les credentials. Un client de test ou CLI
+doit conserver le cookie et fournir ces deux en-têtes ; les jetons Bearer ne sont plus acceptés.
+
+En production, servir **le frontend et l’API en HTTPS sur le même site** : par exemple
+`https://app.example.com` et `https://api.example.com`, ou un reverse proxy sur une
+origine commune. Des domaines indépendants ne sont pas compatibles avec `SameSite=Strict`.
+En local, utiliser `localhost` pour les deux services, sans mélanger `localhost` et `127.0.0.1`.
+
+La déconnexion efface le cookie du navigateur, mais le JWT reste sans révocation
+individuelle côté serveur jusqu’à son expiration. `HttpOnly` empêche sa lecture par
+JavaScript ; il ne bloque pas les actions qu’un script XSS pourrait réaliser dans la page.

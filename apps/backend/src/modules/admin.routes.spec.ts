@@ -19,7 +19,7 @@ async function authorizationHeader(role: 'ADMIN' | 'USER'): Promise<string> {
 		'test-jwt-secret',
 	);
 
-	return `Bearer ${token}`;
+	return `tempo_session=${token}`;
 }
 
 describe('admin routes', () => {
@@ -31,7 +31,7 @@ describe('admin routes', () => {
 
 	it('should reject audit access for a standard user', async () => {
 		const response = await auditRoute.request('/', {
-			headers: { Authorization: await authorizationHeader('USER') },
+			headers: { Cookie: await authorizationHeader('USER') },
 		});
 
 		expect(response.status).toBe(403);
@@ -41,7 +41,7 @@ describe('admin routes', () => {
 		const response = await workspacesRoute.request('/1', {
 			method: 'PATCH',
 			headers: {
-				Authorization: await authorizationHeader('USER'),
+				Cookie: await authorizationHeader('USER'),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ name: 'Interdit' }),
@@ -54,7 +54,7 @@ describe('admin routes', () => {
 		const response = await workspacesRoute.request('/1', {
 			method: 'PATCH',
 			headers: {
-				Authorization: await authorizationHeader('ADMIN'),
+				Cookie: await authorizationHeader('ADMIN'),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({}),

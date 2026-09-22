@@ -23,7 +23,7 @@ async function authorizationHeader(role: 'ADMIN' | 'USER' = 'USER'): Promise<str
 		'test-jwt-secret',
 	);
 
-	return `Bearer ${token}`;
+	return `tempo_session=${token}`;
 }
 
 afterEach(() => {
@@ -52,7 +52,7 @@ describe('booking collaboration HTTP routes', () => {
 		const response = await bookingsRoute.request(`/${bookingId}/invitations`, {
 			method: 'POST',
 			headers: {
-				Authorization: await authorizationHeader(),
+				Cookie: await authorizationHeader(),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ email: participant.user.email }),
@@ -69,7 +69,7 @@ describe('booking collaboration HTTP routes', () => {
 
 		const response = await bookingsRoute.request(`/${bookingId}/join`, {
 			method: 'POST',
-			headers: { Authorization: await authorizationHeader() },
+			headers: { Cookie: await authorizationHeader() },
 		});
 
 		expect(response.status).toBe(403);
@@ -91,7 +91,7 @@ describe('booking collaboration HTTP routes', () => {
 		const response = await bookingsRoute.request(`/${bookingId}/invitations/${participantId}`, {
 			method: 'PATCH',
 			headers: {
-				Authorization: await authorizationHeader(),
+				Cookie: await authorizationHeader(),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ status: 'ACCEPTED' }),
@@ -107,7 +107,7 @@ describe('booking collaboration HTTP routes', () => {
 		const response = await bookingsRoute.request(`/${bookingId}/check-in`, {
 			method: 'POST',
 			headers: {
-				Authorization: await authorizationHeader(),
+				Cookie: await authorizationHeader(),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ token: 'a'.repeat(64) }),
@@ -122,7 +122,7 @@ describe('booking collaboration HTTP routes', () => {
 
 		const response = await bookingsRoute.request(`/${bookingId}/qr`, {
 			method: 'POST',
-			headers: { Authorization: await authorizationHeader() },
+			headers: { Cookie: await authorizationHeader() },
 		});
 
 		expect(response.status).toBe(403);

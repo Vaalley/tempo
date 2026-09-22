@@ -16,6 +16,13 @@
 	let error = $state('');
 
 	onMount(async () => {
+		try {
+			await auth.restore();
+		} catch {
+			error = 'Impossible de vérifier la session. Rechargez cette page pour réessayer.';
+			loading = false;
+			return;
+		}
 		const returnTo = `${window.location.pathname}${window.location.hash}`;
 
 		if (!auth.isLoggedIn) {
@@ -29,7 +36,6 @@
 		const parameters = new URLSearchParams(window.location.hash.slice(1));
 		const bookingId = parameters.get('bookingId');
 		const token = parameters.get('token');
-		window.history.replaceState(null, '', window.location.pathname);
 
 		if (!bookingId || !token) {
 			error = 'Ce QR code est incomplet.';
@@ -39,6 +45,7 @@
 
 		try {
 			const result = await authorizedApi.bookings.checkIn(bookingId, { token });
+			window.history.replaceState(null, '', window.location.pathname);
 			checkedInAt = result.checkedInAt ? new Date(result.checkedInAt).toLocaleString('fr-FR') : null;
 		} catch (caughtError) {
 			error = getErrorMessage(caughtError, 'Le check-in a échoué');

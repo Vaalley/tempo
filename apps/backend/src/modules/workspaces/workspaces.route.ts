@@ -42,15 +42,27 @@ const app = new Hono<AuthEnv>()
 		zValidator('param', paramIdSchema),
 		zValidator('json', updateWorkspaceSchema),
 		async (c) => {
-			const { id } = c.req.valid('param');
-			const data = c.req.valid('json');
-			const workspace = await workspaceService.update(id, data);
+			try {
+				const { id } = c.req.valid('param');
+				const data = c.req.valid('json');
+				const workspace = await workspaceService.update(id, data);
 
-			if (!workspace) {
-				return c.json({ error: 'Workspace not found' }, 404);
+				if (!workspace) {
+					return c.json({ error: 'Workspace not found' }, 404);
+				}
+
+				return c.json(workspace);
+			} catch (error) {
+				if (error instanceof Error && error.message === 'WORKSPACE_CAPACITY_CONFLICT') {
+					return c.json(
+						{
+							error: 'Cette capacité est inférieure au nombre de participants des réservations en cours ou à venir',
+						},
+						409,
+					);
+				}
+				throw error;
 			}
-
-			return c.json(workspace);
 		},
 	)
 	// DELETE /workspaces/:id - Delete a workspace

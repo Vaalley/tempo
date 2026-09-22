@@ -11,6 +11,14 @@ const mockWhere = mock(() => ({ returning: mockReturning }));
 const mockSet = mock(() => ({ where: mockWhere }));
 const mockUpdate = mock(() => ({ set: mockSet }));
 const mockDelete = mock(() => ({ where: mockWhere }));
+const transaction = {
+	query: { workspaces: { findFirst: mockFindFirst } },
+	execute: mock(() => Promise.resolve()),
+	update: mockUpdate,
+};
+const mockTransaction = mock(
+	async (callback: (tx: typeof transaction) => Promise<unknown>) => await callback(transaction),
+);
 
 mock.module('../../db', () => ({
 	db: {
@@ -23,6 +31,7 @@ mock.module('../../db', () => ({
 		insert: mockInsert,
 		update: mockUpdate,
 		delete: mockDelete,
+		transaction: mockTransaction,
 	},
 }));
 
@@ -37,6 +46,8 @@ describe('WorkspaceService', () => {
 		mockSet.mockReset();
 		mockUpdate.mockReset();
 		mockDelete.mockReset();
+		transaction.execute.mockClear();
+		mockFindFirst.mockResolvedValue({ id: 1, capacity: 10 });
 
 		// Reconfigure les retours par défaut
 		mockValues.mockReturnValue({ returning: mockReturning });
@@ -166,6 +177,7 @@ describe('WorkspaceService', () => {
 		});
 
 		it('should return undefined when workspace to update does not exist', async () => {
+			mockFindFirst.mockResolvedValue(undefined);
 			mockReturning.mockResolvedValue([]);
 
 			const result = await workspaceService.update(999, { name: 'Introuvable' });

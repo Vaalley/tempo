@@ -98,12 +98,12 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl p-10">
-	<div class="flex justify-between items-center mb-6">
+	<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
 		<div>
 			<h1 class="text-3xl font-bold">Gestion des Espaces</h1>
 			<p class="text-muted-foreground text-sm mt-1">Bureaux et salles de réunion</p>
 		</div>
-		<div class="flex items-center gap-2">
+		<div class="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
 			<Button variant="ghost" size="sm" href="/">
 				<ArrowLeft class="size-4" />
 				Accueil
@@ -117,11 +117,12 @@
 				Audit
 			</Button>
 			<Separator orientation="vertical" class="h-6" />
-			<span class="text-sm text-muted-foreground">{auth.user?.email}</span>
+			<span class="min-w-0 max-w-full break-all text-sm text-muted-foreground">{auth.user?.email}</span>
 			<Button
 				variant="ghost"
 				size="sm"
 				onclick={logoutAndRedirect}
+				aria-label="Se déconnecter"
 			>
 				<LogOut class="size-4" />
 			</Button>
@@ -151,13 +152,14 @@
 					type="text"
 					bind:value={name}
 					placeholder="Nom de l'espace"
+					aria-label="Nom de l’espace"
 				/>
 				<Select.Root
 					type="single"
 					value={type}
 					onValueChange={(v) => { if (v) type = v as 'DESK' | 'MEETING_ROOM'; }}
 				>
-					<Select.Trigger class="w-full">
+					<Select.Trigger class="w-full" aria-label="Type d’espace">
 						{type === 'DESK' ? 'Bureau' : 'Salle de réunion'}
 					</Select.Trigger>
 					<Select.Content>
@@ -170,6 +172,7 @@
 					bind:value={capacity}
 					min={1}
 					placeholder="Capacité"
+					aria-label="Capacité"
 				/>
 				<div class="flex gap-2">
 					<Button onclick={saveWorkspace} disabled={loading || !name} class="flex-1">

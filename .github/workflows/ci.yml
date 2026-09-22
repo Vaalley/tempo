@@ -87,6 +87,8 @@ jobs:
                   curl --fail --silent http://localhost:5173/ > /dev/null
                   curl --fail --silent \
                     --header 'Content-Type: application/json' \
+                    --header 'Origin: http://localhost:5173' \
+                    --header 'X-CSRF-Protection: 1' \
                     --data '{"email":"admin@tempo.test","password":"change-me-demo-admin"}' \
                     http://localhost:3000/auth/login > /dev/null
 

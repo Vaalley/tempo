@@ -36,7 +36,13 @@ export function createAuthorizedApi(options: AuthorizedApiOptions = {}) {
 		onUnauthorized:
 			options.onUnauthorized ??
 			(async () => {
-				auth.logout();
+				auth.clear();
+				if (window.location.pathname === '/check-in' && window.location.hash) {
+					sessionStorage.setItem(
+						'tempo:returnTo',
+						`${window.location.pathname}${window.location.hash}`,
+					);
+				}
 				await goto('/login', { replaceState: true });
 			}),
 		onForbidden:

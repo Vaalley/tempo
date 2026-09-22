@@ -35,7 +35,7 @@ async function authorizationHeader(role: 'ADMIN' | 'USER'): Promise<string> {
 		'test-jwt-secret',
 	);
 
-	return `Bearer ${token}`;
+	return `tempo_session=${token}`;
 }
 
 afterEach(() => {
@@ -102,7 +102,7 @@ describe('workspace HTTP routes', () => {
 		spyOn(workspaceService, 'getAll').mockResolvedValue([workspace]);
 
 		const response = await workspacesRoute.request('/', {
-			headers: { Authorization: await authorizationHeader('USER') },
+			headers: { Cookie: await authorizationHeader('USER') },
 		});
 
 		expect(response.status).toBe(200);
@@ -117,7 +117,7 @@ describe('workspace HTTP routes', () => {
 		const response = await workspacesRoute.request('/', {
 			method: 'POST',
 			headers: {
-				Authorization: await authorizationHeader('ADMIN'),
+				Cookie: await authorizationHeader('ADMIN'),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ name: workspace.name, type: workspace.type, capacity: 1 }),
@@ -137,7 +137,7 @@ describe('workspace HTTP routes', () => {
 		const response = await workspacesRoute.request('/', {
 			method: 'POST',
 			headers: {
-				Authorization: await authorizationHeader('USER'),
+				Cookie: await authorizationHeader('USER'),
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ name: workspace.name, type: workspace.type, capacity: 1 }),
@@ -151,7 +151,7 @@ describe('workspace HTTP routes', () => {
 		spyOn(workspaceService, 'getById').mockResolvedValue(undefined);
 
 		const response = await workspacesRoute.request('/999', {
-			headers: { Authorization: await authorizationHeader('USER') },
+			headers: { Cookie: await authorizationHeader('USER') },
 		});
 
 		expect(response.status).toBe(404);

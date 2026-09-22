@@ -4,7 +4,6 @@ import type { ClientRequestOptions } from 'hono/client';
 import type { AppType } from '@tempo/backend/src/index';
 
 export interface ApiClientOptions {
-	token?: string | null;
 	fetch?: ClientRequestOptions['fetch'];
 }
 
@@ -32,7 +31,8 @@ export function normalizeApiUrl(value: string | undefined): string {
 
 export function createApiClient(apiUrl: string | undefined, options: ApiClientOptions = {}) {
 	return hc<AppType>(normalizeApiUrl(apiUrl), {
-		headers: options.token ? { Authorization: `Bearer ${options.token}` } : {},
+		init: { credentials: 'include' },
+		headers: { 'X-CSRF-Protection': '1' },
 		fetch: options.fetch,
 	});
 }
@@ -44,6 +44,5 @@ export function getPublicClient(): ApiClient {
 }
 
 export function getAuthClient(): ApiClient {
-	const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-	return createApiClient(env.PUBLIC_API_URL, { token });
+	return createApiClient(env.PUBLIC_API_URL);
 }

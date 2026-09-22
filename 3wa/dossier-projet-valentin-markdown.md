@@ -4,7 +4,7 @@ Titre professionnel: **Concepteur développeur d'applications**
 
 RNCP**:** **37873**
 
-DOSSIER PROJET
+DOSSIER PROJET
 
 PROJET :
 
@@ -35,13 +35,13 @@ Date : _7 Octobre 2026_
 
 # 1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET
 
-J'ai mobilisé les compétences suivantes pendant la conception, le développement et la mise en service de Tempo. Les éléments cités renvoient à des fichiers, des tests ou des écrans présents dans le dépôt.
+Ce dossier présente mon travail de conception, de développement et de préparation du déploiement de Tempo. Les exemples s’appuient sur les fichiers du dépôt, les tests et les écrans de l’application.
 
 ## 1.1 Développer une application sécurisée
 
 ### 1.1.1. Installer et configurer son environnement de travail en fonction du projet
 
-J'ai organisé Tempo sous la forme d'un monorepo Bun composé d'un backend Hono et d'un frontend SvelteKit. Les commandes communes sont centralisées à la racine pour lancer le développement, les tests, le lint, le formatage et le build. Cette organisation évite de maintenir deux procédures différentes pour les deux applications.
+J'ai organisé Tempo sous la forme d'un monorepo Bun composé d'un backend Hono et d'un frontend SvelteKit. Les commandes communes sont centralisées à la racine pour lancer le développement, les tests, le lint, le formatage et le build. Les deux applications gardent leurs commandes propres, avec un point d’entrée commun à la racine.
 
 PostgreSQL et MongoDB peuvent être lancés localement ou avec Docker Compose. Les versions de Bun et des images de base sont épinglées pour limiter les écarts entre un poste de développement et le runner GitHub Actions. Les identifiants de base de données et le secret JWT proviennent de fichiers d'environnement ignorés par Git. Les fichiers `.env.example` décrivent uniquement la structure attendue avec des valeurs factices.
 
@@ -59,7 +59,7 @@ Les appels réseau passent par un client Hono RPC typé avec `AppType`. Les rép
 
 Le backend est découpé en modules `auth`, `users`, `workspaces`, `bookings`, `analytics` et `audit`. Chaque module sépare les routes HTTP de la logique métier et de l'accès aux données. Les entrées sont validées avec Zod avant d'atteindre les services.
 
-Le module de réservation concentre les règles les plus importantes. Il vérifie les créneaux, traduit les conflits PostgreSQL en réponses HTTP 409, gère la visibilité publique ou privée, les invitations, les participants et la capacité de l'espace. Une transaction verrouille la réservation pendant l'ajout d'un participant afin que deux requêtes simultanées ne dépassent pas la capacité disponible.
+Le module de réservation contrôle les créneaux et les participants. Il vérifie les créneaux, traduit les conflits PostgreSQL en réponses HTTP 409, gère la visibilité publique ou privée, les invitations, les participants et la capacité de l'espace. Pour une admission, la transaction verrouille d’abord l’espace, puis la réservation. Cet ordre coordonne l’ajout des participants avec les modifications de capacité.
 
 Pour le check-in, le serveur génère un jeton aléatoire de 256 bits et n'enregistre que son hash SHA-256. Seul un participant accepté peut confirmer sa présence, pendant le créneau de la réservation. La génération d'un nouveau QR code invalide le précédent. Ces règles sont couvertes par des tests de routes et par un scénario d'intégration sur PostgreSQL réel.
 
@@ -69,7 +69,7 @@ J'ai mené ce projet seul et assuré le cadrage, la conception, le développemen
 
 La priorité a d'abord porté sur l'authentification, la création d'espaces et la réservation. Les contrôles d'accès, l'intégrité des données, la CI et les tests d'intégration ont ensuite consolidé ce premier socle. Les réservations publiques ou privées, les invitations, les participants et le check-in par QR code ont été intégrés à la V1 avant la reprise du dossier.
 
-Chaque évolution est vérifiée localement avant l'envoi sur GitHub. La CI rejoue ensuite le formatage, le lint, les types, les tests, les builds et la recette Docker. La branche `main` reste volontairement non protégée pendant le développement, mais le résultat de la CI sert de contrôle avant de poursuivre.
+Les commandes de contrôle local portent sur le formatage, le lint, les types, les tests et le build. Le workflow GitHub Actions prévoit aussi une recette Docker. Un résultat local ne vaut pas validation de la CI : la version finale doit disposer de son propre résultat. La protection de `main` était désactivée dans l’état précédemment documenté ; ce réglage distant n’a pas été revérifié pendant la recette du 21 septembre.
 
 ## 1.2. Concevoir et développer une application sécurisée organisée en couches
 
@@ -83,9 +83,9 @@ Une première maquette Figma a fixé la navigation générale. L'interface a év
 
 J'ai retenu une architecture en trois couches. SvelteKit gère la présentation, Hono porte les routes et les services métier, tandis que PostgreSQL et MongoDB assurent la persistance. Le frontend et le backend sont deux workspaces du même dépôt. Le type de l'application Hono est partagé avec le client RPC, ce qui permet à TypeScript de détecter une incompatibilité de route ou de données pendant la compilation.
 
-La sécurité est répartie sans être dupliquée. Le frontend adapte la navigation, mais l'API reste responsable des autorisations. Les middlewares vérifient le JWT, le rôle, le CORS, les en-têtes de sécurité et la limite de requêtes. Zod contrôle les entrées. PostgreSQL applique les clés étrangères, les contraintes temporelles et l'exclusion des réservations concurrentes.
+Les contrôles interviennent à plusieurs niveaux. Le frontend adapte la navigation, mais l'API reste responsable des autorisations. Les middlewares vérifient le JWT, le rôle, le CORS, les en-têtes de sécurité et la limite de requêtes. Zod contrôle les entrées. PostgreSQL applique les clés étrangères, les contraintes temporelles et l'exclusion des réservations concurrentes.
 
-Le projet reste un monolithe modulaire adapté à la volumétrie prévue. Les images Docker multi-stage et le runtime commun limitent le nombre de composants à construire et à maintenir. Aucun gain chiffré de consommation n'a été mesuré, donc l'éco-conception est abordée ici par la sobriété de l'architecture et la réduction des services inutiles.
+Le backend est un monolithe modulaire. Sa capacité sous charge reste à mesurer. Les images Docker multi-stage et le runtime commun limitent le nombre de composants à construire et à maintenir. Aucun gain chiffré de consommation n'a été mesuré, donc l'éco-conception est abordée ici par la sobriété de l'architecture et la réduction des services inutiles.
 
 ### 1.2.3. Concevoir et mettre en place une base de données relationnelle
 
@@ -107,11 +107,11 @@ Les routes convertissent les erreurs métier en statuts HTTP cohérents. Les tes
 
 ### 1.3.1. Préparer et exécuter les plans de tests d'une application
 
-J'ai organisé les tests en plusieurs niveaux. Les 99 tests backend unitaires et HTTP couvrent les services, les routes, les autorisations et la sécurité. Les 18 tests frontend vérifient l'authentification, le client RPC, les erreurs et les gardes de navigation.
+Les tests couvrent plusieurs niveaux. Lors de la validation locale du 17 septembre 2026, 106 tests backend unitaires et HTTP et 22 tests frontend ont réussi. Ils vérifient les services, les routes, les autorisations, les sessions par cookie, le client RPC et les gardes de navigation.
 
-Trois tests PostgreSQL utilisent une base réelle pour contrôler la persistance d'une réservation, le rejet atomique de deux créations concurrentes et le parcours public avec invitation, acceptation puis check-in. Deux tests MongoDB vérifient l'écriture, l'auteur, l'horodatage, l'ordre et le filtrage des audits. Enfin, deux parcours Playwright reproduisent la réservation puis l'annulation, et le parcours collaboratif jusqu'au check-in par QR code.
+Les 15 tests PostgreSQL comprennent trois scénarios de réservation et de collaboration, ainsi que douze scénarios de capacité et de concurrence. Deux tests MongoDB sont présents pour l’écriture, l’auteur, l’horodatage, l’ordre et le filtrage des audits. Deux parcours Playwright couvrent la réservation suivie de son annulation et le parcours d’invitation jusqu’au check-in. Le compte rendu du 17 septembre distingue les suites exécutées des vérifications MongoDB non rejouées ce jour-là.
 
-La section 9 relie chaque groupe de tests aux règles qu'il vérifie. Les résultats locaux sont complétés par la recette GitHub Actions sur une stack Docker neuve.
+La section 9 relie les tests aux règles métier et précise la date et le périmètre des résultats. Le workflow prévoit une recette Docker sur le runner ; son succès doit être vérifié pour la version remise.
 
 ### 1.3.2. Préparer et documenter le déploiement d'une application
 
@@ -123,7 +123,7 @@ Le `README.md` décrit la configuration, le lancement, les contrôles de santé,
 
 J'ai configuré le workflow `.github/workflows/ci.yml`. Le premier job vérifie le format, le lint, les types, les tests et le build. Le second construit la stack Docker Compose, attend les services, charge le seed et exécute les intégrations PostgreSQL et MongoDB ainsi que les deux parcours Playwright. Les traces, captures et vidéos d'un échec E2E sont conservées comme artefacts pendant sept jours.
 
-L'[exécution du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) est entièrement réussie. Les jobs de qualité et de recette Docker sont verts avec les fonctionnalités collaboratives et le check-in de la V1.
+L'[exécution du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) et la capture ci-dessous sont des preuves historiques citées pour la V1. Elles ne valident pas les modifications locales de septembre. La relecture du 21 septembre a relevé que l’appel de connexion du contrôle final `Verify Public Endpoints` ne fournit pas `Origin` ni `X-CSRF-Protection`. Ce contrôle doit être adapté au nouveau contrat CSRF avant de relancer la CI.
 
 ![Exécution GitHub Actions réussie avec les jobs Quality et Docker](github-ci.png)
 
@@ -156,13 +156,13 @@ Les hypothèses de dimensionnement sont les suivantes :
 - un service disponible pendant les heures ouvrées ;
 - un temps de réponse visé inférieur à 300 ms pour la consultation et la réservation.
 
-Cette charge reste compatible avec une application modulaire unique et une base PostgreSQL. Une architecture distribuée ajouterait de l'exploitation sans répondre à un besoin mesuré dans cette première version.
+Ces chiffres sont des objectifs de dimensionnement, pas des mesures. Aucun essai de charge ne confirme encore le seuil de 300 ms. La V1 repose sur un backend unique et PostgreSQL ; le besoin d’une architecture distribuée n’a pas été établi.
 
 ## 2.5. Multilinguisme et adaptations pour un public spécifique
 
 La V1 est disponible uniquement en français. Aucune traduction n'est prévue dans le périmètre actuel.
 
-Les formulaires disposent de libellés associés et les actions principales ont des noms explicites. Aucun audit RGAA ou WCAG complet n'a toutefois été réalisé. L'accessibilité reste donc un chantier identifié, et non une conformité revendiquée.
+La recette du 21 septembre a relevé des boutons de déconnexion sans nom accessible dans les pages de réservations et d’administration. Les champs de création de compte et d’espace demandent aussi une vérification des libellés. Aucun audit RGAA ou WCAG complet n’a été réalisé ; le dossier ne revendique pas cette conformité.
 
 ## 2.6. Description graphique et ergonomique
 
@@ -176,7 +176,7 @@ La palette repose sur les variables CSS de shadcn-svelte et Tailwind CSS. Elle c
 
 Les écrans utilisent les classes adaptatives de Tailwind CSS. L'administration et les tableaux sont principalement destinés à un poste de travail. La création d'une réservation, la réponse à une invitation et le check-in doivent aussi rester utilisables sur mobile.
 
-Le projet privilégie des parcours courts et des libellés directs. Il ne comporte ni animation décorative ni effet de navigation complexe.
+À 390 × 844 pixels, le formulaire de réservation se range en colonne, mais le bandeau supérieur déborde : l’adresse du compte et la déconnexion sortent du cadre visible. Le tableau nécessite un défilement horizontal. Ces réserves doivent être corrigées et retestées avant de valider l’usage mobile.
 
 ## 2.7. Besoins fonctionnels métier
 
@@ -232,13 +232,13 @@ Aucun relevé horaire exhaustif n'a été tenu. Les charges restent donc exprim�
 
 Tempo n'est pas développé pour une entreprise existante. C'est un projet personnel mené en autonomie pour couvrir les compétences du titre CDA sur un cas de gestion d'espaces en flex-office.
 
-Le projet est envisagé comme un produit SaaS destiné à des PME. J'ai donc tenu à la fois le rôle du commanditaire pour formaliser le besoin et celui du concepteur développeur pour construire la solution. Cette situation est propre au cadre de certification et ne correspond pas à une commande commerciale réelle.
+Le projet est envisagé comme un produit SaaS destiné à des PME. J’ai défini le besoin et développé la solution. Cette situation est propre au cadre de certification et ne correspond pas à une commande commerciale réelle.
 
 ## 3.2. Objectifs du projet
 
 Tempo doit permettre à un collaborateur de réserver un bureau ou une salle sans conflit, seul ou avec d'autres participants. L'administrateur gère les espaces, les comptes et la vue globale des réservations. Il dispose aussi d'indicateurs d'occupation et d'un historique des suppressions.
 
-Le QR code rapproche la réservation de l'usage réel : un participant accepté confirme sa présence pendant le créneau. Le produit reste une application interne de gestion de ressources, sans fonction de vente.
+Le QR permet à un participant accepté d’enregistrer un check-in pendant le créneau. Il ne prouve pas sa présence physique, car le code peut être partagé. Le produit reste une application interne de gestion de ressources, sans fonction de vente.
 
 ## 3.3. Cible adressée par le projet
 
@@ -250,7 +250,7 @@ Tempo intervient dans la réservation quotidienne des espaces et dans le suivi d
 
 # 4\. GESTION DE PROJET
 
-J'ai organisé le projet et ses contrôles de la manière suivante.
+Le suivi repose sur Trello, Git et les documents de travail du dépôt.
 
 ## 4.1. Intervenants sur le projet
 
@@ -284,17 +284,17 @@ Trello a servi au suivi visuel. Git et GitHub conservent l'historique du code. `
 
 Les critères retenus sont vérifiables dans le dépôt :
 
-- les règles métier sont couvertes par 99 tests backend unitaires et HTTP, 3 tests PostgreSQL, 2 tests MongoDB, 18 tests frontend et 2 parcours E2E ;
+- l’inventaire comprend 106 tests backend unitaires et HTTP, 15 tests PostgreSQL, 2 tests MongoDB, 22 tests frontend et 2 parcours E2E ; les exécutions réellement constatées sont précisées en section 9 ;
 - Oxlint, Oxfmt, TypeScript et Svelte Check contrôlent le code avant le build ;
 - Zod valide les entrées, les mots de passe sont hachés, les routes sont protégées par JWT et les droits sont vérifiés côté API ;
 - les modules séparent les routes, les services et la persistance ;
 - GitHub Actions reconstruit l'application et exécute la recette Docker sur un environnement neuf.
 
-La CI informe du résultat sans bloquer les envois directs, car la protection de `main` est volontairement désactivée pendant le développement.
+Le workflow fournit un résultat après les envois. Le réglage distant de protection de branche doit être distingué du contenu de ce workflow.
 
 # 5\. SPÉCIFICATIONS FONCTIONNELLES
 
-La V1 livrée est décrite ci-dessous à travers ses écrans, ses règles de gestion, ses données et les réponses de l'API.
+Les sections suivantes décrivent la V1 présente dans le dépôt. Les diagrammes conservés montrent aussi des choix de conception non implémentés ; leurs écarts sont signalés au fil du texte.
 
 ## 5.1. Contraintes du projet et livrables attendus
 
@@ -335,6 +335,8 @@ PostgreSQL contient les comptes, les espaces, les réservations, les participant
 Le frontend et le backend disposent chacun d'un Dockerfile multi-stage. Docker Compose les lance avec PostgreSQL et MongoDB.
 
 ![Architecture 3-tiers implémentée de Tempo](../diagrams/architecture-as-built.svg)
+
+Le diagramme d’architecture ci-dessus conserve l’ancien stockage `localStorage` et l’en-tête Bearer. Le code actuel utilise un cookie `HttpOnly`, `credentials: include` et une protection CSRF. Les couches restent représentatives, mais le chemin d’authentification dessiné doit être lu avec cette réserve.
 
 ## 5.3. Maquettes et enchaînement des écrans
 
@@ -378,9 +380,11 @@ La [maquette Figma](https://www.figma.com/design/cvMJhj3qr2kSouD2GR3fE8/Tempo?no
 
 ![Diagramme de classes](../diagrams/class%20diagram.png)
 
-Les diagrammes décrivent le modèle cible du projet. La V1 couvre les comptes, les espaces, les réservations publiques ou privées, les participants, les invitations et les QR codes. Le multi-site, les notifications et l'annulation logique restent prévus pour une version ultérieure.
+Les modèles MERISE et le diagramme de classes décrivent une cible plus large que la V1. Le code gère les comptes, les espaces, les réservations, les participants et les jetons QR. Les entreprises, les localisations, les quotas avancés, les notifications et l’annulation logique représentés dans les modèles ne sont pas implémentés. Les schémas sont conservés sans modification ; le relevé des différences figure dans `docs/ECARTS_DIAGRAMMES_2026-09-21.md`.
 
 Le schéma réellement exécuté est défini dans `apps/backend/src/db/schema.ts`. Il contient cinq tables PostgreSQL : `users`, `workspaces`, `bookings`, `booking_participants` et `booking_qr_tokens`. MongoDB conserve les audits dans une collection séparée. Les migrations `0000` à `0004` permettent de reconstruire ce modèle.
+
+Dans la V1, les rôles et types d’espace sont des enums PostgreSQL, pas des tables `ROLE` et `TYPE`. Les comptes et réservations ont des identifiants UUID, contrairement aux entiers du MPD. `booking_participants` porte la réponse et le check-in de chaque personne. `booking_qr_tokens` conserve au plus un hash actif par réservation, avec sa date d’expiration ; les modèles dessinent plusieurs QR et ne montrent pas ce hash.
 
 ## 5.5. Création et modification de la base de données
 
@@ -472,7 +476,7 @@ Une lecture suivie d'une insertion ne suffit pas à empêcher deux requêtes sim
 
 La contrainte `CHECK` rejette un créneau vide ou inversé. La migration `0003` rend le rôle obligatoire, impose une capacité minimale et indexe les recherches principales. La migration `0004` empêche qu'un utilisateur apparaisse deux fois dans la même réservation et indexe les recherches par réservation, utilisateur et statut.
 
-L'ajout d'un participant utilise aussi une transaction avec verrouillage de la réservation. La capacité reste ainsi cohérente lorsque plusieurs invitations ou demandes de participation arrivent en même temps.
+L’admission verrouille l’espace puis la réservation avant de compter les places. La modification de capacité verrouille le même espace et refuse une valeur inférieure au nombre de participants acceptés ou en attente d’une réservation non terminée. Les douze tests de capacité couvrent ces règles et leurs accès concurrents.
 
 ## 5.6. Diagrammes de comportement
 
@@ -506,7 +510,7 @@ Le collaborateur choisit un espace et un créneau, puis définit la réservation
 
 ![Séquence de réservation](../diagrams/sequence%20diagram%20-%20reservation.png)
 
-L'annulation reste une suppression physique. Le statut d'annulation logique visible dans le modèle cible n'est pas utilisé dans la V1.
+Les diagrammes de réservation utilisent `/api/bookings`, `isPublic`, une liste d’invités à la création et une table d’invitations séparée. La route réelle est `POST /bookings` avec `visibility` ; les invitations sont créées ensuite dans `booking_participants`. La contrainte GiST garantit le non-chevauchement, même si deux précontrôles applicatifs réussissent. L’annulation reste une suppression physique.
 
 ### 5.7.2. Fonctionnalité 2 : annuler une réservation
 
@@ -528,6 +532,8 @@ Un collaborateur peut annuler sa propre réservation. Un administrateur peut ann
 
 ![Séquence d'annulation](../diagrams/sequence%20diagram%20-%20annulation%20reservation.png)
 
+Les diagrammes d’annulation imposent un délai de 24 heures, un statut `CANCELLED` et des notifications. Le code ne prévoit ni ce délai ni ces notifications. Il supprime la réservation et tente d’écrire un audit MongoDB ; l’administrateur peut également annuler celle d’un tiers.
+
 ### 5.7.3. Fonctionnalité 3 : gérer les espaces
 
 | Élément      | Spécification                                                                                         |
@@ -545,6 +551,8 @@ Un collaborateur peut annuler sa propre réservation. Un administrateur peut ann
 ![Activité de gestion des espaces](../diagrams/activity%20diagram%20-%20gestion%20espaces%20admin.png)
 
 ![Séquence de gestion des espaces](../diagrams/sequence%20diagram%20-%20gestion%20espaces%20admin.png)
+
+Les diagrammes de gestion des espaces ajoutent un quota et des notifications, absents du code. Une suppression entraîne les cascades PostgreSQL, pas une mise à jour vers `CANCELLED`. La modification par `PATCH` et le contrôle des capacités sont présents dans la V1 mais non détaillés dans ces séquences.
 
 ### 5.7.4. Fonctionnalité 4 : effectuer un check-in par QR code
 
@@ -566,6 +574,8 @@ Le propriétaire ou un administrateur génère le QR code. Un participant accept
 
 ![Séquence de check-in](../diagrams/sequence%20diagram%20-%20checkin.png)
 
+Les diagrammes de check-in montrent un QR lié à l’espace, un statut global `CHECKED_IN` et un audit MongoDB. La V1 utilise un jeton propre à la réservation, enregistre `checkedInAt` sur le participant et ne produit pas d’audit de check-in. Sa fenêtre est `startAt <= maintenant < endAt` : la borne de fin est exclue.
+
 ### 5.7.5. Fonctionnalité 5 : s'authentifier
 
 | Élément      | Spécification                                                                                                            |
@@ -580,7 +590,7 @@ Le propriétaire ou un administrateur génère le QR code. Un participant accept
 | Acceptation  | Aucun hash ne quitte l'API et le rôle du JWT détermine l'accès aux routes protégées                                      |
 | Preuves      | `auth.service.spec.ts`, `app.security.spec.ts`, `rate-limit.spec.ts`, `auth.svelte.spec.ts`, `booking-flow.spec.ts`      |
 
-Le JWT est conservé dans `localStorage`. Cette limite est décrite dans la section sécurité.
+Le JWT est transmis dans le cookie `tempo_session`, `HttpOnly`, `SameSite=Strict` et `Secure` en HTTPS. Le frontend conserve seulement les informations du compte en mémoire et les restaure via `GET /auth/session`.
 
 ### 5.7.6. Fonctionnalité 6 : consulter les statistiques d'occupation
 
@@ -650,7 +660,7 @@ Tempo est une application interne protégée par authentification. Le document H
 | Tests              | Bun Test, Vitest 4.1.8, Playwright 1.57.0 | Tests isolés, intégrations et E2E                  |
 | CI                 | GitHub Actions                            | Contrôles qualité et recette Docker                |
 
-La finalisation a été effectuée sous Windows 10 Pro avec PowerShell. Le dépôt ne dépend pas de Codex Desktop ni d'un réglage propre au poste. La CI utilise un runner Ubuntu fourni par GitHub.
+Les contrôles locaux documentés ont été réalisés sous Windows avec PowerShell. Le dépôt ne dépend pas de Codex Desktop ni d'un réglage propre au poste. La CI utilise un runner Ubuntu fourni par GitHub.
 
 | Environnement | Composition                                                                |
 | ------------- | -------------------------------------------------------------------------- |
@@ -683,7 +693,7 @@ La stack complète se lance avec `docker compose up --build --detach --wait`. Le
 
 Les routes `/bookings` et `/check-in` demandent un compte connecté. Les pages `/admin/*` demandent aussi le rôle `ADMIN`. Ces contrôles frontend améliorent le parcours, mais les mêmes droits sont vérifiés par l'API.
 
-Les champs disposent de libellés et les boutons importants ont un nom accessible. Svelte Check ne signale aucune erreur ni aucun avertissement. Les deux parcours Playwright sont validés dans Chromium. Aucun audit WCAG complet n'a été mené et les autres moteurs de navigateur n'ont pas été testés.
+Svelte Check et les deux parcours Chromium ont réussi le 17 septembre. La recette manuelle du 21 septembre a néanmoins révélé des noms accessibles manquants et un débordement du bandeau sur petit écran. Ces observations montrent la limite des contrôles automatisés actuels. Aucun audit WCAG complet ni recette Firefox ou WebKit n’est établi.
 
 ### 6.3.1. Routes de l'API
 
@@ -691,7 +701,9 @@ Les champs disposent de libellés et les boutons importants ont un nom accessibl
 | -------- | ------------------------------------------ | -------------------------- | --------------------------------------------------- |
 | `GET`    | `/health`                                  | Public                     | Vérifier que l'API répond                           |
 | `POST`   | `/auth/register`                           | Public, limité par adresse | Créer un compte `USER`                              |
-| `POST`   | `/auth/login`                              | Public, limité par adresse | Obtenir le JWT et le compte                         |
+| `POST`   | `/auth/login`                              | Public, limité par adresse | Créer le cookie de session et obtenir le compte     |
+| `GET`    | `/auth/session`                            | Public                     | Restaurer le compte ou retourner `user: null`       |
+| `POST`   | `/auth/logout`                             | Public, protection CSRF    | Supprimer le cookie de session                      |
 | `GET`    | `/users`                                   | `ADMIN`                    | Lister les comptes                                  |
 | `POST`   | `/users`                                   | `ADMIN`                    | Créer un compte sans renvoyer son hash              |
 | `GET`    | `/workspaces`                              | Connecté                   | Lister les espaces                                  |
@@ -721,15 +733,15 @@ Les rôles `ADMIN` et `USER` sont définis dans PostgreSQL et inclus dans le JWT
 
 Les JWT sont signés en HS256 avec `hono/jwt` et expirent après 24 heures. `JWT_SECRET` est obligatoire au démarrage. Les mots de passe sont hachés avec `Bun.password.hash` et vérifiés avec `Bun.password.verify`. Les réponses de l'API ne contiennent jamais le hash.
 
-Le CORS accepte uniquement `FRONTEND_ORIGIN`. Les en-têtes HTTP ajoutent notamment une politique CSP, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et `Permissions-Policy`. Par défaut, l'inscription et la connexion sont limitées à 10 requêtes par adresse sur 15 minutes. La requête suivante reçoit HTTP 429 et un en-tête `Retry-After`.
+Le CORS accepte uniquement `FRONTEND_ORIGIN`. Le middleware Hono ajoute notamment une politique CSP, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS et `Permissions-Policy` aux réponses de l’API. Cela ne démontre pas la présence des mêmes protections sur les pages servies par SvelteKit. Par défaut, l'inscription et la connexion sont limitées à 10 requêtes par adresse sur 15 minutes. La requête suivante reçoit HTTP 429 et un en-tête `Retry-After`.
 
 Zod valide les données avant le service. PostgreSQL complète cette validation avec les clés étrangères, les contraintes `CHECK`, l'unicité des participants et l'exclusion des réservations concurrentes.
 
-Le jeton QR contient 256 bits aléatoires. L'URL le place dans le fragment, puis la page le retire de l'historique avant l'appel API. Si une connexion est nécessaire, la destination passe par `sessionStorage` et non par la chaîne de requête de `/login`. PostgreSQL ne conserve que le hash SHA-256. Le backend vérifie le participant, son statut, le créneau et l'expiration du jeton.
+Le jeton QR contient 256 bits aléatoires. L'URL le place dans le fragment, puis la page le retire de l'historique après un check-in réussi. Si une connexion est nécessaire, la destination passe par `sessionStorage` et non par la chaîne de requête de `/login`. PostgreSQL ne conserve que le hash SHA-256. Le backend vérifie le participant, son statut, le créneau et l'expiration du jeton.
 
 ### 6.5.1. Limites connues
 
-- Le JWT est stocké dans `localStorage`. Une faille XSS exécutée dans la page pourrait le lire. Une mise en ligne publique demanderait un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF.
+- Le cookie de session est `HttpOnly`, `SameSite=Strict` et `Secure` lorsque `FRONTEND_ORIGIN` utilise HTTPS. Les mutations exigent une origine autorisée et un en-tête `X-CSRF-Protection: 1`. Le frontend et l’API doivent être déployés sur le même site au sens du navigateur. Une faille XSS pourrait encore effectuer des actions avec la session : le cookie ne remplace pas la prévention XSS.
 - Il n'existe pas de révocation individuelle des JWT ni de rotation automatique du secret.
 - Le limiteur est en mémoire. Plusieurs instances backend devraient partager son état.
 - Le développement local utilise HTTP. Un déploiement public doit terminer TLS devant l'application.
@@ -741,7 +753,7 @@ GitHub Actions contrôle le format, le lint, les types, les tests, les builds et
 
 # 7\. RÉALISATIONS
 
-Les extraits suivants proviennent du code livré. Les fichiers complets restent la source de référence.
+Les extraits suivants expliquent les choix techniques. Ceux des sections 7.2 et 7.3 sont antérieurs aux corrections de session et de capacité ; les notes associées précisent le fonctionnement actuel. Les fichiers complets restent la référence.
 
 ## 7.1. Détection des chevauchements
 
@@ -807,7 +819,7 @@ export const adminGuard: MiddlewareHandler<AuthEnv> = async (c, next) => {
 
 ### 7.2.3. Argumentation
 
-`authGuard` vérifie le JWT sur les groupes de routes protégées. `adminGuard` centralise le contrôle d'administration. Une route métier peut ensuite appliquer une règle plus précise avec l'identifiant `sub` du JWT, par exemple vérifier le propriétaire d'une réservation ou l'utilisateur visé par une invitation.
+L’extrait ci-dessus montre l’ancien middleware `jwt`. Le garde actuel appelle `readSession`, lit le cookie `tempo_session`, vérifie la signature HS256 et les claims, puis renseigne `jwtPayload`. Les requêtes de modification passent aussi par le garde CSRF de `app.ts`. `authGuard` vérifie la session sur les groupes de routes protégées. `adminGuard` centralise le contrôle d'administration. Une route métier peut ensuite appliquer une règle plus précise avec l'identifiant `sub` du JWT, par exemple vérifier le propriétaire d'une réservation ou l'utilisateur visé par une invitation.
 
 Cette séparation évite de confondre authentification et autorisation. Elle est testée avec un utilisateur standard, un administrateur, un jeton absent et plusieurs routes protégées.
 
@@ -843,7 +855,7 @@ return await db.transaction(async (transaction) => {
 
 ### 7.3.3. Argumentation
 
-Une invitation en attente réserve déjà une place. Sans verrou, deux requêtes pourraient lire la même capacité disponible et ajouter chacune un participant. La transaction verrouille la réservation avec `FOR UPDATE`, recompte les participants non refusés, puis effectue l'écriture.
+Une invitation en attente réserve une place. Sans verrou, deux requêtes pourraient lire la même place disponible et ajouter chacune un participant. Le code actuel appelle `lockAdmission` : il verrouille l’espace, puis la réservation, recompte les participants non refusés et effectue l’écriture. L’extrait ci-dessus omet le premier verrou et ne suffit donc pas à décrire la coordination avec une modification de capacité.
 
 La même règle est appliquée aux invitations et à la participation directe dans une réservation publique. Le propriétaire est créé comme participant accepté dans la transaction de création de la réservation.
 
@@ -881,7 +893,7 @@ if (now >= participant.booking.endAt) throw new Error('BOOKING_ENDED');
 
 Le jeton brut est nécessaire dans le QR, mais pas dans la base. Le serveur compare le hash reçu au hash enregistré. Une fuite de la table ne révèle donc pas directement le jeton utilisable. La génération suivante remplace la ligne associée à la réservation et invalide le QR précédent.
 
-Le QR seul ne suffit pas. L'utilisateur doit être connecté, appartenir à la réservation, avoir accepté l'invitation et effectuer l'action pendant le créneau.
+Un QR partagé ne prouve pas la présence dans la salle. L'utilisateur doit être connecté, appartenir à la réservation, avoir accepté l'invitation et effectuer l'action pendant le créneau.
 
 ## 7.5. Audits MongoDB
 
@@ -937,7 +949,8 @@ import type { AppType } from '@tempo/backend/src/index';
 
 export function createApiClient(apiUrl: string | undefined, options: ApiClientOptions = {}) {
     return hc<AppType>(normalizeApiUrl(apiUrl), {
-        headers: options.token ? { Authorization: `Bearer ${options.token}` } : {},
+        init: { credentials: 'include' },
+        headers: { 'X-CSRF-Protection': '1' },
         fetch: options.fetch,
     });
 }
@@ -968,7 +981,7 @@ La sécurité repose sur plusieurs contrôles complémentaires :
 | Secret versionné                      | Variables d'environnement et modèles factices              | `.gitignore`, `.env.example`                    |
 | Régression                            | Format, lint, types, tests, builds et recette Docker en CI | GitHub Actions                                  |
 
-Le JWT reste dans `localStorage`. Ce choix simplifie le client RPC, mais expose le jeton à un script exécuté par une faille XSS. Une version publique devrait utiliser un cookie `HttpOnly`, `Secure` et `SameSite`, avec une protection CSRF.
+Le JWT est conservé dans un cookie `HttpOnly` de 24 heures, inaccessible au JavaScript de la page. Le client RPC utilise `credentials: include` et un en-tête dédié à la protection CSRF. L’API vérifie aussi l’origine exacte des requêtes qui modifient les données. La déconnexion supprime le cookie ; elle ne révoque pas un JWT qui aurait été copié avant sa suppression.
 
 Le limiteur actuel est propre à un processus. Un déploiement horizontal demanderait un stockage partagé. TLS doit aussi être terminé devant l'application. Enfin, l'audit best effort et le QR commun à une réservation sont des compromis connus de la V1.
 
@@ -978,13 +991,13 @@ Le limiteur actuel est propre à un processus. Un déploiement horizontal demand
 
 | Niveau                   | Outil      | Périmètre                                           | Nombre |
 | ------------------------ | ---------- | --------------------------------------------------- | -----: |
-| Backend unitaire et HTTP | Bun Test   | Services, DTO, middlewares, routes, sécurité        |     99 |
-| Frontend unitaire        | Vitest     | Authentification, client RPC, API autorisée, gardes |     18 |
-| Intégration PostgreSQL   | Bun Test   | Persistance, concurrence, collaboration et QR       |      3 |
+| Backend unitaire et HTTP | Bun Test   | Services, DTO, middlewares, routes, sécurité        |    106 |
+| Frontend unitaire        | Vitest     | Authentification, client RPC, API autorisée, gardes |     22 |
+| Intégration PostgreSQL   | Bun Test   | Persistance, concurrence, collaboration et QR       |     15 |
 | Intégration MongoDB      | Bun Test   | Écriture, auteur, ordre et filtrage                 |      2 |
 | E2E Chromium             | Playwright | Réservation et parcours collaboratif                |      2 |
 
-Les tests d'intégration ne sont pas compris dans les 99 tests backend standards. Le total backend, intégrations comprises, est donc de 104 tests.
+Les intégrations sont séparées des 106 tests backend standards. L’inventaire backend atteint 123 tests en incluant les 15 PostgreSQL et les 2 MongoDB. Ce total décrit les tests présents, pas une exécution unique des trois suites.
 
 ## 9.2. Couverture par module
 
@@ -998,7 +1011,7 @@ Les tests d'intégration ne sont pas compris dans les 99 tests backend standards
 | Collaboration    | `booking-collaboration.routes.spec.ts`                                  | Invitation, réponse, participation publique, droits et fenêtre de check-in |
 | Statistiques     | `analytics.service.spec.ts`                                             | Totaux, bornes temporelles et taux                                         |
 | Audit            | `audit.service.spec.ts`                                                 | Écriture et lecture MongoDB                                                |
-| Frontend         | quatre fichiers `.spec.ts`                                              | Stockage de session, erreurs, client et navigation                         |
+| Frontend         | quatre fichiers `.spec.ts`                                              | Restauration de session, déconnexion, erreurs, client et navigation        |
 | Intégration      | fichiers du dossier `integration`                                       | Bases réelles et migrations                                                |
 | E2E              | `e2e/booking-flow.spec.ts`                                              | Deux parcours utilisateur complets                                         |
 
@@ -1008,7 +1021,9 @@ Les tests unitaires fonctionnent sans base grâce aux mocks. Les intégrations u
 
 Une suite est réussie si aucune assertion n'échoue, si Svelte Check ne produit ni erreur ni avertissement, et si le build de production se termine. Pour l'E2E, les réponses attendues doivent être reçues et les éléments visibles doivent correspondre au parcours. En cas d'échec, Playwright conserve une trace, une capture et une vidéo.
 
-Les vérifications locales ont donné 99 tests backend, 18 tests frontend, 3 intégrations PostgreSQL, 2 intégrations MongoDB et 2 E2E réussis. L'[exécution GitHub Actions du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) confirme le même résultat sur la stack Docker du runner.
+Le 17 septembre 2026, 106 tests backend, 22 tests frontend, 15 tests PostgreSQL et 2 parcours Chromium ont réussi en local, avec les types, le lint, le formatage et le build. MongoDB était indisponible dans cet environnement isolé : sa persistance n’a pas été validée par cette exécution. L'[exécution GitHub Actions du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) reste une référence historique, distincte de ces changements. La recette manuelle du 21 septembre est consignée dans `docs/RECETTE_HELIUM_2026-09-21.md`.
+
+La recette manuelle relève trois réserves : message générique pour un créneau inversé, boutons de déconnexion sans nom accessible et bandeau débordant à 390 pixels de large. L’absence d’erreur de compilation ne suffit pas à valider ces aspects. Le dernier appel de connexion du workflow doit aussi fournir les en-têtes CSRF.
 
 ## 9.4. Évolutions du plan
 
@@ -1040,14 +1055,14 @@ Le parcours retenu est une réservation publique avec invitation, acceptation et
 
 ## 10.3. Résultats
 
-| Groupe                                 | Scénarios validés                                 | Résultat |
-| -------------------------------------- | ------------------------------------------------- | -------- |
-| `bookings.service.spec.ts`             | JE1, JE3, JE4, JE5, JE12, JE13                    | Conforme |
-| `booking-collaboration.routes.spec.ts` | JE6, JE7, JE8, JE10                               | Conforme |
-| Intégration PostgreSQL                 | JE1, JE2, JE6, JE8, JE9, JE11                     | Conforme |
-| E2E réservation                        | JE1 et JE13 depuis l'interface                    | Conforme |
-| E2E collaboration                      | JE6, JE8, JE9 et JE11 depuis l'API et l'interface | Conforme |
-| Intégration MongoDB                    | Audit de JE13                                     | Conforme |
+| Groupe                                 | Scénarios validés                                 | Résultat                                               |
+| -------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| `bookings.service.spec.ts`             | JE1, JE3, JE4, JE5, JE12, JE13                    | Conforme                                               |
+| `booking-collaboration.routes.spec.ts` | JE6, JE7, JE8, JE10                               | Conforme                                               |
+| Intégration PostgreSQL                 | JE1, JE2, JE6, JE8, JE9, JE11                     | Conforme                                               |
+| E2E réservation                        | JE1 et JE13 depuis l'interface                    | Conforme                                               |
+| E2E collaboration                      | JE6, JE8, JE9 et JE11 depuis l'API et l'interface | Conforme                                               |
+| Intégration MongoDB                    | Audit de JE13                                     | Résultat historique, suite non rejouée le 17 septembre |
 
 Les scénarios sont exécutés automatiquement. Les tests PostgreSQL appliquent les migrations avant le parcours et vérifient la valeur de `checkedInAt` en base. Le test E2E se connecte avec les comptes du seed, accepte l'invitation dans l'interface, ouvre l'URL du QR et attend le message "Présence confirmée".
 
@@ -1057,17 +1072,17 @@ _(Insérer ici une capture de l'écran "Présence confirmée".)_
 
 ## 10.4. Conclusion
 
-Les scénarios automatisés sont conformes en local et dans GitHub Actions. La contrainte PostgreSQL protège le créneau sous concurrence. La transaction des participants protège la capacité. Le check-in vérifie l'identité, le statut, la réservation, l'heure et le jeton QR.
+Les contrôles locaux du 17 septembre valident les scénarios automatisés exécutés. La recette du 21 septembre confirme le refus d’un chevauchement, le contrôle de réduction de capacité et le check-in après acceptation de l’invitation. Elle conserve des réserves d’interface et ne remplace pas une CI réussie sur la version finale. Le check-in contrôle l’identité, le statut, la réservation, le créneau et le jeton QR.
 
-Ce jeu d'essai valide le parcours fonctionnel le plus complet de la V1. Les limites restantes concernent surtout une utilisation en production publique : stockage du JWT, check-in à distance possible avec un QR partagé, absence de tests de charge et audit MongoDB best effort.
+Ce jeu d’essai couvre le parcours collaboratif de la V1. Les réserves portent sur l’ergonomie, l’accessibilité et la validation de la livraison finale. Pour une utilisation publique, il faut aussi traiter la révocation des JWT, le partage possible du QR, les tests de charge et les limites de l’audit MongoDB.
 
 # 11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ
 
-_(Section à rédiger personnellement : décrire ma pratique réelle de veille sécurité — sources suivies (ex : newsletters CERT-FR, blogs sécurité, OWASP, changelogs de sécurité des dépendances npm/Bun), fréquence, et actions concrètes menées sur ce projet, par exemple :_
+_(Section à rédiger personnellement : décrire ma pratique réelle de veille sécurité : sources suivies (ex : newsletters CERT-FR, blogs sécurité, OWASP, changelogs de sécurité des dépendances npm/Bun), fréquence, et actions concrètes menées sur ce projet, par exemple :_
 
 - _Vérification régulière des vulnérabilités connues dans les dépendances (`bun audit` / Dependabot / GitHub Security Advisories) ;_
 - _Application du principe du moindre privilège pour les rôles applicatifs ;_
 - _Choix de fonctions de hachage de mot de passe recommandées (Argon2id via `Bun.password`) plutôt que des algorithmes obsolètes ;_
 - _Suivi des bonnes pratiques OWASP (validation des entrées, gestion des erreurs sans fuite d'information, expiration des jetons JWT).)_
 
-23 Dossier Projet MUSSET \- VALENTIN ![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)
+Référence de pied de page importé à vérifier avant export : ![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)

@@ -4,11 +4,22 @@ import { bookingParticipants, bookings, users } from '../../db/schema';
 import type { InvitationResponseStatus } from './bookings.dto';
 
 type UserRole = 'ADMIN' | 'USER';
+type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-async function countReservedPlaces(
-	transaction: Parameters<Parameters<typeof db.transaction>[0]>[0],
-	bookingId: string,
-): Promise<number> {
+async function lockAdmission(transaction: Transaction, bookingId: string): Promise<void> {
+	// Lock the workspace before the booking, so capacity edits and admissions
+	// use the same ordering. Read the current capacity only after acquiring it.
+	await transaction.execute(sql`
+		SELECT w.id FROM workspaces w
+		INNER JOIN bookings b ON b.workspace_id = w.id
+		WHERE b.id = ${bookingId} FOR UPDATE OF w
+	`);
+	await transaction.execute(
+		sql`SELECT "id" FROM "bookings" WHERE "id" = ${bookingId} FOR UPDATE`,
+	);
+}
+
+async function countReservedPlaces(transaction: Transaction, bookingId: string): Promise<number> {
 	const [result] = await transaction
 		.select({ value: count() })
 		.from(bookingParticipants)
@@ -25,9 +36,7 @@ async function countReservedPlaces(
 export const bookingParticipantsService = {
 	async invite(bookingId: string, actorId: string, actorRole: UserRole, email: string) {
 		return await db.transaction(async (transaction) => {
-			await transaction.execute(
-				sql`SELECT "id" FROM "bookings" WHERE "id" = ${bookingId} FOR UPDATE`,
-			);
+			await lockAdmission(transaction, bookingId);
 			const booking = await transaction.query.bookings.findFirst({
 				where: eq(bookings.id, bookingId),
 				with: { workspace: true },
@@ -96,38 +105,45 @@ export const bookingParticipantsService = {
 		userId: string,
 		status: InvitationResponseStatus,
 	) {
-		const participant = await db.query.bookingParticipants.findFirst({
-			where: and(
-				eq(bookingParticipants.id, participantId),
-				eq(bookingParticipants.bookingId, bookingId),
-			),
-			with: { booking: true },
-		});
-
-		if (!participant) throw new Error('PARTICIPANT_NOT_FOUND');
-		if (participant.userId !== userId || participant.role !== 'GUEST') {
-			throw new Error('UNAUTHORIZED');
-		}
-		if (participant.booking.endAt <= new Date()) throw new Error('BOOKING_ENDED');
-
-		const [updated] = await db
-			.update(bookingParticipants)
-			.set({
-				invitationStatus: status,
-				respondedAt: new Date(),
-				checkedInAt: status === 'DECLINED' ? null : participant.checkedInAt,
-			})
-			.where(eq(bookingParticipants.id, participantId))
-			.returning();
-
-		return updated;
-	},
-
-	async joinPublic(bookingId: string, userId: string) {
 		return await db.transaction(async (transaction) => {
 			await transaction.execute(
 				sql`SELECT "id" FROM "bookings" WHERE "id" = ${bookingId} FOR UPDATE`,
 			);
+			const participant = await transaction.query.bookingParticipants.findFirst({
+				where: and(
+					eq(bookingParticipants.id, participantId),
+					eq(bookingParticipants.bookingId, bookingId),
+				),
+				with: { booking: true },
+			});
+
+			if (!participant) throw new Error('PARTICIPANT_NOT_FOUND');
+			if (participant.userId !== userId || participant.role !== 'GUEST') {
+				throw new Error('UNAUTHORIZED');
+			}
+			if (participant.booking.endAt <= new Date()) throw new Error('BOOKING_ENDED');
+			// A refusal releases the place. Only invite/join can reserve it again.
+			if (participant.invitationStatus === 'DECLINED' && status === 'ACCEPTED') {
+				throw new Error('INVITATION_DECLINED');
+			}
+
+			const [updated] = await transaction
+				.update(bookingParticipants)
+				.set({
+					invitationStatus: status,
+					respondedAt: new Date(),
+					checkedInAt: status === 'DECLINED' ? null : participant.checkedInAt,
+				})
+				.where(eq(bookingParticipants.id, participantId))
+				.returning();
+
+			return updated;
+		});
+	},
+
+	async joinPublic(bookingId: string, userId: string) {
+		return await db.transaction(async (transaction) => {
+			await lockAdmission(transaction, bookingId);
 			const booking = await transaction.query.bookings.findFirst({
 				where: eq(bookings.id, bookingId),
 				with: { workspace: true },

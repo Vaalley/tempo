@@ -123,6 +123,14 @@ const app = new Hono<AuthEnv>()
 					if (error.message === 'PARTICIPANT_NOT_FOUND') {
 						return c.json({ error: 'Invitation introuvable' }, 404);
 					}
+					if (error.message === 'INVITATION_DECLINED') {
+						return c.json(
+							{
+								error: 'Cette invitation a été refusée. Demandez une nouvelle invitation ou rejoignez la réservation publique.',
+							},
+							409,
+						);
+					}
 					if (error.message === 'UNAUTHORIZED') {
 						return c.json({ error: 'Action non autorisée' }, 403);
 					}

@@ -98,16 +98,16 @@ PostgreSQL garde les données métier. MongoDB reçoit les événements d'audit,
 
 ## 2. Éléments de sécurité de l'application
 
-| Risque | Mesure appliquée |
-| --- | --- |
-| Mot de passe exposé | Hash avec `Bun.password`. Le hash n'est jamais renvoyé par l'API. |
-| Accès non autorisé | JWT de 24 heures, `authGuard` et `adminGuard`. Un jeton absent donne HTTP 401 et un rôle insuffisant HTTP 403. |
-| Donnée incorrecte | Validation Zod avant l'appel des services. |
-| Double réservation | Contrainte d'exclusion PostgreSQL. |
-| Dépassement de capacité | Transaction et verrou `FOR UPDATE`. |
-| Bruteforce | 10 requêtes par adresse sur 15 minutes, puis HTTP 429. |
-| Jeton QR divulgué | Hash SHA-256, date d'expiration et rotation du jeton. |
-| Mauvaise configuration | `JWT_SECRET` et `FRONTEND_ORIGIN` obligatoires au démarrage. |
+| Risque                  | Mesure appliquée                                                                                               |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Mot de passe exposé     | Hash avec `Bun.password`. Le hash n'est jamais renvoyé par l'API.                                              |
+| Accès non autorisé      | JWT de 24 heures, `authGuard` et `adminGuard`. Un jeton absent donne HTTP 401 et un rôle insuffisant HTTP 403. |
+| Donnée incorrecte       | Validation Zod avant l'appel des services.                                                                     |
+| Double réservation      | Contrainte d'exclusion PostgreSQL.                                                                             |
+| Dépassement de capacité | Transaction et verrou `FOR UPDATE`.                                                                            |
+| Bruteforce              | 10 requêtes par adresse sur 15 minutes, puis HTTP 429.                                                         |
+| Jeton QR divulgué       | Hash SHA-256, date d'expiration et rotation du jeton.                                                          |
+| Mauvaise configuration  | `JWT_SECRET` et `FRONTEND_ORIGIN` obligatoires au démarrage.                                                   |
 
 Le CORS n'accepte que `FRONTEND_ORIGIN`. L'API ajoute aussi une CSP et plusieurs en-têtes de sécurité. Les secrets restent dans les fichiers d'environnement.
 
@@ -115,13 +115,13 @@ Le JWT est encore stocké dans `localStorage`. Pour une mise en ligne publique, 
 
 ## 3. Plan de tests
 
-| Niveau | Outil | Nombre |
-| --- | --- | ---: |
-| Backend unitaire et HTTP | Bun Test | 99 |
-| Frontend unitaire | Vitest | 18 |
-| Intégration PostgreSQL | Bun Test | 3 |
-| Intégration MongoDB | Bun Test | 2 |
-| Parcours E2E Chromium | Playwright | 2 |
+| Niveau                   | Outil      | Nombre |
+| ------------------------ | ---------- | -----: |
+| Backend unitaire et HTTP | Bun Test   |     99 |
+| Frontend unitaire        | Vitest     |     18 |
+| Intégration PostgreSQL   | Bun Test   |      3 |
+| Intégration MongoDB      | Bun Test   |      2 |
+| Parcours E2E Chromium    | Playwright |      2 |
 
 Les tests unitaires couvrent les règles métier, la validation et les droits. Les tests d'intégration utilisent PostgreSQL et MongoDB réels. Playwright vérifie les parcours depuis l'interface. GitHub Actions exécute le format, le lint, les types, les tests, les builds et la recette Docker.
 
@@ -137,35 +137,35 @@ Le parcours choisi est une réservation publique avec invitation, acceptation et
 
 ### 4.2. Description des scénarios
 
-| Étape | Scénario | Résultat attendu |
-| --- | --- | --- |
-| Étape 1 | Créer une réservation sur un créneau libre | HTTP 201 |
-| Étape 2 | Envoyer deux créations identiques en même temps | Une réussite et un HTTP 409 |
-| Étape 3 | Créer un créneau qui chevauche une réservation | HTTP 409 `BOOKING_OVERLAP` |
-| Étape 4 | Inviter un utilisateur lorsqu'une place est libre | Participant `PENDING` |
-| Étape 5 | Rejoindre une réservation privée sans invitation | HTTP 403 |
-| Étape 6 | Accepter l'invitation avec le compte invité | Participant `ACCEPTED` |
-| Étape 7 | Générer le QR avec le propriétaire | HTTP 200 |
-| Étape 8 | Faire le check-in avant le créneau | HTTP 409 |
-| Étape 9 | Faire le check-in pendant le créneau | HTTP 200 et `checkedInAt` renseigné |
-| Étape 10 | Annuler avec un autre utilisateur standard | HTTP 403 |
-| Étape 11 | Annuler avec le propriétaire | HTTP 200 et tentative d'audit |
+| Étape    | Scénario                                          | Résultat attendu                    |
+| -------- | ------------------------------------------------- | ----------------------------------- |
+| Étape 1  | Créer une réservation sur un créneau libre        | HTTP 201                            |
+| Étape 2  | Envoyer deux créations identiques en même temps   | Une réussite et un HTTP 409         |
+| Étape 3  | Créer un créneau qui chevauche une réservation    | HTTP 409 `BOOKING_OVERLAP`          |
+| Étape 4  | Inviter un utilisateur lorsqu'une place est libre | Participant `PENDING`               |
+| Étape 5  | Rejoindre une réservation privée sans invitation  | HTTP 403                            |
+| Étape 6  | Accepter l'invitation avec le compte invité       | Participant `ACCEPTED`              |
+| Étape 7  | Générer le QR avec le propriétaire                | HTTP 200                            |
+| Étape 8  | Faire le check-in avant le créneau                | HTTP 409                            |
+| Étape 9  | Faire le check-in pendant le créneau              | HTTP 200 et `checkedInAt` renseigné |
+| Étape 10 | Annuler avec un autre utilisateur standard        | HTTP 403                            |
+| Étape 11 | Annuler avec le propriétaire                      | HTTP 200 et tentative d'audit       |
 
 ### 4.3. Résultats des tests
 
-| Étape | Résultat obtenu |
-| --- | --- |
-| Étape 1 | Conforme, réservation et propriétaire enregistrés. |
-| Étape 2 | Conforme, PostgreSQL bloque la seconde création. |
-| Étape 3 | Conforme, chevauchement refusé avec HTTP 409. |
-| Étape 4 | Conforme, invitation créée avec le statut `PENDING`. |
-| Étape 5 | Conforme, accès refusé avec HTTP 403. |
-| Étape 6 | Conforme, statut `ACCEPTED` enregistré. |
-| Étape 7 | Conforme, jeton créé et hash stocké. |
-| Étape 8 | Conforme, check-in anticipé refusé avec HTTP 409. |
-| Étape 9 | Conforme, présence enregistrée dans PostgreSQL. |
-| Étape 10 | Conforme, annulation refusée avec HTTP 403. |
-| Étape 11 | Conforme, réservation supprimée et audit tenté. |
+| Étape    | Résultat obtenu                                      |
+| -------- | ---------------------------------------------------- |
+| Étape 1  | Conforme, réservation et propriétaire enregistrés.   |
+| Étape 2  | Conforme, PostgreSQL bloque la seconde création.     |
+| Étape 3  | Conforme, chevauchement refusé avec HTTP 409.        |
+| Étape 4  | Conforme, invitation créée avec le statut `PENDING`. |
+| Étape 5  | Conforme, accès refusé avec HTTP 403.                |
+| Étape 6  | Conforme, statut `ACCEPTED` enregistré.              |
+| Étape 7  | Conforme, jeton créé et hash stocké.                 |
+| Étape 8  | Conforme, check-in anticipé refusé avec HTTP 409.    |
+| Étape 9  | Conforme, présence enregistrée dans PostgreSQL.      |
+| Étape 10 | Conforme, annulation refusée avec HTTP 403.          |
+| Étape 11 | Conforme, réservation supprimée et audit tenté.      |
 
 Les scénarios sont couverts par les tests de service, les tests de routes, les intégrations et Playwright. Le parcours E2E accepte l'invitation dans l'interface, ouvre l'URL du QR et vérifie le titre « Présence confirmée ».
 

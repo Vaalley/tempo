@@ -2,8 +2,22 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { authService } from './auth.service';
 import { loginSchema, registerSchema } from './auth.dto';
+import type { AuthEnv } from '../../middlewares/auth.guard';
+import { clearSessionCookie, readSession, setSessionCookie } from './session';
 
-const app = new Hono()
+const app = new Hono<AuthEnv>()
+	.get('/session', async (c) => {
+		const payload = await readSession(c);
+		if (!payload) {
+			clearSessionCookie(c);
+			return c.json({ user: null });
+		}
+		return c.json({ user: { id: payload.sub, email: payload.email, role: payload.role } });
+	})
+	.post('/logout', (c) => {
+		clearSessionCookie(c);
+		return c.json({ message: 'Déconnexion effectuée' });
+	})
 	// POST /auth/register
 	.post('/register', zValidator('json', registerSchema), async (c) => {
 		try {
@@ -24,7 +38,8 @@ const app = new Hono()
 			const { email, password } = c.req.valid('json');
 
 			const result = await authService.login(email, password);
-			return c.json(result);
+			setSessionCookie(c, result.token);
+			return c.json({ user: result.user });
 		} catch (error) {
 			if (error instanceof Error && error.message === 'INVALID_CREDENTIALS') {
 				return c.json({ error: 'Email ou mot de passe incorrect' }, 401);
