@@ -1,0 +1,113 @@
+name: tempo
+
+x-logging: &logging
+    driver: json-file
+    options:
+        max-size: '10m'
+        max-file: '3'
+
+services:
+    postgres:
+        image: postgres:18.6-alpine3.24
+        restart: unless-stopped
+        logging: *logging
+        environment:
+            POSTGRES_USER: tempo
+            POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}'
+            POSTGRES_DB: tempo_db
+        volumes:
+            - ./data/postgres:/var/lib/postgresql
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U tempo -d tempo_db']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    mongo:
+        image: mongo:8.0.29-noble
+        restart: unless-stopped
+        logging: *logging
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: tempo
+            MONGO_INITDB_ROOT_PASSWORD: '${MONGO_PASSWORD:?Set MONGO_PASSWORD}'
+        volumes:
+            - ./data/mongo:/data/db
+            - ./data/mongo-config:/data/configdb
+        healthcheck:
+            test:
+                - CMD-SHELL
+                - 'mongosh --quiet --username "$${MONGO_INITDB_ROOT_USERNAME}" --password "$${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --eval "quit(db.adminCommand({ ping: 1 }).ok ? 0 : 2)"'
+            interval: 10s
+            timeout: 10s
+            retries: 10
+
+    backend:
+        image: tempo-backend:local
+        build:
+            context: .
+            dockerfile: apps/backend/Dockerfile
+        restart: unless-stopped
+        logging: *logging
+        environment:
+            DATABASE_URL: 'postgres://tempo:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@postgres:5432/tempo_db'
+            MONGO_URL: 'mongodb://tempo:${MONGO_PASSWORD:?Set MONGO_PASSWORD}@mongo:27017/?authSource=admin'
+            MONGO_DB_NAME: tempo_audit
+            JWT_SECRET: '${JWT_SECRET:?Set JWT_SECRET}'
+            FRONTEND_ORIGIN: '${TEMPO_ORIGIN:?Set TEMPO_ORIGIN}'
+            TRUST_PROXY: 'true'
+        depends_on:
+            postgres:
+                condition: service_healthy
+            mongo:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'bun',
+                    '-e',
+                    "const r = await fetch('http://localhost:3000/health'); if (!r.ok) process.exit(1)",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+
+    frontend:
+        image: tempo-frontend:local
+        build:
+            context: .
+            dockerfile: apps/frontend/Dockerfile
+        restart: unless-stopped
+        logging: *logging
+        environment:
+            PUBLIC_API_URL: '${TEMPO_ORIGIN:?Set TEMPO_ORIGIN}/api'
+            ORIGIN: '${TEMPO_ORIGIN:?Set TEMPO_ORIGIN}'
+        depends_on:
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'bun',
+                    '-e',
+                    "const r = await fetch('http://localhost:3000/'); if (!r.ok) process.exit(1)",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
+    gateway:
+        image: caddy:2-alpine
+        restart: unless-stopped
+        logging: *logging
+        ports:
+            - '127.0.0.1:${TEMPO_PORT:-18080}:8080'
+        volumes:
+            - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./data/caddy-data:/data
+            - ./data/caddy-config:/config
+        depends_on:
+            frontend:
+                condition: service_healthy

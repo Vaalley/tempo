@@ -15,8 +15,6 @@ Modalité d’accès : Parcours de formation
 ☐ Parcours de formation
 ☐ Validation des Acquis de l’Expérience (VAE)
 
-> Version de travail relue le 21 septembre 2026 à partir du dossier projet et du dépôt Tempo. Les exemples reprennent les réalisations documentées. Avant remise, le candidat doit confirmer ses interventions personnelles, préciser les aides utilisées, compléter les périodes et relire la déclaration sur l’honneur. Les résultats de la recette assistée sont distingués de ses propres interventions.
-
 Présentation du dossier
 
 Le dossier professionnel (DP) constitue un élément du système de validation du titre professionnel.
@@ -50,7 +48,7 @@ Pour compléter ce dossier, le candidat dispose d’un site web en accès libre 
 
 1. Développer une application sécurisée : réaliser les réservations et leurs contrôles d’accès.
 2. Concevoir et développer une application sécurisée organisée en couches : organiser les données et les traitements SQL/NoSQL.
-3. Préparer le déploiement d’une application sécurisée : préparer les tests et la livraison de Tempo.
+3. Préparer le déploiement d’une application sécurisée : tester, livrer et publier Tempo en HTTPS.
 4. Titres, diplômes, CQP et attestations de formation.
 5. Déclaration sur l’honneur.
 6. Documents illustrant la pratique professionnelle et annexes.
@@ -137,7 +135,7 @@ La classe `ApiError`, qui hérite de `Error`, illustre l’utilisation de la pro
 
 ## Activité-type 3 : Préparer le déploiement d’une application sécurisée
 
-### Exemple n° 1 : Préparer les tests et la livraison reproductible de Tempo
+### Exemple n° 1 : Préparer les tests et publier Tempo dans un environnement Docker
 
 ### 1. Décrivez les tâches ou opérations que vous avez effectuées, et dans quelles conditions
 
@@ -145,23 +143,31 @@ J’ai préparé deux Dockerfiles multi-stage et une configuration Docker Compos
 
 J’ai organisé les tests par niveau : services et routes, frontend, intégrations PostgreSQL et MongoDB, puis parcours navigateur. Le workflow GitHub Actions prévoit le formatage, le lint, les types et le build, suivis d’une recette Docker. Les traces des échecs Playwright sont conservées comme artefacts.
 
-Tous les tests backend, tests frontend, tests PostgreSQL et parcours Chromium réussis en local. Les types, le lint, le formatage et le build ont aussi réussi.
+Les vérifications locales du 17 septembre ont validé les tests backend, frontend, PostgreSQL et les parcours Chromium, ainsi que les types, le lint, le formatage et le build. Lors de la préparation du déploiement du 22 septembre, 106 tests backend et 22 tests frontend ont de nouveau réussi, avec le formatage et le lint. Les suites d’intégration et les parcours navigateur n’ont pas été rejoués à cette occasion.
 
-Le README décrit le démarrage, les migrations, la sauvegarde, la restauration et le retour arrière.
+Le 22 septembre 2026, j’ai choisi d’héberger la démonstration sur une machine Ubuntu mise à disposition par un ami. J’ai fait en sorte que les fichiers et les données de Tempo soient regroupés dans `/opt/tempo/` pour faciliter leur retrait. J’ai autorisé séparément le transfert, le démarrage et la publication, car la machine héberge déjà d’autres services.
+
+Les images du frontend et du backend ont été construites sur le serveur. Docker Compose organise cinq services : PostgreSQL, MongoDB, l’API, le frontend et une passerelle Caddy. Les données persistent dans `/opt/tempo/data/`. Les secrets nécessaires ont été transférés séparément dans `.env.host`, lisible uniquement par root ; ils ne sont pas intégrés aux images. Seule la passerelle publie un port sur l’interface locale du serveur. Les bases ne sont pas directement exposées à Internet.
+
+Le premier démarrage a révélé une incompatibilité entre MongoDB 8.0.29 et le noyau Linux 7.0 de la machine. Après lecture des journaux et vérification de la cause, j’ai validé l’utilisation de MongoDB 7.0.43 dans le conteneur Tempo, sur une base encore vide. Cette adaptation a permis le démarrage sans modifier le système d’exploitation de mon ami.
+
+J’ai créé le sous-domaine gratuit `tempo-val.duckdns.org` et renseigné l’adresse IPv4 du serveur dans DuckDNS. Le proxy Caddy déjà présent sur la machine a ensuite été configuré pour transmettre les requêtes vers Tempo et gérer HTTPS. Le site et l’API partagent la même origine, l’API étant accessible sous `/api`. Un fichier de raccordement reste dans `/srv/tempo/caddy.conf` ; il constitue une exception au regroupement dans `/opt/tempo/`.
+
+Le site est accessible à l’adresse https://tempo-val.duckdns.org. Les vérifications ont confirmé une réponse HTTP 200 du site, le fonctionnement de l’API, une redirection HTTP vers HTTPS et un cookie de session `HttpOnly`, `Secure` et `SameSite=Strict`. Une route protégée refuse les accès non authentifiés avec HTTP 401. Le seed a créé deux comptes, quatre espaces et une réservation publique avec une invitation en attente. La connexion et la restauration de session des deux rôles ont été vérifiées via HTTPS.
 
 ### 2. Précisez les moyens utilisés
 
-Docker Compose, Dockerfiles, Git, GitHub Actions, commandes Bun, Bun Test, Vitest, Playwright et bases dédiées aux intégrations.
+Docker Compose, Dockerfiles multi-stage, SSH, serveur Ubuntu, Caddy, DuckDNS, Git, GitHub Actions, commandes Bun, Bun Test, Vitest, Playwright et bases dédiées aux intégrations. Les fichiers `compose.host.yml`, `deployment/compose.mongo7.yml`, `deployment/Caddyfile` et `deployment/public.caddy.conf` décrivent le déploiement public.
 
 ### 3. Avec qui avez-vous travaillé ?
 
-Projet personnel réalisé en autonomie. Avec l'aide des formateurs de la 3WA et mon tuteur en entreprise.
+Projet personnel réalisé avec l’aide des formateurs de la 3WA et de mon tuteur en entreprise. Un ami a mis à disposition la machine d’hébergement.
 
 ### 4. Contexte
 
 Nom de l’entreprise, organisme ou association : Collectif Energie ; projet personnel Tempo ; Ecole 3WAcademy.
 
-Chantier, atelier, service : préparation de la livraison et de l’environnement de démonstration.
+Chantier, atelier, service : préparation de la livraison et publication de l’environnement de démonstration sur un serveur partagé. Un ami a mis la machine à disposition ; Codex a assisté les opérations techniques autorisées.
 
 Période d’exercice : du 5 Janvier 2026 au 22 Septembre 2026.
 
@@ -194,7 +200,8 @@ Pièces proposées, à sélectionner et à légender avant remise :
 - captures des parcours de réservation, d’invitation et de check-in ;
 - extraits de code commentés et résultats de tests datés ;
 - schémas UML et MERISE accompagnés du relevé de leurs écarts avec la V1 ;
-- procédure de déploiement et preuve de CI correspondant à la version remise.
+- procédure de déploiement, compte rendu du 22 septembre (`docs/DEPLOIEMENT_2026-09-22.md`) et preuve de CI correspondant à la version remise ;
+- configuration Docker et raccordement HTTPS, sans identifiants ni mots de passe.
 
 # Annexes
 

@@ -1,0 +1,5 @@
+# Approved compatibility override for the shared server's Linux 7.0 kernel.
+# Initialized with a fresh MongoDB data directory; keep this override on restart.
+services:
+    mongo:
+        image: mongo:7.0.43-jammy

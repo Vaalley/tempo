@@ -4,6 +4,10 @@
 .codex
 .env
 **/.env
+**/.env.*
+!**/.env.example
+data
+deployment/*.tar
 **/node_modules
 **/.svelte-kit
 **/build

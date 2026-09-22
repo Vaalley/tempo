@@ -35,7 +35,7 @@ Date : _7 Octobre 2026_
 
 # 1\. LISTE DES COMPÉTENCES DU RÉFÉRENTIEL COUVERTES PAR LE PROJET
 
-Ce dossier présente mon travail de conception, de développement et de préparation du déploiement de Tempo. Les exemples s’appuient sur les fichiers du dépôt, les tests et les écrans de l’application.
+Ce dossier présente mon travail de conception, de développement et de préparation du déploiement de Tempo. Il intègre la mise en ligne de la démonstration du 22 septembre 2026 sur https://tempo-val.duckdns.org. Les exemples s’appuient sur les fichiers du dépôt, les tests et les écrans de l’application. Les opérations de déploiement réalisées avec l’assistance de Codex sont précisées dans les sections 1.3 et 6.2.2.
 
 ## 1.1 Développer une application sécurisée
 
@@ -117,7 +117,9 @@ La section 9 relie les tests aux règles métier et précise la date et le péri
 
 J'ai écrit deux Dockerfiles multi-stage et un fichier `docker-compose.yml` pour PostgreSQL, MongoDB, le backend et le frontend. Compose attend les contrôles de santé des bases. Le backend applique ensuite les migrations avant de démarrer, puis le frontend attend que l'API soit disponible. Un profil optionnel charge le jeu de démonstration.
 
-Le `README.md` décrit la configuration, le lancement, les contrôles de santé, les tests d'intégration, les sauvegardes, la restauration et le retour à une version précédente. Les versions des services sont épinglées et les secrets restent hors du dépôt.
+Le `README.md` décrit la configuration, le lancement, les contrôles de santé, les tests d'intégration, les sauvegardes, la restauration et le retour à une version précédente. Les principales versions applicatives sont épinglées et les secrets restent hors du dépôt. Le déploiement public utilise aussi une image Caddy `2-alpine`, qui reste une étiquette évolutive.
+
+Le 22 septembre 2026, j’ai choisi une machine Ubuntu mise à disposition par un ami. J’ai imposé un regroupement des fichiers et des données dans `/opt/tempo/`, ainsi qu’une validation de chaque étape modifiant ce serveur partagé. La configuration `compose.host.yml` et la procédure `deployment/README.md` ont été préparées avec l’assistance de Codex. Le transfert et les constructions ont précédé le démarrage, puis la publication HTTPS et le chargement du seed, chacun autorisé séparément.
 
 ### 1.3.3. Contribuer à la mise en production dans une démarche DevOps
 
@@ -126,6 +128,8 @@ J'ai configuré le workflow `.github/workflows/ci.yml`. Le premier job vérifie 
 L'[exécution du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) et la capture ci-dessous sont des preuves historiques citées pour la V1. Elles ne valident pas les modifications locales de septembre. La relecture du 21 septembre a relevé que l’appel de connexion du contrôle final `Verify Public Endpoints` ne fournit pas `Origin` ni `X-CSRF-Protection`. Ce contrôle doit être adapté au nouveau contrat CSRF avant de relancer la CI.
 
 ![Exécution GitHub Actions réussie avec les jobs Quality et Docker](github-ci.png)
+
+La publication du 22 septembre est une opération manuelle assistée par SSH et Docker Compose, distincte de cette CI. J’ai créé le sous-domaine DuckDNS et configuré son adresse IPv4. Codex a réalisé les opérations serveur et les contrôles après mes accords. Aucun déploiement automatique depuis GitHub n’a été mis en place. Le compte rendu `docs/DEPLOIEMENT_2026-09-22.md` distingue les résultats observés des vérifications qui restent à effectuer.
 
 # 2\. CAHIER DES CHARGES
 
@@ -644,31 +648,35 @@ Tempo est une application interne protégée par authentification. Le document H
 
 ## 6.2. Environnement technique
 
-| Domaine            | Version                                   | Usage                                              |
-| ------------------ | ----------------------------------------- | -------------------------------------------------- |
-| Runtime            | Bun 1.3.14                                | TypeScript, scripts, paquets et workspaces         |
-| Backend            | Hono 4.12.24                              | API HTTP, middlewares et RPC typé                  |
-| Validation         | Zod 4.4.3                                 | Corps, paramètres et chaînes de requête            |
-| Frontend           | Svelte 5.56.3, SvelteKit 2.63.1           | Pages, composants et navigation                    |
-| Build              | Vite 7.3.5                                | Développement et production                        |
-| Interface          | Tailwind CSS 4.3.0, shadcn-svelte         | Mise en page et composants                         |
-| SQL                | Drizzle ORM 0.45.2, Drizzle Kit 0.31.10   | Schéma, requêtes et migrations                     |
-| QR code            | qrcode 1.5.4                              | Génération du QR sous forme de Data URL            |
-| Base relationnelle | PostgreSQL 18.6, Alpine 3.24              | Comptes, espaces, réservations, participants et QR |
-| Base documentaire  | MongoDB 8.0.29, Noble                     | Audits de suppression                              |
-| Qualité            | Oxlint 1.68.0, Oxfmt 0.21.0               | Lint et formatage                                  |
-| Tests              | Bun Test, Vitest 4.1.8, Playwright 1.57.0 | Tests isolés, intégrations et E2E                  |
-| CI                 | GitHub Actions                            | Contrôles qualité et recette Docker                |
+| Domaine            | Version                                                               | Usage                                                 |
+| ------------------ | --------------------------------------------------------------------- | ----------------------------------------------------- |
+| Runtime            | Bun 1.3.14                                                            | TypeScript, scripts, paquets et workspaces            |
+| Backend            | Hono 4.12.24                                                          | API HTTP, middlewares et RPC typé                     |
+| Validation         | Zod 4.4.3                                                             | Corps, paramètres et chaînes de requête               |
+| Frontend           | Svelte 5.56.3, SvelteKit 2.63.1                                       | Pages, composants et navigation                       |
+| Build              | Vite 7.3.5                                                            | Développement et production                           |
+| Interface          | Tailwind CSS 4.3.0, shadcn-svelte                                     | Mise en page et composants                            |
+| SQL                | Drizzle ORM 0.45.2, Drizzle Kit 0.31.10                               | Schéma, requêtes et migrations                        |
+| QR code            | qrcode 1.5.4                                                          | Génération du QR sous forme de Data URL               |
+| Base relationnelle | PostgreSQL 18.6, Alpine 3.24                                          | Comptes, espaces, réservations, participants et QR    |
+| Base documentaire  | MongoDB 8.0.29 en configuration locale ; 7.0.43, Jammy sur le serveur | Audits de suppression ; adaptation au noyau de l’hôte |
+| Qualité            | Oxlint 1.68.0, Oxfmt 0.21.0                                           | Lint et formatage                                     |
+| Tests              | Bun Test, Vitest 4.1.8, Playwright 1.57.0                             | Tests isolés, intégrations et E2E                     |
+| CI                 | GitHub Actions                                                        | Contrôles qualité et recette Docker                   |
+| Publication        | Docker Compose, Caddy 2.11.4 observé, DuckDNS                         | Reverse proxy, HTTPS et sous-domaine public           |
 
 Les contrôles locaux documentés ont été réalisés sous Windows avec PowerShell. Le dépôt ne dépend pas de Codex Desktop ni d'un réglage propre au poste. La CI utilise un runner Ubuntu fourni par GitHub.
 
-| Environnement | Composition                                                                |
-| ------------- | -------------------------------------------------------------------------- |
-| Développement | Backend et frontend lancés avec Bun, PostgreSQL et MongoDB locaux          |
-| Test          | Mocks, bases PostgreSQL et MongoDB réelles, Chromium piloté par Playwright |
-| Démonstration | Quatre services Docker Compose et profil optionnel de seed                 |
+| Environnement          | Composition                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| Développement          | Backend et frontend lancés avec Bun, PostgreSQL et MongoDB locaux                      |
+| Test                   | Mocks, bases PostgreSQL et MongoDB réelles, Chromium piloté par Playwright             |
+| Démonstration          | Quatre services Docker Compose et profil optionnel de seed                             |
+| Démonstration publique | Serveur Ubuntu partagé, cinq services Compose, proxy Caddy existant et domaine DuckDNS |
 
 ### 6.2.1. Ports et configuration
+
+Le tableau suivant décrit la configuration locale `docker-compose.yml`. Les ports des bases et des applications ne sont pas publiés de cette manière sur le serveur.
 
 | Service            | Port hôte | Port du conteneur |
 | ------------------ | --------: | ----------------: |
@@ -687,9 +695,38 @@ Les modèles de configuration se trouvent dans `.env.example` et `apps/backend/.
 | Frontend                 | `PUBLIC_API_URL`                                                                                   |
 | Démonstration            | `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD`, `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`                 |
 
+### 6.2.2. Déploiement public du 22 septembre 2026
+
+La démonstration est hébergée sur une machine Ubuntu mise à disposition par un ami. Le code, les fichiers de déploiement, les secrets et les données persistantes sont regroupés dans `/opt/tempo/`. Les images, conteneurs et journaux restent gérés par Docker hors de ce dossier. Le proxy partagé conserve également ses certificats dans son propre stockage.
+
+| Composant                      | Rôle et exposition sur le serveur                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Caddy de l’hôte                | Reçoit HTTP/HTTPS sur les ports existants 80 et 443 ; gère le certificat du domaine                            |
+| Passerelle Caddy de Tempo      | Écoute sur `127.0.0.1:18080` ; transmet `/api/*` au backend en retirant `/api`, les autres chemins au frontend |
+| Frontend SvelteKit et API Hono | Port 3000 interne à chacun de leurs conteneurs ; aucune publication directe sur l’hôte                         |
+| PostgreSQL 18.6                | Port 5432 interne au réseau Docker ; données sous `/opt/tempo/data/postgres`                                   |
+| MongoDB 7.0.43                 | Port 27017 interne au réseau Docker ; données sous `/opt/tempo/data/mongo` et `/opt/tempo/data/mongo-config`   |
+
+J’ai créé le sous-domaine gratuit `tempo-val.duckdns.org` dans DuckDNS et renseigné l’IPv4 du serveur. Le Caddy partagé importe déjà les configurations `/srv/*/caddy.conf`. L’ajout ciblé de `/srv/tempo/caddy.conf` raccorde le domaine au port local de Tempo sans remplacer les configurations des autres sites. Après validation avec l’environnement du service Caddy, un rechargement a activé le domaine. HTTPS est terminé par ce proxy ; les échanges entre les composants locaux passent sur les réseaux internes.
+
+Le fichier `.env.host`, accessible uniquement à root avec des droits `600`, contient les secrets nécessaires et `TEMPO_ORIGIN=https://tempo-val.duckdns.org`. Cette origine configure `FRONTEND_ORIGIN` côté API et `PUBLIC_API_URL=https://tempo-val.duckdns.org/api` côté frontend. Les fichiers réels d’environnement sont exclus du transfert initial et des images ; les secrets ont été transférés séparément après autorisation. La passerelle tient compte du proxy privé pour transmettre l’adresse client au limiteur de connexion.
+
+Le premier démarrage de MongoDB 8.0.29 a échoué avec un message explicite d’incompatibilité avec le noyau Linux 7.0 de l’hôte. Docker partage ce noyau et n’isole donc pas ce problème. Après diagnostic et accord, le fichier `deployment/compose.mongo7.yml` a fixé MongoDB à `7.0.43-jammy`. La base était encore vide : aucune migration de données MongoDB existantes n’a été réalisée. Les services ont ensuite atteint leur état de disponibilité sans modification du noyau ni redémarrage de la machine.
+
+La commande de démarrage à conserver inclut cette adaptation :
+
+```sh
+cd /opt/tempo
+docker compose --env-file .env.host -f compose.host.yml -f deployment/compose.mongo7.yml up -d --no-build --wait
+```
+
+Le backend applique les migrations PostgreSQL avant son démarrage. Le seed a ensuite été lancé dans le conteneur backend avec les identifiants de démonstration transmis par SSH. Il a créé les comptes `admin@tempo.local` et `user@tempo.local`, les bureaux Horizon et Rivage, les salles Atlas et Boréale, ainsi qu’une réservation publique dans Atlas le 15 décembre 2027 de 13 h à 15 h UTC. Deux participations lui sont associées : le propriétaire accepté et un invité en attente. Les mots de passe ne sont pas reproduits dans ce dossier. Le seed n’est pas une copie de la base locale et sa réexécution réinitialise les mots de passe et rôles des comptes de démonstration.
+
+Les fichiers précédant HTTPS sont sauvegardés dans `deployment/before-https/`. Il s’agit d’une sauvegarde de configuration, pas d’une sauvegarde des données. Pour retirer Tempo, la procédure prévoit la suppression du raccordement `/srv/tempo/caddy.conf`, la validation et le rechargement du proxy, puis l’arrêt du projet Compose avant suppression de son dossier. Aucun nettoyage Docker global ne doit être effectué sur cette machine partagée. Les sauvegardes externalisées et automatiques des bases restent à mettre en place.
+
 ## 6.3. Navigation et accessibilité
 
-La stack complète se lance avec `docker compose up --build --detach --wait`. Le frontend répond sur `http://localhost:5173` et l'API sur `http://localhost:3000`. Aucun domaine public n'est configuré.
+En local, la stack complète se lance avec `docker compose up --build --detach --wait`. Le frontend répond sur `http://localhost:5173` et l’API sur `http://localhost:3000`. Depuis le 22 septembre 2026, la démonstration publique répond sur https://tempo-val.duckdns.org et son API sous `/api`. La publication ne dispense pas des contrôles d’authentification et d’autorisation.
 
 Les routes `/bookings` et `/check-in` demandent un compte connecté. Les pages `/admin/*` demandent aussi le rôle `ADMIN`. Ces contrôles frontend améliorent le parcours, mais les mêmes droits sont vérifiés par l'API.
 
@@ -725,7 +762,7 @@ Svelte Check et les deux parcours Chromium ont réussi le 17 septembre. La recet
 
 ## 6.4. Services tiers
 
-Aucun service tiers métier n'est appelé. Tempo n'envoie pas d'email et n'utilise ni CRM, ni analytics externe, ni réseau social. GitHub Actions exécute uniquement la CI.
+Aucun service tiers métier n'est appelé. Tempo n'envoie pas d'email et n'utilise ni CRM, ni analytics externe, ni réseau social. GitHub Actions exécute uniquement la CI. Pour l’hébergement, DuckDNS fournit le sous-domaine et sa résolution DNS ; Caddy automatise la gestion du certificat HTTPS. Le déploiement reste manuel.
 
 ## 6.5. Sécurité
 
@@ -744,7 +781,7 @@ Le jeton QR contient 256 bits aléatoires. L'URL le place dans le fragment, puis
 - Le cookie de session est `HttpOnly`, `SameSite=Strict` et `Secure` lorsque `FRONTEND_ORIGIN` utilise HTTPS. Les mutations exigent une origine autorisée et un en-tête `X-CSRF-Protection: 1`. Le frontend et l’API doivent être déployés sur le même site au sens du navigateur. Une faille XSS pourrait encore effectuer des actions avec la session : le cookie ne remplace pas la prévention XSS.
 - Il n'existe pas de révocation individuelle des JWT ni de rotation automatique du secret.
 - Le limiteur est en mémoire. Plusieurs instances backend devraient partager son état.
-- Le développement local utilise HTTP. Un déploiement public doit terminer TLS devant l'application.
+- Le développement local utilise HTTP. Depuis le 22 septembre, le déploiement public termine TLS sur le Caddy de l’hôte et redirige HTTP vers HTTPS. Les échanges internes restent en HTTP.
 - Les sauvegardes sont documentées mais ne sont ni planifiées ni externalisées.
 - L'audit MongoDB est best effort. Une panne ne revient pas sur une suppression PostgreSQL déjà validée.
 - Le QR est commun aux participants d'une réservation. Un utilisateur doit tout de même être connecté, accepté et dans le créneau, mais un participant peut transmettre le code ou effectuer le check-in à distance.
@@ -983,7 +1020,7 @@ La sécurité repose sur plusieurs contrôles complémentaires :
 
 Le JWT est conservé dans un cookie `HttpOnly` de 24 heures, inaccessible au JavaScript de la page. Le client RPC utilise `credentials: include` et un en-tête dédié à la protection CSRF. L’API vérifie aussi l’origine exacte des requêtes qui modifient les données. La déconnexion supprime le cookie ; elle ne révoque pas un JWT qui aurait été copié avant sa suppression.
 
-Le limiteur actuel est propre à un processus. Un déploiement horizontal demanderait un stockage partagé. TLS doit aussi être terminé devant l'application. Enfin, l'audit best effort et le QR commun à une réservation sont des compromis connus de la V1.
+Le limiteur actuel est propre à un processus. Un déploiement horizontal demanderait un stockage partagé. TLS est terminé devant l’application par le Caddy de l’hôte pour la démonstration publique. Enfin, l’audit best effort et le QR commun à une réservation sont des compromis connus de la V1.
 
 # 9\. PLAN DE TESTS
 
@@ -1024,6 +1061,23 @@ Une suite est réussie si aucune assertion n'échoue, si Svelte Check ne produit
 Le 17 septembre 2026, 106 tests backend, 22 tests frontend, 15 tests PostgreSQL et 2 parcours Chromium ont réussi en local, avec les types, le lint, le formatage et le build. MongoDB était indisponible dans cet environnement isolé : sa persistance n’a pas été validée par cette exécution. L'[exécution GitHub Actions du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) reste une référence historique, distincte de ces changements. La recette manuelle du 21 septembre est consignée dans `docs/RECETTE_HELIUM_2026-09-21.md`.
 
 La recette manuelle relève trois réserves : message générique pour un créneau inversé, boutons de déconnexion sans nom accessible et bandeau débordant à 390 pixels de large. L’absence d’erreur de compilation ne suffit pas à valider ces aspects. Le dernier appel de connexion du workflow doit aussi fournir les en-têtes CSRF.
+
+### 9.3.1. Vérifications du déploiement du 22 septembre 2026
+
+Les contrôles de publication ont été réalisés avec l’assistance de Codex, après autorisation. Le formatage, le lint, les 106 tests backend et les 22 tests frontend ont réussi en local. Les deux images applicatives ont été construites sur le serveur. Les vérifications suivantes portent sur la démonstration publiée, sans constituer une nouvelle exécution des suites d’intégration ou de Playwright.
+
+| Vérification       | Résultat observé                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Services Docker    | PostgreSQL, MongoDB 7, backend et frontend déclarés sains ; passerelle démarrée                                           |
+| Site public        | HTTP 200 sur `https://tempo-val.duckdns.org/`, avec vérification du certificat TLS                                        |
+| Redirection        | HTTP 308 vers HTTPS                                                                                                       |
+| API                | `/api/health` renvoie `OK`                                                                                                |
+| Accès sans session | `/api/auth/session` renvoie `user: null` ; la route protégée `/api/bookings` renvoie 401 lors du contrôle privé préalable |
+| Cookie             | Attributs `HttpOnly`, `Secure` et `SameSite=Strict` observés sur HTTPS                                                    |
+| Seed               | 2 comptes, 4 espaces, 1 réservation et 2 participations dans PostgreSQL                                                   |
+| Authentification   | Connexion puis restauration de session vérifiées via HTTPS pour les rôles `ADMIN` et `USER`                               |
+
+Ces résultats ne valident pas un parcours complet de réservation en navigateur sur le serveur, l’écriture d’un audit MongoDB, la restauration d’une sauvegarde ni la tenue en charge. Les réserves de la recette du 21 septembre restent distinctes de ces contrôles de déploiement. Le détail est conservé dans `docs/DEPLOIEMENT_2026-09-22.md`.
 
 ## 9.4. Évolutions du plan
 
