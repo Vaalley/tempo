@@ -167,7 +167,7 @@ Projet personnel réalisé avec l’aide des formateurs de la 3WA et de mon tute
 
 Nom de l’entreprise, organisme ou association : Collectif Energie ; projet personnel Tempo ; Ecole 3WAcademy.
 
-Chantier, atelier, service : préparation de la livraison et publication de l’environnement de démonstration sur un serveur partagé. Un ami a mis la machine à disposition ; Codex a assisté les opérations techniques autorisées.
+Chantier, atelier, service : préparation de la livraison et publication de l’environnement de démonstration sur un serveur partagé. Un ami a mis la machine à disposition.
 
 Période d’exercice : du 5 Janvier 2026 au 22 Septembre 2026.
 

@@ -97,13 +97,13 @@
 	<title>Gestion des Espaces - Tempo</title>
 </svelte:head>
 
-<div class="mx-auto max-w-4xl p-10">
-	<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<div class="mx-auto max-w-4xl p-4 sm:p-10">
+	<div class="flex flex-col items-start gap-4 mb-6 lg:flex-row lg:flex-wrap lg:justify-between lg:items-center">
 		<div>
 			<h1 class="text-3xl font-bold">Gestion des Espaces</h1>
 			<p class="text-muted-foreground text-sm mt-1">Bureaux et salles de réunion</p>
 		</div>
-		<div class="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
+		<div class="flex w-full min-w-0 flex-wrap items-center gap-2 lg:w-auto lg:max-w-full">
 			<Button variant="ghost" size="sm" href="/">
 				<ArrowLeft class="size-4" />
 				Accueil
