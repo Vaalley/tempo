@@ -4,6 +4,7 @@ node_modules
 # output
 out
 dist
+/output/odt-final/
 *.tgz
 
 # code coverage

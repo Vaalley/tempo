@@ -125,9 +125,9 @@ Le 22 septembre 2026, j’ai choisi une machine Ubuntu mise à disposition par u
 
 J'ai configuré le workflow `.github/workflows/ci.yml`. Le premier job vérifie le format, le lint, les types, les tests et le build. Le second construit la stack Docker Compose, attend les services, charge le seed et exécute les intégrations PostgreSQL et MongoDB ainsi que les deux parcours Playwright. Les traces, captures et vidéos d'un échec E2E sont conservées comme artefacts pendant sept jours.
 
-L'[exécution du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) et la capture ci-dessous sont des preuves que la CI fonctionne. 
+L’exécution GitHub Actions n° 78 du 23 septembre 2026 a réussi pour le commit 8d0d1cd, qui contient les corrections mobiles. Les jobs Quality & Tests et Docker Build Check sont tous les deux passés. Cette preuve porte sur ce commit. [Consulter cette exécution](https://github.com/Vaalley/tempo/actions/runs/35839428413).
 
-![Exécution GitHub Actions réussie avec les jobs Quality et Docker](github-ci.png)
+![Exécution GitHub Actions réussie avec les jobs Quality et Docker](captures/ci-2026-09-23.png)
 
 # 2\. CAHIER DES CHARGES
 
@@ -176,7 +176,11 @@ La palette repose sur les variables CSS de shadcn-svelte et Tailwind CSS. Elle c
 
 Les écrans utilisent les classes adaptatives de Tailwind CSS. L'administration et les tableaux sont principalement destinés à un poste de travail. La création d'une réservation, la réponse à une invitation et le check-in doivent aussi rester utilisables sur mobile.
 
-Sur petit écran, le titre et la navigation se placent l’un sous l’autre. Les liens passent à la ligne et les longues adresses de compte peuvent être coupées pour rester dans la largeur disponible. Les marges sont réduites et le formulaire de réservation s’affiche en colonne. Le nom de l’espace sélectionné est tronqué s’il est trop long. Les tableaux conservent un défilement horizontal dans leur propre zone. Ces adaptations corrigent la mise en page à l’origine du débordement relevé pendant la recette ; une nouvelle vérification visuelle à 390 × 844 pixels reste à effectuer.
+Sur petit écran, le titre et la navigation se placent l’un sous l’autre. Les liens passent à la ligne et les longues adresses de compte peuvent être coupées pour rester dans la largeur disponible. Les marges sont réduites et le formulaire de réservation s’affiche en colonne. Le nom de l’espace sélectionné est tronqué s’il est trop long. Les tableaux conservent un défilement horizontal dans leur propre zone. Le 24 septembre 2026, l’accueil, les réservations, les espaces, le check-in et l’audit ont été vérifiés avec une fenêtre de 390 × 844 pixels. Aucun débordement horizontal de la page n’a été observé sur ces écrans.
+
+![Réservations à 390 pixels de largeur. Le tableau défile dans sa propre zone.](captures/mobile-reservations-390.png)
+
+Réservations à 390 pixels de largeur. Le tableau défile dans sa propre zone.
 
 ## 2.7. Besoins fonctionnels métier
 
@@ -734,7 +738,9 @@ Les extraits suivants présentent les principaux traitements. Ceux des sections 
 
 ### 7.1.1. Affichage
 
-_(Insérer une capture du message "Ce créneau est déjà réservé pour cet espace" dans la page des réservations.)_
+![Refus d’un créneau déjà occupé sur la démonstration publique, le 24 septembre 2026.](captures/conflit-reservation.png)
+
+Refus d’un créneau déjà occupé sur la démonstration publique, le 24 septembre 2026.
 
 ### 7.1.2. Extrait de code
 
@@ -771,7 +777,9 @@ Le service vérifie d’abord le créneau pour renvoyer une erreur rapidement. S
 
 ### 7.2.1. Affichage
 
-_(Insérer une capture d'une réponse HTTP 401 et d'une réponse HTTP 403 sur une route protégée.)_
+![Réponses de l’API publique enregistrées le 24 septembre 2026 : 401 sans session et 403 avec le compte USER sur /api/users.](captures/reponses-http-401-403.png)
+
+Réponses de l’API publique enregistrées le 24 septembre 2026 : 401 sans session et 403 avec le compte USER sur /api/users.
 
 ### 7.2.2. Extrait de code
 
@@ -802,7 +810,9 @@ L’authentification vérifie qui est connecté ; l’autorisation vérifie ce q
 
 ### 7.3.1. Affichage
 
-_(Insérer une capture du panneau "Participants et QR code" avec une invitation en attente.)_
+![Invitation en attente dans le panneau des participants, le 24 septembre 2026.](captures/participants-invitation.png)
+
+Invitation en attente dans le panneau des participants, le 24 septembre 2026.
 
 ### 7.3.2. Extrait de code
 
@@ -838,7 +848,13 @@ La même règle est appliquée aux invitations et à la participation directe da
 
 ### 7.4.1. Affichage
 
-_(Insérer une capture du QR code puis de l'écran "Présence confirmée".)_
+![QR code de la réservation de recette, le 24 septembre 2026. La réservation a été supprimée après le contrôle.](captures/qr-reservation.png)
+
+QR code de la réservation de recette, le 24 septembre 2026. La réservation a été supprimée après le contrôle.
+
+![Confirmation du check-in du propriétaire pendant le créneau, le 24 septembre 2026.](captures/presence-confirmee.png)
+
+Confirmation du check-in du propriétaire pendant le créneau, le 24 septembre 2026.
 
 ### 7.4.2. Extrait de code
 
@@ -876,7 +892,9 @@ Un QR partagé ne prouve pas la présence dans la salle. L'utilisateur doit êtr
 
 La page `/admin/audit` montre les 100 événements les plus récents avec l'action, l'entité, la date et l'auteur.
 
-_(Insérer une capture de cet écran avec les données de démonstration.)_
+![Journal d’audit après suppression par l’API de la réservation et de l’espace de recette, le 24 septembre 2026.](captures/audit-suppressions.png)
+
+Journal d’audit après suppression par l’API de la réservation et de l’espace de recette, le 24 septembre 2026.
 
 ### 7.5.2. Extrait de code
 
@@ -913,7 +931,9 @@ Une panne MongoDB ne bloque pas la suppression dans PostgreSQL. En contrepartie,
 
 ### 7.6.1. Affichage
 
-_(Insérer une capture de l'autocomplétion TypeScript d'une route Hono dans le frontend.)_
+![Autocomplétion du client Hono dans l’éditeur : les méthodes de bookings sont proposées à partir du type du backend.](captures/autocompletion-hono.png)
+
+Autocomplétion du client Hono dans l’éditeur : les méthodes de bookings sont proposées à partir du type du backend.
 
 ### 7.6.2. Extrait de code
 
@@ -996,7 +1016,7 @@ Les tests unitaires fonctionnent sans base grâce aux mocks. Les intégrations u
 
 La validation demande des tests sans assertion en échec, aucun avertissement ni erreur Svelte Check et un build de production réussi. Les parcours E2E vérifient les réponses HTTP et les éléments affichés. En cas d’échec, Playwright conserve une trace, une capture et une vidéo.
 
-Le 17 septembre 2026, 106 tests backend, 22 tests frontend, 15 tests PostgreSQL et 2 parcours Chromium ont réussi en local, avec les types, le lint, le formatage et le build. MongoDB était indisponible dans cet environnement isolé : sa persistance n’a pas été validée par cette exécution. L'[exécution GitHub Actions du 2 septembre 2026](https://github.com/Vaalley/tempo/actions/runs/33612722369) reste une référence historique, distincte de ces changements. La recette manuelle du 21 septembre est consignée dans `docs/RECETTE_HELIUM_2026-09-21.md`.
+Le 17 septembre 2026, 106 tests backend, 22 tests frontend, 15 tests PostgreSQL et 2 parcours Chromium ont réussi en local, avec les types, le lint, le formatage et le build. MongoDB était indisponible dans cet environnement isolé : sa persistance n’a pas été validée par cette exécution. Le 23 septembre, les deux jobs de la CI n° 78 ont réussi sur le commit 8d0d1cd. La capture et le lien de cette exécution figurent en section 1.3.3.
 
 ### 9.3.1. Vérifications du déploiement du 22 septembre 2026
 
@@ -1013,7 +1033,7 @@ Le formatage, le lint, les 106 tests backend et les 22 tests frontend ont réuss
 | Seed               | 2 comptes, 4 espaces, 1 réservation et 2 participations dans PostgreSQL                                                   |
 | Authentification   | Connexion puis restauration de session vérifiées via HTTPS pour les rôles `ADMIN` et `USER`                               |
 
-Il reste à tester sur le serveur le parcours complet de réservation en navigateur, l’écriture d’un audit MongoDB, la restauration d’une sauvegarde et la charge. Le compte rendu se trouve dans `docs/DEPLOIEMENT_2026-09-22.md`.
+Le 24 septembre 2026, la démonstration publique a permis de vérifier la création d’une réservation privée, le refus d’un chevauchement, l’invitation d’un utilisateur, son acceptation et le check-in. Les appels à /api/users ont renvoyé 401 sans session et 403 avec le compte USER. La réservation et l’espace RECETTE-2026-09-24 ont ensuite été supprimés par l’API ; les deux événements sont visibles dans le journal d’audit. L’annulation depuis le navigateur n’a pas pu être menée à terme pendant ce contrôle, en raison d’un blocage de la boîte de confirmation. La restauration d’une sauvegarde et la charge restent à tester.
 
 ## 9.4. Évolutions du plan
 
@@ -1056,23 +1076,21 @@ J’ai retenu une réservation publique avec invitation, acceptation et check-in
 
 Les tests PostgreSQL appliquent les migrations, exécutent le parcours et vérifient `checkedInAt` en base. Le test E2E utilise les comptes du seed, accepte l’invitation dans l’interface, ouvre le lien du QR et attend le message « Présence confirmée ».
 
-![Exécution réussie du pipeline GitHub Actions](github-ci.png)
+![Exécution réussie du pipeline GitHub Actions](captures/ci-2026-09-23.png)
 
-_(Insérer ici une capture de l'écran "Présence confirmée".)_
+![Check-in confirmé sur la démonstration publique, le 24 septembre 2026. Le parcours manuel illustré utilise une réservation privée avec invitation.](captures/presence-confirmee.png)
+
+Check-in confirmé sur la démonstration publique, le 24 septembre 2026. Le parcours manuel illustré utilise une réservation privée avec invitation.
 
 ## 10.4. Conclusion
 
 Les tests locaux du 17 septembre ont validé les scénarios automatisés exécutés. La recette du 21 septembre a confirmé le refus des chevauchements, le contrôle de capacité et le check-in après acceptation de l’invitation. Le serveur vérifie l’utilisateur, sa participation, la réservation, le créneau et le jeton QR.
 
-Les corrections d’interface sont décrites en section 9.3. La validation finale doit encore comprendre une vérification du rendu et une CI réussie sur la version remise. La révocation des JWT, le partage possible du QR et les limites de l’audit MongoDB restent des points à prendre en compte, avec les tests de charge.
+Le rendu mobile a été vérifié le 24 septembre sur les écrans décrits en section 2.6.2. La CI n° 78 valide le commit 8d0d1cd. Le commit documentaire suivant, f43f5ed, a une CI en échec : une exécution réussie reste nécessaire sur la version finale remise. La révocation des JWT, le partage possible du QR et les limites de l’audit MongoDB restent des points à prendre en compte, avec les tests de charge.
 
 # 11\. VEILLE SUR LES VULNÉRABILITÉS DE SÉCURITÉ
 
-_(Section à rédiger personnellement : décrire ma pratique réelle de veille sécurité : sources suivies (ex : newsletters CERT-FR, blogs sécurité, OWASP, changelogs de sécurité des dépendances npm/Bun), fréquence, et actions concrètes menées sur ce projet, par exemple :_
-
-- _Vérification régulière des vulnérabilités connues dans les dépendances (`bun audit` / Dependabot / GitHub Security Advisories) ;_
-- _Application du principe du moindre privilège pour les rôles applicatifs ;_
-- _Choix de fonctions de hachage de mot de passe recommandées (Argon2id via `Bun.password`) plutôt que des algorithmes obsolètes ;_
-- _Suivi des bonnes pratiques OWASP (validation des entrées, gestion des erreurs sans fuite d'information, expiration des jetons JWT).)_
-
-Référence de pied de page importé à vérifier avant export : ![](Dossier_projet_Valentin_Musset_htm_8a4710a1.png)
+- Discussions autour de la sécurité avec les collègues en entreprise
+- Application du principe du moindre privilège pour les rôles applicatifs
+- Choix de fonctions de hachage de mot de passe recommandées (Argon2id via Bun.password) plutôt que des algorithmes obsolètes
+- Suivi des bonnes pratiques (validation des entrées, gestion des erreurs sans fuite d'information, expiration des jetons JWT)

@@ -179,9 +179,9 @@ Période d’exercice : du 5 Janvier 2026 au 22 Septembre 2026.
 
 Rubrique facultative, à renseigner par le candidat.
 
-| Intitulé                   | Autorité ou organisme | Date          |
-| -------------------------- | --------------------- | ------------- |
-| [à compléter si pertinent] | [à compléter]         | [à compléter] |
+| Intitulé                                | Autorité ou organisme | Date                               |
+| --------------------------------------- | --------------------- | ---------------------------------- |
+| Développeur web full stack (RNCP 37273) | 3W Academy            | 5 novembre 2025 (décision du jury) |
 
 # Déclaration sur l’honneur
 
@@ -195,14 +195,22 @@ Signature :
 
 # Documents illustrant la pratique professionnelle
 
-Pièces proposées, à sélectionner et à légender avant remise :
+Les captures suivantes illustrent les invitations, le check-in et les contrôles de livraison de Tempo.
 
-- captures des parcours de réservation, d’invitation et de check-in ;
-- extraits de code commentés et résultats de tests datés ;
-- schémas UML et MERISE accompagnés du relevé de leurs écarts avec la V1 ;
-- procédure de déploiement, compte rendu du 22 septembre (`docs/DEPLOIEMENT_2026-09-22.md`) et preuve de CI correspondant à la version remise ;
-- configuration Docker et raccordement HTTPS, sans identifiants ni mots de passe.
+![Invitation en attente sur la démonstration publique, le 24 septembre 2026.](captures/participants-invitation.png)
+
+Invitation en attente sur la démonstration publique, le 24 septembre 2026.
+
+![Check-in confirmé pendant le créneau, le 24 septembre 2026.](captures/presence-confirmee.png)
+
+Check-in confirmé pendant le créneau, le 24 septembre 2026.
+
+![L’exécution GitHub Actions n° 78 du 23 septembre 2026 a réussi pour le commit 8d0d1cd, qui contient les corrections mobiles. Les jobs Quality & Tests et Docker Build Check sont tous les deux passés. Cette preuve porte sur ce commit.](captures/ci-2026-09-23.png)
+
+L’exécution GitHub Actions n° 78 du 23 septembre 2026 a réussi pour le commit 8d0d1cd, qui contient les corrections mobiles. Les jobs Quality & Tests et Docker Build Check sont tous les deux passés. Cette preuve porte sur ce commit.
+
+[Exécution GitHub Actions n° 78](https://github.com/Vaalley/tempo/actions/runs/35839428413).
 
 # Annexes
 
-À compléter selon les consignes du centre et le référentiel de certification. Ne joindre que les pièces utiles aux exemples décrits.
+Les schémas UML et MERISE et leurs écarts avec la V1 sont présentés dans le dossier projet, avec les extraits de code et les résultats des tests.
