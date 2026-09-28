@@ -42,6 +42,7 @@ style: |
 <!-- _paginate: false -->
 
 # Tempo
+
 ## Réserver un bureau ou une salle
 
 Titre professionnel **Concepteur développeur d’applications**
@@ -132,11 +133,11 @@ Soutenance du 7 octobre 2026
 
 # 1.3. Contraintes
 
-| Métier | Technique et organisation |
-| --- | --- |
-| Aucun chevauchement pour un espace | Contrôles dans l’API et PostgreSQL |
-| Une invitation en attente occupe une place | Gérer les demandes simultanées |
-| Des droits différents selon le compte | Vérifier les droits côté serveur |
+| Métier                                           | Technique et organisation               |
+| ------------------------------------------------ | --------------------------------------- |
+| Aucun chevauchement pour un espace               | Contrôles dans l’API et PostgreSQL      |
+| Une invitation en attente occupe une place       | Gérer les demandes simultanées          |
+| Des droits différents selon le compte            | Vérifier les droits côté serveur        |
 | Un projet personnel en parallèle de l’alternance | Avancer par fonctionnalités dans Trello |
 
 <!-- Expliquer pourquoi un simple contrôle dans le formulaire ne suffit pas si deux requêtes arrivent en même temps. -->
@@ -296,13 +297,13 @@ Une application organisée en trois couches
 
 # 4.1. Choix techniques
 
-| Outil | Utilisation dans Tempo |
-| --- | --- |
-| Svelte 5, SvelteKit, Tailwind et shadcn-svelte | Écrans et formulaires |
-| Bun et Hono | API TypeScript et exécution des services |
-| Drizzle et PostgreSQL | Données métier, transactions et contraintes |
-| MongoDB | Journal des suppressions |
-| Docker Compose | Environnement de démonstration |
+| Outil                                          | Utilisation dans Tempo                      |
+| ---------------------------------------------- | ------------------------------------------- |
+| Svelte 5, SvelteKit, Tailwind et shadcn-svelte | Écrans et formulaires                       |
+| Bun et Hono                                    | API TypeScript et exécution des services    |
+| Drizzle et PostgreSQL                          | Données métier, transactions et contraintes |
+| MongoDB                                        | Journal des suppressions                    |
+| Docker Compose                                 | Environnement de démonstration              |
 
 <!-- Justifier les choix par leur usage concret. Le monorepo permet de partager le type AppType entre Hono et le frontend. -->
 
@@ -310,11 +311,11 @@ Une application organisée en trois couches
 
 # 4.2. Architecture générale
 
-| Couche | Responsabilité |
-| --- | --- |
-| Présentation : SvelteKit | Afficher les pages et envoyer les demandes |
-| API et services : Hono | Vérifier les droits et appliquer les règles |
-| Données : PostgreSQL et MongoDB | Conserver les données métier et les audits |
+| Couche                          | Responsabilité                              |
+| ------------------------------- | ------------------------------------------- |
+| Présentation : SvelteKit        | Afficher les pages et envoyer les demandes  |
+| API et services : Hono          | Vérifier les droits et appliquer les règles |
+| Données : PostgreSQL et MongoDB | Conserver les données métier et les audits  |
 
 <!-- Description du code actuel, sans modifier les diagrammes existants. Le frontend et l'API partagent la même origine sur la démonstration publique. -->
 
@@ -482,13 +483,13 @@ Vérifier les règles, puis les parcours complets
 
 # 7.1. Stratégie de test
 
-| Niveau | Ce que je vérifie |
-| --- | --- |
-| Unitaires et HTTP | Services, routes, rôles et erreurs |
-| Frontend | Session, client RPC et gardes de navigation |
-| Intégration PostgreSQL | Transactions, capacité et concurrence |
-| Intégration MongoDB | Écriture et lecture des audits |
-| Playwright | Réservation, invitation et check-in |
+| Niveau                 | Ce que je vérifie                           |
+| ---------------------- | ------------------------------------------- |
+| Unitaires et HTTP      | Services, routes, rôles et erreurs          |
+| Frontend               | Session, client RPC et gardes de navigation |
+| Intégration PostgreSQL | Transactions, capacité et concurrence       |
+| Intégration MongoDB    | Écriture et lecture des audits              |
+| Playwright             | Réservation, invitation et check-in         |
 
 <!-- Inventaire du dossier : 106 tests backend unitaires et HTTP, 22 frontend, 15 PostgreSQL, 2 MongoDB et 2 parcours E2E. Ces chiffres ne signifient pas que toutes les suites ont été rejouées lors de chaque déploiement. -->
 
