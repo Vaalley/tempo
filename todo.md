@@ -1,6 +1,0 @@
-- [ ] commencer a remplir [dossier projet](./3wa/Dossier_projet_Valentin_Musset.docx)
-- [ ] authentication "jwt" trop specific
-- [ ] enlever system des utilisateurs
-- [ ] detailles les diagrammes de sequences (plus de couches entre API -> DB)
-- [ ] aucune fleches dans le vide dans les diagrammes de sequences
-- [ ] environment tehcniques -> exposes les versions specifiques (lts)

@@ -78,7 +78,7 @@
 				</Alert.Root>
 			{:else}
 				<div class="flex flex-col items-center gap-3">
-					<CircleCheck class="size-14 text-green-600" />
+					<CircleCheck class="size-14 text-green-600 dark:text-green-500" />
 					<h1 class="text-2xl font-semibold">Présence confirmée</h1>
 					{#if checkedInAt}
 						<p class="text-muted-foreground">Check-in enregistré le {checkedInAt}.</p>

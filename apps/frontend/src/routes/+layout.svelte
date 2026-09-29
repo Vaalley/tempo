@@ -4,6 +4,8 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/auth.svelte';
+	import { ModeWatcher } from 'mode-watcher';
+	import ThemeToggle from '$lib/components/theme-toggle.svelte';
 	let ready = $state(false);
 	let sessionError = $state(false);
 	async function restoreSession(): Promise<void> {
@@ -17,6 +19,8 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<ModeWatcher />
+<ThemeToggle />
 {#if ready}
 	{@render children()}
 {:else if sessionError}
