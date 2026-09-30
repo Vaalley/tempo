@@ -16,7 +16,7 @@ actor "Collaborateur ou\nadministrateur" as User
 rectangle "Couche présentation\nSvelteKit 2.63.1 / Svelte 5.56.3" as Presentation #E0F2FE {
     component "Pages SvelteKit\n/, /login, /bookings, /check-in, /admin/*" as Pages
     component "Gardes de navigation\net client Hono RPC typé" as Client
-    component "Jeton JWT\ndans localStorage" as Token
+    component "Jeton JWT\ndans cookie" as Token
     Pages --> Client
     Token --> Client
 }
@@ -38,10 +38,5 @@ User --> Pages : navigateur
 Client --> Security : HTTP JSON\nAuthorization: Bearer JWT
 Services --> PostgreSQL : Drizzle ORM / SQL
 Services --> MongoDB : pilote MongoDB\naudit best effort
-
-note bottom of Persistence
-  Architecture observée dans le code de la V1.
-  Aucune couche Repository distincte.
-end note
 
 @enduml

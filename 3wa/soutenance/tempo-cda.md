@@ -28,6 +28,8 @@ style: |
   .cols img { max-width: 100%; max-height: 440px; object-fit: contain; }
   .diagram { text-align: center; margin: 0; }
   .diagram img { max-width: 100%; height: 420px; object-fit: contain; }
+  section.diagram-slide .diagram img { height: 390px; }
+  .diagram-link { font-size: 18px; margin: 8px 0 0; text-align: center; }
   .caption { font-size: 21px; line-height: 1.3; margin-top: 14px; }
   .small { font-size: 23px; }
   .source { font-size: 17px; color: #777; margin-top: 18px; }
@@ -150,7 +152,7 @@ Soutenance du 7 octobre 2026
 
 Du besoin aux modèles de données
 
-<!-- Transition : les diagrammes présentés sont ceux du dossier. Ils décrivent la conception initiale. Les écarts avec la V1 sont signalés sur les slides. -->
+<!-- Transition : les diagrammes présentés sont ceux du dossier. La séquence de réservation suit la V1 ; les autres modèles conservent des éléments de la conception initiale. Les écarts sont signalés sur les slides. -->
 
 ---
 
@@ -167,6 +169,8 @@ Du besoin aux modèles de données
 
 ---
 
+<!-- _class: diagram-slide -->
+
 # 2.2. Diagramme de cas d’utilisation
 
 <div class="cols">
@@ -178,15 +182,18 @@ Du besoin aux modèles de données
 - Le collaborateur gère ses réservations
 - L’administrateur dispose aussi des fonctions de gestion
 
-<p class="small">Le diagramme prévoit davantage de fonctions que la V1, notamment le filtrage avancé et le multi-site.</p>
+<p class="small">Les droits sont contrôlés côté serveur. Le check-in confirme une action pendant le créneau, sans prouver la présence physique.</p>
 
-[Ouvrir le diagramme complet](assets/uml-cas.png)
 
 </div></div>
 
-<!-- Source : diagrams/use case diagram.png, reproduit sans modification. Le document est très vertical : utiliser le lien et zoomer pour une question détaillée du jury. -->
+<p class="diagram-link"><a href="assets/uml-cas.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
+
+<!-- Source : diagrams/use case diagram.png, reproduit sans modification. Le lien ouvre le diagramme actuel dans un nouvel onglet pour le zoom. La référence UC_FilterWorkspaces reste à corriger dans le fichier source. -->
 
 ---
+
+<!-- _class: diagram-slide -->
 
 # 2.3. Diagramme d’activité
 
@@ -200,43 +207,53 @@ Choisir un espace et un créneau, vérifier la disponibilité, puis enregistrer 
 
 <p class="small">Dans la V1, les dates sont des instants complets et la contrainte PostgreSQL protège aussi les demandes simultanées.</p>
 
-[Voir en détail](assets/uml-activite.png)
 
 </div></div>
+
+<p class="diagram-link"><a href="assets/uml-activite.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
 
 <!-- Source : diagrams/activity diagram - reservation.png. Faire suivre le chemin nominal puis le refus de disponibilité. Ne pas attribuer au diagramme les corrections de concurrence ajoutées dans le code. -->
 
 ---
 
+<!-- _class: diagram-slide -->
+
 # 2.4. Diagramme de séquence
 
 <div class="cols wide">
-<div class="diagram"><img src="assets/uml-sequence.png" alt="Séquence UML originale de réservation"></div>
+<div class="diagram"><img src="assets/uml-sequence.png" alt="Séquence UML de réservation dans la V1"></div>
 <div>
 
 **Du navigateur à la base**
 
 La requête traverse la route et le service avant l’écriture en base.
 
-<p class="small">Écarts : la V1 appelle <code>/api/bookings</code>, utilise Drizzle sans couche Repository et laisse PostgreSQL arbitrer les conflits concurrents.</p>
+<p class="small">Dans la V1, le champ de visibilité est <code>visibility</code>. Une transaction crée la réservation et la participation de son propriétaire ; PostgreSQL protège les créneaux concurrents.</p>
 
-[Voir en détail](assets/uml-sequence.png)
 
 </div></div>
 
-<!-- Source : diagrams/sequence diagram - reservation.png. Décrire les échanges plutôt que lire chaque message. Le diagramme d'origine n'intègre pas toutes les protections finales. -->
+<p class="diagram-link"><a href="assets/uml-sequence.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
+
+<!-- Source : diagrams/sequence diagram - reservation.png. Décrire les échanges plutôt que lire chaque message. La séquence représente la V1 : transaction, participation du propriétaire et refus des conflits concurrents par PostgreSQL. Les fragments break arrêtent le parcours en cas de refus. -->
 
 ---
+
+<!-- _class: diagram-slide -->
 
 # 2.5. Diagramme de classes
 
 <div class="diagram"><img src="assets/uml-classes.png" alt="Diagramme de classes UML original"></div>
 
-<p class="caption">Le modèle décrit la conception. Le code utilise surtout des services sous forme d’objets et de fonctions. Les entreprises, quotas et notifications ne font pas partie de la V1.</p>
+<p class="caption">Le modèle décrit la conception. Le code utilise surtout des services sous forme d’objets et de fonctions. Les quotas et plusieurs attributs du modèle ne font pas partie de la V1.</p>
+
+<p class="diagram-link"><a href="assets/uml-classes.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
 
 <!-- Source : diagrams/class diagram.png. Les enums et les participants dans le code diffèrent de ce modèle. Ouvrir assets/uml-classes.png si nécessaire. Ne pas présenter les classes du diagramme comme les classes TypeScript exécutées. -->
 
 ---
+
+<!-- _class: diagram-slide -->
 
 # 2.6. MERISE : le MCD
 
@@ -244,9 +261,13 @@ La requête traverse la route et le service avant l’écriture en base.
 
 <p class="caption">Le MCD décrit les entités et leurs liens métier. Le modèle initial inclut un périmètre plus large que la V1.</p>
 
+<p class="diagram-link"><a href="assets/mcd.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
+
 <!-- Source : diagrams/merise/MCD.png. Expliquer le lien entre un utilisateur, une réservation et un espace. Signaler les entreprises, localisations ou notifications du modèle qui ne sont pas implémentées. -->
 
 ---
+
+<!-- _class: diagram-slide -->
 
 # 2.7. MERISE : le MLD
 
@@ -254,15 +275,21 @@ La requête traverse la route et le service avant l’écriture en base.
 
 <p class="caption">Dans le MLD, la table `Inviter` relie les utilisateurs aux réservations. Dans le code, cette relation est implémentée par `booking_participants`, qui conserve le rôle du participant, sa réponse à l’invitation et l’heure de son check-in.</p>
 
+<p class="diagram-link"><a href="assets/mld.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
+
 <!-- Source : diagrams/merise/MLD.png. Expliquer les clés primaires et étrangères sans lire toutes les colonnes. Le code actuel conserve un seul hash QR actif par réservation. -->
 
 ---
+
+<!-- _class: diagram-slide -->
 
 # 2.8. MERISE : le MPD
 
 <div class="diagram"><img src="assets/mpd.png" alt="Modèle physique des données original"></div>
 
 <p class="caption">Le schéma Drizzle et les migrations décrivent la base mise en place : cinq tables PostgreSQL, des UUID pour les comptes et réservations, et des enums pour les rôles.</p>
+
+<p class="diagram-link"><a href="assets/mpd.png" target="_blank" rel="noopener noreferrer">Ouvrir le diagramme complet dans un nouvel onglet</a></p>
 
 <!-- Source : diagrams/merise/MPD.png. Le MPD original utilise notamment des identifiants entiers. Ne pas le confondre avec apps/backend/src/db/schema.ts. MongoDB conserve les audits séparément. -->
 

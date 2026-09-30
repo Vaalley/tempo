@@ -22,7 +22,6 @@ rectangle "Tempo - Gestion d'espaces flex-office" {
     ' --- Espaces de travail ---
     package "Gestion des espaces" {
         usecase "Consulter les espaces\ndisponibles" as UC_ListWorkspaces
-        usecase "Filtrer par type\n(bureau / salle / cabine)" as UC_FilterWorkspaces
         usecase "Vérifier la disponibilité\nd'un espace" as UC_CheckAvailability
         usecase "Créer un espace" as UC_CreateWorkspace
         usecase "Modifier un espace" as UC_EditWorkspace

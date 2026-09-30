@@ -274,6 +274,12 @@ Trello m'a servi à suivre les tâches et GitHub à conserver l'historique du co
 
 ![Tableau Kanban du projet dans Trello](trello.png)
 
+### 4.3.1. Planning prévisionnel par sprints
+
+La frise reprend les quatre sprints du tableau Trello : authentification, gestion des espaces, réservations, puis audit et finitions. Le cadrage et la conception précèdent ces sprints ; les tests accompagnent le développement. Les durées proposées (cinq jours de cadrage, puis dix jours par sprint) sont indicatives. Les captures ne permettent pas d’établir les dates réelles.
+
+![Planning prévisionnel par sprints](../diagrams/planning-sprints.png)
+
 ![Historique des commits GitHub](github-commits.png)
 
 ## 4.4. Objectifs de qualité
@@ -500,7 +506,7 @@ Tests associés : `bookings.service.spec.ts`, `http.routes.spec.ts`, `postgres-b
 
 ![Séquence de réservation](../diagrams/sequence%20diagram%20-%20reservation.png)
 
-Les diagrammes de réservation utilisent `/api/bookings`, `isPublic`, une liste d’invités à la création et une table d’invitations séparée. La route réelle est `POST /bookings` avec `visibility` ; les invitations sont créées ensuite dans `booking_participants`. La contrainte GiST garantit le non-chevauchement, même si deux précontrôles applicatifs réussissent. L’annulation reste une suppression physique.
+La séquence de réservation suit le fonctionnement de la V1 : le champ visibility distingue les réservations publiques et privées. La réservation et la participation du propriétaire sont créées dans une même transaction. La contrainte GiST refuse les créneaux qui se chevauchent, y compris lors de demandes concurrentes. Les invitations sont ajoutées ensuite. Le diagramme d’activité conserve le statut CONFIRMED de la conception initiale ; ce statut n’est pas enregistré dans la base.
 
 ### 5.7.2. Fonctionnalité 2 : annuler une réservation
 
@@ -516,7 +522,7 @@ Tests associés : `bookings.service.spec.ts`, `http.routes.spec.ts`, `mongo-audi
 
 ![Séquence d'annulation](../diagrams/sequence%20diagram%20-%20annulation%20reservation.png)
 
-Les diagrammes d’annulation imposent un délai de 24 heures, un statut `CANCELLED` et des notifications. Le code ne prévoit ni ce délai ni ces notifications. Il supprime la réservation et tente d’écrire un audit MongoDB ; l’administrateur peut également annuler celle d’un tiers.
+La séquence d’annulation montre la suppression d’une réservation par son propriétaire ou par un administrateur. PostgreSQL supprime aussi les participations et le jeton QR associés. Le serveur tente ensuite d’enregistrer la suppression dans MongoDB ; un échec de cet audit ne rétablit pas la réservation. Le diagramme d’activité conserve le délai de 24 heures, le statut CANCELLED et les notifications de la conception initiale. Ces règles ne sont pas appliquées dans la V1.
 
 ### 5.7.3. Fonctionnalité 3 : gérer les espaces
 
@@ -530,7 +536,7 @@ Tests associés : `workspaces.dto.spec.ts`, `workspaces.service.spec.ts`, `admin
 
 ![Séquence de gestion des espaces](../diagrams/sequence%20diagram%20-%20gestion%20espaces%20admin.png)
 
-Les diagrammes de gestion des espaces ajoutent un quota et des notifications, absents du code. Une suppression entraîne les cascades PostgreSQL, pas une mise à jour vers `CANCELLED`. La modification par `PATCH` et le contrôle des capacités sont présents dans la V1 mais non détaillés dans ces séquences.
+La séquence de gestion des espaces montre les opérations de création et de suppression réservées à l’administrateur. La suppression entraîne celle des réservations, de leurs participations et de leurs jetons QR par cascade, puis une tentative d’audit dans MongoDB. Le diagramme d’activité conserve les quotas et les notifications de la conception initiale, absents de la V1. La modification par PATCH constitue un parcours distinct : une réduction de capacité est refusée si elle ne permet plus d’accueillir les participants des réservations en cours ou à venir.
 
 ### 5.7.4. Fonctionnalité 4 : effectuer un check-in par QR code
 
@@ -546,7 +552,7 @@ Tests associés : `booking-collaboration.routes.spec.ts`, `postgres-bookings.int
 
 ![Séquence de check-in](../diagrams/sequence%20diagram%20-%20checkin.png)
 
-Les diagrammes de check-in montrent un QR lié à l’espace, un statut global `CHECKED_IN` et un audit MongoDB. La V1 utilise un jeton propre à la réservation, enregistre `checkedInAt` sur le participant et ne produit pas d’audit de check-in. Sa fenêtre est `startAt <= maintenant < endAt` : la borne de fin est exclue.
+La séquence de check-in utilise un jeton propre à la réservation, dont seul le hash est conservé dans PostgreSQL. Le serveur vérifie que l’utilisateur est un participant accepté et que le créneau a commencé sans être terminé : startAt <= maintenant < endAt. Il enregistre ensuite checkedInAt sur le participant. Le diagramme d’activité conserve le QR lié à l’espace, le statut global CHECKED_IN et l’audit MongoDB de la conception initiale. Ces éléments ne correspondent pas au check-in de la V1.
 
 ### 5.7.5. Fonctionnalité 5 : s'authentifier
 
@@ -993,6 +999,34 @@ Le limiteur actuel est propre à un processus. Un déploiement horizontal demand
 | E2E Chromium             | Playwright | Réservation et parcours collaboratif                |      2 |
 
 Le backend compte 123 tests : 106 tests unitaires et HTTP, 15 tests PostgreSQL et 2 tests MongoDB. Les suites d’intégration se lancent séparément.
+
+### 9.1.1. Exemple de test unitaire : refuser un chevauchement
+
+Cet extrait de bookings.service.spec.ts vérifie qu’une réservation est refusée lorsqu’un créneau est déjà occupé. Le mock renvoie d’abord un espace existant, puis une réservation de 10 h à 12 h. La nouvelle demande porte sur le même espace, de 10 h 30 à 11 h 30.
+
+```typescript
+it('should throw BOOKING_OVERLAP if time slot is already booked', async () => {
+	mockFindFirst
+		.mockResolvedValueOnce({ id: 1, name: 'Workspace 1' })
+		.mockResolvedValueOnce({
+			id: 'existing-booking',
+			workspaceId: 1,
+			startAt: new Date('2024-01-01T10:00:00Z'),
+			endAt: new Date('2024-01-01T12:00:00Z'),
+		});
+
+	await expect(
+		bookingService.create('user-1', {
+			workspaceId: 1,
+			startAt: '2024-01-01T10:30:00Z',
+			endAt: '2024-01-01T11:30:00Z',
+			visibility: 'PRIVATE',
+		}),
+	).rejects.toThrow('BOOKING_OVERLAP');
+});
+```
+
+L’assertion attend l’erreur BOOKING_OVERLAP. Les appels à la base sont remplacés par des mocks : ce test contrôle la réaction du service, pas la contrainte PostgreSQL ni les requêtes concurrentes. Les dates de 2024 sont des données de test.
 
 ## 9.2. Couverture par module
 

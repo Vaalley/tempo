@@ -1,81 +1,71 @@
 @startuml
-
-title Diagramme de séquence — Check-in / Suivi de présence (Tempo)
-
-actor "Collaborateur" as User
+title Séquence - Check-in par QR code (Tempo V1)
+actor "Participant" as User
 participant "Frontend" as Frontend
-participant "API" as API
+participant "API\n(routes et services)" as API
 database "PostgreSQL" as DB
-database "MongoDB\n(Audit)" as Mongo
 
-== Consultation des réservations ==
+note over Frontend, API
+  JWT dans un cookie HttpOnly.
+  Les écritures exigent Origin autorisé et X-CSRF-Protection: 1.
+  Refus CSRF : 403 ; session invalide : 401 ; entrées Zod invalides : 400.
+end note
 
-User -> Frontend : Accéder à "Mes réservations"
+note over Frontend, API
+  Le propriétaire ou un ADMIN génère le QR par POST /api/bookings/:id/qr.
+  Le QR ouvre /check-in#bookingId=...&token=...
+  Seul le hash SHA-256 est stocké dans booking_qr_tokens.
+  Un nouveau QR remplace le jeton précédent.
+end note
+User -> Frontend : Ouvrir le lien du QR code
 activate Frontend
-
-Frontend -> API : GET /api/bookings/my
+Frontend -> Frontend : Restaurer la session et lire bookingId et token
+note right of Frontend
+  Sans session, redirection vers /login
+  en conservant le lien pour le retour.
+end note
+Frontend -> API : POST /api/bookings/:id/check-in\n{ token }
 activate API
-
-API -> API : Vérifier le JWT
-
-API -> DB : Récupérer les réservations de l'utilisateur
-activate DB
-DB --> API : Liste des réservations
-deactivate DB
-
-API --> Frontend : 200 OK
-deactivate API
-
-Frontend --> User : Afficher les réservations actives
-deactivate Frontend
-
-== Check-in via QR Code ==
-
-User -> Frontend : Scanner le QR code dans la salle
-activate Frontend
-
-Frontend -> API : POST /api/bookings/checkin\n{ qrCodeData }
-activate API
-
-API -> API : Décoder le QR code (extract workspaceId)
-
-API -> API : Vérifier le JWT
-
-alt JWT invalide
-    API --> Frontend : 401 Unauthorized
-    deactivate API
-    Frontend --> User : Afficher "Authentification requise"
-    deactivate Frontend
-else Authentification OK
+API -> API : Contrôler CSRF, session, entrées Zod
+break Requête refusée
+  API --> Frontend : 401 session / 403 CSRF / 400 données
+  Frontend --> User : Afficher l'erreur
 end
 
-API -> DB : SELECT b.* FROM bookings b\nLEFT JOIN booking_participants bp ON bp.booking_id = b.id\nWHERE b.workspace_id = ?\nAND (b.user_id = ? OR (bp.user_id = ? AND bp.status = 'ACCEPTED'))\nAND b.status = 'CONFIRMED'\nAND b.start_at <= now()\nAND b.end_at >= now()
+API -> DB : Charger booking_participants par booking_id et user_id\navec la réservation liée
 activate DB
-DB --> API : Réservation ou null
+DB --> API : Participant et réservation, ou absence
 deactivate DB
-
-alt Aucune réservation active ou accès non autorisé
-    API --> Frontend : 404 Not Found\n{ error: "Aucune réservation active ou accès non autorisé" }
-    deactivate API
-    Frontend --> User : Afficher "Check-in impossible (aucune réservation ou accès refusé)"
-    deactivate Frontend
-else Reservation trouvee
+break Participant introuvable
+  API --> Frontend : 403 Vous ne participez pas à cette réservation
+  Frontend --> User : Afficher le refus
 end
-
-API -> DB : UPDATE bookings SET status = 'CHECKED_IN', checked_in_at = now() WHERE id = ?
+API -> API : Vérifier invitation_status = ACCEPTED
+break Invitation non acceptée
+  API --> Frontend : 409 Invitation à accepter avant le check-in
+  Frontend --> User : Afficher le refus
+end
+API -> API : Vérifier start_at <= maintenant < end_at
+break Créneau non commencé ou terminé
+  API --> Frontend : 409 Check-in non ouvert / réservation terminée
+  Frontend --> User : Afficher le refus
+end
+API -> DB : Charger booking_qr_tokens par booking_id
 activate DB
-DB --> API : Réservation mise à jour
+DB --> API : Hash du jeton et expires_at, ou absence
 deactivate DB
-
-API -> Mongo : Enregistrer l'action\n{ action: CHECK_IN, bookingId, userId, workspaceId, timestamp }
-activate Mongo
-Mongo --> API : Log enregistré
-deactivate Mongo
-
-API --> Frontend : 200 OK
+API -> API : Comparer SHA-256(token) au hash stocké\net vérifier expires_at > maintenant
+break Jeton absent, expiré ou incorrect
+  API --> Frontend : 403 QR code invalide ou expiré
+  Frontend --> User : Afficher le refus
+end
+API -> DB : UPDATE booking_participants SET checked_in_at = maintenant\nWHERE id = :participantId RETURNING *
+activate DB
+DB --> API : Participant avec checkedInAt
+deactivate DB
+API --> Frontend : 200 - Participant mis à jour
 deactivate API
-
-Frontend --> User : Afficher "Présence confirmée"
+Frontend -> Frontend : Retirer le fragment du QR de l'URL
+Frontend --> User : Afficher la confirmation et l'heure du check-in
 deactivate Frontend
-
 @enduml

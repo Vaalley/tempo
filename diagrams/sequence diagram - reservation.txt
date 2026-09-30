@@ -1,128 +1,88 @@
 @startuml
-
-title Diagramme de sequence — Réservation d'un espace (Tempo)
-
+title Séquence - Réservation d'un espace (Tempo V1)
 actor "Collaborateur" as User
 participant "Frontend" as Frontend
-participant "API" as API
+participant "API\n(routes et services)" as API
 database "PostgreSQL" as DB
 
+note over Frontend, API
+  JWT dans un cookie HttpOnly.
+  Les écritures exigent Origin autorisé et X-CSRF-Protection: 1.
+  Refus CSRF : 403 ; session invalide : 401 ; entrées Zod invalides : 400.
+end note
+
 == Consultation des espaces ==
-
-User -> Frontend : Accéder à la page des espaces
+User -> Frontend : Consulter les espaces
 activate Frontend
-
 Frontend -> API : GET /api/workspaces
 activate API
-
-API -> DB : Récupérer tous les espaces
+API -> API : Vérifier la session
+break Session invalide
+  API --> Frontend : 401 Authentification requise
+  Frontend --> User : Afficher l'erreur
+end
+API -> DB : Charger workspaces, triés par nom
 activate DB
 DB --> API : Liste des espaces
 deactivate DB
-
-API --> Frontend : 200 OK
+API --> Frontend : 200 - Espaces
 deactivate API
-
-Frontend --> User : Afficher les espaces disponibles
+Frontend --> User : Afficher les espaces
 deactivate Frontend
 
 == Création de la réservation ==
-
-User -> Frontend : Sélectionner un espace, choisir créneau, définir public/privé, saisir invités
+User -> Frontend : Choisir espace, dates et visibilité
 activate Frontend
-
-Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt, isPublic, invitedEmails[] }
+Frontend -> API : POST /api/bookings\n{ workspaceId, startAt, endAt, visibility }
 activate API
-
-API -> API : Vérifier le JWT
-
-alt JWT invalide
-    API --> Frontend : 401 Unauthorized
-    deactivate API
-    Frontend --> User : Afficher message d'erreur
-    deactivate Frontend
-else Authentification OK
+API -> API : Contrôler CSRF, session, entrées Zod
+break Requête refusée
+  API --> Frontend : 401 session / 403 CSRF / 400 données
+  Frontend --> User : Afficher l'erreur
 end
 
-API -> DB : Vérifier que l'espace existe
+API -> DB : Rechercher l'espace par id
 activate DB
-DB --> API : Espace ou null
+DB --> API : Espace ou absence
 deactivate DB
-
-alt Espace introuvable
-    API --> Frontend : 404 Not Found
-    deactivate API
-    Frontend --> User : Afficher "Espace introuvable"
-    deactivate Frontend
-else Espace trouve
+break Espace introuvable
+  API --> Frontend : 404 Workspace not found
+  Frontend --> User : Afficher l'erreur
 end
-
-API -> DB : Vérifier les chevauchements de réservations
+API -> DB : Rechercher un chevauchement\nstart_at < fin demandée ET end_at > début demandé
 activate DB
-DB --> API : Conflit ou OK
+DB --> API : Conflit ou absence
 deactivate DB
-
-alt Créneau déjà réservé
-    API --> Frontend : 409 Conflict
-    deactivate API
-    Frontend --> User : Afficher "Créneau non disponible"
-    deactivate Frontend
-else Creneau disponible
+break Chevauchement détecté
+  API --> Frontend : 409 Créneau déjà réservé
+  Frontend --> User : Afficher le conflit
 end
-
-API -> DB : Insérer la réservation (status: CONFIRMED, is_public, owner_id)
-activate DB
-DB --> API : Réservation créée avec ID
-deactivate DB
-
-alt Invitations à envoyer
-    loop Pour chaque email invité
-        API -> DB : INSERT INTO booking_invitations\n{ booking_id, email, status: PENDING }
-        activate DB
-        DB --> API : Invitation enregistrée
-        deactivate DB
-    end
+group Transaction : réservation et propriétaire
+  API -> DB : BEGIN puis INSERT INTO bookings\n{ user_id, workspace_id, start_at, end_at, visibility }
+  activate DB
+  DB --> API : Réservation créée ou erreur
+  deactivate DB
+  alt Conflit concurrent : exclusion GiST (23P01)
+    API -> DB : ROLLBACK
+    activate DB
+    DB --> API : Transaction annulée
+    deactivate DB
+    API --> Frontend : 409 Créneau déjà réservé
+    Frontend --> User : Afficher le conflit
+  else Insertion réussie
+    API -> DB : INSERT INTO booking_participants\n{ booking_id, user_id, role: OWNER, invitation_status: ACCEPTED }\npuis COMMIT
+    activate DB
+    DB --> API : Transaction validée
+    deactivate DB
+    API --> Frontend : 201 - Réservation
+    Frontend --> User : Actualiser la liste et afficher la confirmation
+  end
 end
-
-API --> Frontend : 201 Created\n{ reservation, invitationsCount }
+note over API, DB
+  Toute erreur de transaction annule les deux écritures.
+  Les erreurs serveur inattendues donnent 500.
+  Les invitations sont ajoutées après la création.
+end note
 deactivate API
-
-Frontend --> User : Afficher la confirmation et les invitations envoyées
 deactivate Frontend
-
-== Réception des réponses (asynchrone) ==
-
-User -> Frontend : Recevoir notification invitation
-activate Frontend
-Frontend --> User : Afficher invitation reçue
-deactivate Frontend
-
-alt Invité accepte
-    User -> Frontend : Accepter l'invitation
-    activate Frontend
-    Frontend -> API : POST /api/invitations/:id/accept
-    activate API
-    API -> DB : UPDATE booking_invitations SET status = 'ACCEPTED'
-    activate DB
-    DB --> API : OK
-    deactivate DB
-    API --> Frontend : 200 OK
-    deactivate API
-    Frontend --> User : Afficher "Invitation acceptée"
-    deactivate Frontend
-else Invité décline
-    User -> Frontend : Décliner l'invitation
-    activate Frontend
-    Frontend -> API : POST /api/invitations/:id/decline
-    activate API
-    API -> DB : UPDATE booking_invitations SET status = 'DECLINED'
-    activate DB
-    DB --> API : OK
-    deactivate DB
-    API --> Frontend : 200 OK
-    deactivate API
-    Frontend --> User : Afficher "Invitation déclinée"
-    deactivate Frontend
-end
-
 @enduml

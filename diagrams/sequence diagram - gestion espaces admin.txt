@@ -1,111 +1,77 @@
 @startuml
-
-title Diagramme de séquence — Gestion des espaces (Administrateur)
-
-actor "Administrateur" as Admin
+title Séquence - Gestion des espaces (Tempo V1)
+actor "Administrateur" as User
 participant "Frontend" as Frontend
-participant "API" as API
+participant "API\n(routes et services)" as API
 database "PostgreSQL" as DB
-database "MongoDB\n(Audit)" as Mongo
+database "MongoDB\n(audit_logs)" as Mongo
+
+note over Frontend, API
+  JWT dans un cookie HttpOnly.
+  Les écritures exigent Origin autorisé et X-CSRF-Protection: 1.
+  Refus CSRF : 403 ; session invalide : 401 ; entrées Zod invalides : 400.
+end note
 
 == Création d'un espace ==
-
-Admin -> Frontend : Renseigner nom, type, capacité, quota et confirmer
+User -> Frontend : Renseigner nom, type et capacité
 activate Frontend
-
-Frontend -> API : POST /api/workspaces\n{ name, type, capacity, maxQuota }
+Frontend -> API : POST /api/workspaces\n{ name, type, capacity }
 activate API
-
-API -> API : Vérifier le JWT et le rôle ADMIN
-
-alt JWT invalide ou rôle insuffisant
-    API --> Frontend : 403 Forbidden
-    deactivate API
-    Frontend --> Admin : Afficher "Accès refusé"
-    deactivate Frontend
-else Authentification OK
+API -> API : Contrôler CSRF, session, rôle ADMIN, entrées Zod
+break Requête refusée
+  API --> Frontend : 401 session / 403 CSRF ou rôle / 400 données
+  Frontend --> User : Afficher l'erreur
 end
 
-API -> API : Valider les données (Zod)
-
-alt Données invalides
-    API --> Frontend : 400 Bad Request
-    deactivate API
-    Frontend --> Admin : Afficher les erreurs de saisie
-    deactivate Frontend
-else Donnees valides
-end
-
-API -> DB : INSERT INTO workspaces\n{ name, type, capacity, max_quota }
+API -> DB : INSERT INTO workspaces\n{ name, type, capacity } RETURNING *
 activate DB
 DB --> API : Espace créé
 deactivate DB
-
-API --> Frontend : 201 Created
+API --> Frontend : 201 - Espace
 deactivate API
-
-Frontend --> Admin : Afficher l'espace créé
+Frontend --> User : Actualiser le tableau des espaces
 deactivate Frontend
 
 == Suppression d'un espace ==
-
-Admin -> Frontend : Sélectionner un espace et confirmer la suppression
+User -> Frontend : Confirmer la suppression d'un espace
 activate Frontend
-
 Frontend -> API : DELETE /api/workspaces/:id
 activate API
-
-API -> API : Vérifier le JWT et le rôle ADMIN
-
-alt JWT invalide ou rôle insuffisant
-    API --> Frontend : 403 Forbidden
-    deactivate API
-    Frontend --> Admin : Afficher "Accès refusé"
-    deactivate Frontend
-else Authentification OK
+API -> API : Contrôler CSRF, session, rôle ADMIN, entrées Zod
+break Requête refusée
+  API --> Frontend : 401 session / 403 CSRF ou rôle / 400 données
+  Frontend --> User : Afficher l'erreur
 end
 
-API -> DB : SELECT * FROM workspaces WHERE id = ?
+API -> DB : DELETE FROM workspaces WHERE id = :id RETURNING *
 activate DB
-DB --> API : Espace trouvé ou null
+note right of DB
+  Cascade : réservations de l'espace,
+  puis participants et jetons QR associés.
+end note
+DB --> API : Espace supprimé ou absence
 deactivate DB
-
-alt Espace introuvable
-    API --> Frontend : 404 Not Found
-    deactivate API
-    Frontend --> Admin : Afficher "Espace introuvable"
-    deactivate Frontend
-else Espace trouve
+break Espace introuvable
+  API --> Frontend : 404 Workspace not found
+  Frontend --> User : Afficher l'erreur
 end
-
-API -> DB : SELECT * FROM bookings\nWHERE workspace_id = ?\nAND start_at > now()
-activate DB
-DB --> API : Liste des réservations futures
-deactivate DB
-
-alt Réservations futures existantes
-    API -> API : Notifier les utilisateurs concernés
-end
-
-API -> DB : DELETE FROM workspaces WHERE id = ?
-activate DB
-DB --> API : Espace supprimé
-deactivate DB
-
-API -> DB : UPDATE bookings SET status = 'CANCELLED'\nWHERE workspace_id = ?\nAND start_at > now()
-activate DB
-DB --> API : Réservations annulées
-deactivate DB
-
-API -> Mongo : Enregistrer l'action\n{ action: DELETE_WORKSPACE, performedBy, affectedBookings: [...], timestamp }
+API -> Mongo : Tenter l'audit DELETE_WORKSPACE\n{ entityType, entityId, entityData, performedBy, timestamp }
 activate Mongo
-Mongo --> API : Log enregistré
+alt MongoDB disponible
+  Mongo --> API : Audit enregistré
+else Échec de connexion ou d'écriture
+  Mongo --> API : Erreur
+  API -> API : Journaliser l'erreur sans annuler la suppression
+end
 deactivate Mongo
 
-API --> Frontend : 200 OK\n{ warning: "X utilisateurs notifiés" }
+API --> Frontend : 200 - { message: "Workspace deleted", workspace }
 deactivate API
-
-Frontend --> Admin : Afficher confirmation
+Frontend --> User : Actualiser le tableau des espaces
 deactivate Frontend
-
+note over API, DB
+  PATCH /api/workspaces/:id : parcours séparé.
+  Transaction avec verrou sur l'espace ; une capacité insuffisante
+  pour les participants ACCEPTED ou PENDING est refusée (409).
+end note
 @enduml

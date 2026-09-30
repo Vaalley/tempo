@@ -1,0 +1,21 @@
+@startgantt
+title Tempo - Planning prévisionnel par sprints
+footer Durées indicatives : exemple de planification, sans dates historiques
+printscale weekly
+
+[Cadrage et conception] lasts 5 days
+[Sprint 1 : Authentification] lasts 10 days
+[Sprint 2 : Gestion des espaces (CRUD)] lasts 10 days
+[Sprint 3 : Réservations] lasts 10 days
+[Sprint 4 : Audit et finitions] lasts 10 days
+
+[Sprint 1 : Authentification] starts at [Cadrage et conception]'s end
+[Sprint 2 : Gestion des espaces (CRUD)] starts at [Sprint 1 : Authentification]'s end
+[Sprint 3 : Réservations] starts at [Sprint 2 : Gestion des espaces (CRUD)]'s end
+[Sprint 4 : Audit et finitions] starts at [Sprint 3 : Réservations]'s end
+
+[Tests et corrections au fil du développement] lasts 40 days
+[Tests et corrections au fil du développement] starts at [Sprint 1 : Authentification]'s start
+[Tests et corrections au fil du développement] is colored in LightGray
+
+@endgantt

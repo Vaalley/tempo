@@ -7,7 +7,6 @@ start
 :Consulter les espaces disponibles;
 :Selectionner un espace et un creneau;
 :Choisir le type de reservation\n(publique ou privee);
-:Saisir les emails des collaborateurs\na inviter (optionnel);
 :Confirmer la reservation;
 
 |Systeme|
@@ -42,15 +41,9 @@ endif
 
 |Systeme|
 :Enregistrer la reservation (CONFIRMED);
-if (Invitations a envoyer ?) then (oui)
-    :Enregistrer les invitations en base;
-    :Envoyer les invitations\naux collaborateurs;
-else (non)
-endif
 
 |Collaborateur|
 :Afficher la confirmation de reservation;
-:Recevoir les confirmations\nde participation (asynchrone);
 stop
 
 @enduml

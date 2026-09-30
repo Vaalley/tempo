@@ -1,88 +1,80 @@
 @startuml
-
-title Diagramme de sequence - Annulation d'une reservation (Tempo)
-
-actor "Collaborateur" as User
+title Séquence - Annulation d'une réservation (Tempo V1)
+actor "Collaborateur ou\nadministrateur" as User
 participant "Frontend" as Frontend
-participant "API" as API
+participant "API\n(routes et services)" as API
 database "PostgreSQL" as DB
+database "MongoDB\n(audit_logs)" as Mongo
 
-== Consultation des reservations ==
+note over Frontend, API
+  JWT dans un cookie HttpOnly.
+  Les écritures exigent Origin autorisé et X-CSRF-Protection: 1.
+  Refus CSRF : 403 ; session invalide : 401 ; entrées Zod invalides : 400.
+end note
 
-User -> Frontend : Acceder a "Mes reservations"
+== Consultation des réservations ==
+User -> Frontend : Ouvrir les réservations
 activate Frontend
-
-Frontend -> API : GET /api/bookings/my
+Frontend -> API : GET /api/bookings
 activate API
-
-API -> DB : SELECT * FROM bookings WHERE user_id = ? ORDER BY start_at DESC
+API -> API : Vérifier la session
+break Session invalide
+  API --> Frontend : 401 Authentification requise
+  Frontend --> User : Afficher l'erreur
+end
+API -> DB : ADMIN : toutes les réservations\nUSER : publiques, propres ou invitation non refusée\navec espace, propriétaire et participants
 activate DB
-DB --> API : Liste des reservations
+DB --> API : Réservations triées par start_at décroissant
 deactivate DB
-
-API --> Frontend : 200 OK
+API --> Frontend : 200 - Réservations
 deactivate API
-
-Frontend --> User : Afficher les reservations
+Frontend --> User : Afficher la liste
 deactivate Frontend
 
-== Annulation d'une reservation ==
-
-User -> Frontend : Selectionner une reservation
+== Suppression de la réservation ==
+User -> Frontend : Confirmer l'annulation
 activate Frontend
-
 Frontend -> API : DELETE /api/bookings/:id
 activate API
-
-API -> API : Verifier le JWT
-
-alt JWT invalide
-    API --> Frontend : 401 Unauthorized
-    deactivate API
-    Frontend --> User : Afficher "Authentification requise"
-    deactivate Frontend
-else Authentification OK
+API -> API : Contrôler CSRF, session, entrées Zod
+break Requête refusée
+  API --> Frontend : 401 session / 403 CSRF / 400 données
+  Frontend --> User : Afficher l'erreur
 end
 
-API -> DB : SELECT * FROM bookings WHERE id = ? AND user_id = ?
+API -> DB : Rechercher bookings par id
 activate DB
-DB --> API : Reservation ou null
+DB --> API : Réservation ou absence
 deactivate DB
-
-alt Reservation introuvable
-    API --> Frontend : 404 Not Found
-    deactivate API
-    Frontend --> User : Afficher "Reservation introuvable"
-    deactivate Frontend
-else Reservation trouvee
+break Réservation introuvable
+  API --> Frontend : 404 Booking not found
+  Frontend --> User : Afficher l'erreur
 end
-
-API -> API : Verifier delai d'annulation (start_at - now() > 24h)
-
-alt Delai insuffisant (< 24h avant debut)
-    API --> Frontend : 400 Bad Request
-    deactivate API
-    Frontend --> User : Afficher "Annulation impossible (delai trop court)"
-    deactivate Frontend
-else Delai OK
+API -> API : Autoriser le propriétaire ou un ADMIN
+break Collaborateur non propriétaire
+  API --> Frontend : 403 Unauthorized
+  Frontend --> User : Afficher le refus
 end
-
-API -> DB : UPDATE bookings SET status = 'CANCELLED', cancelled_at = now() WHERE id = ?
+API -> DB : DELETE FROM bookings WHERE id = :id RETURNING *
 activate DB
-DB --> API : Reservation annulee
+note right of DB
+  Les participants et le jeton QR liés
+  sont supprimés en cascade.
+end note
+DB --> API : Réservation supprimée
 deactivate DB
+API -> Mongo : Tenter l'audit DELETE_BOOKING\n{ entityType, entityId, entityData, performedBy, timestamp }
+activate Mongo
+alt MongoDB disponible
+  Mongo --> API : Audit enregistré
+else Échec de connexion ou d'écriture
+  Mongo --> API : Erreur
+  API -> API : Journaliser l'erreur sans annuler la suppression
+end
+deactivate Mongo
 
-API -> DB : SELECT user_id FROM booking_participants\nWHERE booking_id = ? AND status = 'ACCEPTED'
-activate DB
-DB --> API : Liste des participants (createur + invites)
-deactivate DB
-
-API -> API : Envoyer notification a chaque participant
-
-API --> Frontend : 200 OK
+API --> Frontend : 200 - { message: "Booking deleted", booking }
 deactivate API
-
-Frontend --> User : Afficher confirmation d'annulation et notification
+Frontend --> User : Retirer la réservation de la liste
 deactivate Frontend
-
 @enduml

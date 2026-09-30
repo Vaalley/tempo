@@ -38,7 +38,9 @@ Documentation : [Marp](https://marp.app/) et [Marp CLI](https://github.com/marp-
 
 ## Diagrammes et preuves
 
-Les images UML et MERISE sont des copies non modifiées des fichiers de `diagrams/`. Les slides et les notes précisent les différences avec le code. Certains diagrammes sont très verticaux ou détaillés : les ouvrir depuis `assets/` et zoomer pour répondre à une question précise. Leur vue complète sert à situer le modèle, pas à lire toutes les annotations à distance.
+Les images UML et MERISE sont des copies des fichiers actuels de `diagrams/`. Chaque diagramme apparaît en entier sur une slide. Le lien « Ouvrir le diagramme complet dans un nouvel onglet » permet de l’agrandir dans le navigateur, puis de revenir à la présentation. Garder le dossier `assets/` à côté du HTML pour que ces liens fonctionnent.
+
+Les légendes et les notes signalent les différences avec le code. Dans un lecteur PDF, l’ouverture des liens dépend des réglages du lecteur ; le nouvel onglet est prévu pour la présentation HTML.
 
 Les extraits de code viennent du dépôt et restent du texte modifiable. Ils remplacent les captures de code proposées par le modèle. Les extraits partiels sont indiqués dans les notes.
 
